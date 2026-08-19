@@ -5,14 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gestión Financiera & Portafolio</title>
   
-  <!-- Configuración PWA -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#0f172a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="apple-touch-icon" href="icon-192.png" />
 
-  <!-- Tailwind CSS & Chart.js via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -25,7 +23,6 @@
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col md:flex-row transition-colors duration-200">
 
-  <!-- Navegación Lateral / Superior -->
   <aside class="w-full md:w-64 bg-white dark:bg-slate-800 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-700 p-4 flex md:flex-col justify-between items-center md:items-stretch z-10">
     <div>
       <div class="flex items-center space-x-3 mb-6">
@@ -54,10 +51,8 @@
     </div>
   </aside>
 
-  <!-- Contenido Principal -->
   <main class="flex-1 p-4 md:p-8 overflow-y-auto">
     
-    <!-- Pestaña 1: Caja Diaria -->
     <section id="sec-caja" class="space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h2 class="text-2xl font-bold">Caja Diaria</h2>
@@ -67,7 +62,6 @@
         </div>
       </div>
 
-      <!-- Tarjetas Resumen -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
           <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Ingresos del Mes</p>
@@ -83,7 +77,6 @@
         </div>
       </div>
 
-      <!-- Formulario Caja -->
       <form onsubmit="guardarMovimiento(event)" class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
         <h3 class="text-lg font-semibold">Nuevo Registro</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
@@ -93,13 +86,12 @@
             <option value="Gasto">Gasto</option>
           </select>
           <input type="text" id="caja-desc" placeholder="Descripción" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm" />
-          <input type="text" id="caja-cat" placeholder="Categoría (Ej: Comida, Sueldo)" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm" />
+          <input type="text" id="caja-cat" placeholder="Categoría" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm" />
           <input type="number" step="0.01" id="caja-monto" placeholder="Monto ($)" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm" />
         </div>
         <button type="submit" class="w-full sm:w-auto bg-primary text-white font-medium px-6 py-2.5 rounded-xl hover:bg-blue-600 transition">Agregar Registro</button>
       </form>
 
-      <!-- Tabla Caja -->
       <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
         <table class="w-full text-left text-sm">
           <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 uppercase text-xs">
@@ -117,11 +109,11 @@
       </div>
     </section>
 
-    <!-- Pestaña 2: Operaciones -->
     <section id="sec-operaciones" class="space-y-6 hidden">
-      <h2 class="text-2xl font-bold">Operaciones Financieras</h2>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <h2 class="text-2xl font-bold">Operaciones Financieras</h2>
+      </div>
 
-      <!-- Resumen Operaciones -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
           <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Capital Invertido Neto</p>
@@ -132,17 +124,25 @@
           <p id="op-flujo" class="text-2xl font-bold mt-1">$0.00</p>
         </div>
         <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Intereses / Dividendos Cobrados</p>
+          <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Intereses / Dividendos</p>
           <p id="op-intereses" class="text-2xl font-bold text-emerald-500 mt-1">$0.00</p>
         </div>
       </div>
 
-      <!-- Formulario Operaciones -->
+      <!-- NUEVO: Módulo de Importación CSV -->
+      <div class="bg-blue-50 dark:bg-slate-800/80 border border-blue-200 dark:border-slate-700 p-5 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <h4 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-file-csv text-primary"></i> Importar operaciones masivas</h4>
+          <p class="text-xs text-slate-500 mt-1">Sube un archivo Excel guardado como CSV. Orden de columnas obligatorio (con encabezados en la primera fila): <br><strong class="dark:text-slate-300">Fecha (AAAA-MM-DD), Activo, Tipo (Compra/Venta), Cantidad, Precio, Comision, Intereses</strong></p>
+        </div>
+        <input type="file" accept=".csv" onchange="importarCSV(event)" class="text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-primary file:text-white hover:file:bg-blue-600 transition cursor-pointer" />
+      </div>
+
       <form onsubmit="guardarOperacion(event)" class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
-        <h3 class="text-lg font-semibold">Registrar Operación</h3>
+        <h3 class="text-lg font-semibold">Registrar Operación Manual</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <input type="date" id="op-fecha" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm" />
-          <input type="text" id="op-activo" placeholder="Activo (Ej: AAPL, BTC)" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm uppercase" />
+          <input type="text" id="op-activo" placeholder="Activo (Ej: AAPL)" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm uppercase" />
           <select id="op-tipo" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm">
             <option value="Compra">Compra</option>
             <option value="Venta">Venta</option>
@@ -150,12 +150,11 @@
           <input type="number" step="any" id="op-cantidad" placeholder="Cantidad" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm" />
           <input type="number" step="any" id="op-precio" placeholder="Precio Unitario ($)" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm" />
           <input type="number" step="any" id="op-comision" placeholder="Comisión ($)" value="0" class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm" />
-          <input type="number" step="any" id="op-interes" placeholder="Intereses/Dividendos ($)" value="0" class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm" />
+          <input type="number" step="any" id="op-interes" placeholder="Intereses ($)" value="0" class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm" />
         </div>
         <button type="submit" class="w-full sm:w-auto bg-primary text-white font-medium px-6 py-2.5 rounded-xl hover:bg-blue-600 transition">Guardar Operación</button>
       </form>
 
-      <!-- Tabla Operaciones -->
       <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
         <table class="w-full text-left text-sm">
           <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 uppercase text-xs">
@@ -175,7 +174,6 @@
       </div>
     </section>
 
-    <!-- Pestaña 3: Cartera -->
     <section id="sec-cartera" class="space-y-6 hidden">
       <h2 class="text-2xl font-bold">Portafolio Activo</h2>
       <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
@@ -187,7 +185,7 @@
               <th class="p-4 text-right">Precio Prom. Compra</th>
               <th class="p-4 text-right">Precio Actual ($)</th>
               <th class="p-4 text-right">Valor Total Actual</th>
-              <th class="p-4 text-right">Ganancia / Pérdida Latente</th>
+              <th class="p-4 text-right">Ganancia / Pérdida</th>
             </tr>
           </thead>
           <tbody id="tabla-cartera" class="divide-y divide-slate-200 dark:divide-slate-700"></tbody>
@@ -195,7 +193,6 @@
       </div>
     </section>
 
-    <!-- Pestaña 4: Métricas -->
     <section id="sec-metricas" class="space-y-6 hidden">
       <h2 class="text-2xl font-bold">Métricas e Histórico</h2>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -213,7 +210,6 @@
   </main>
 
   <script>
-    // --- PERSISTENCIA CON INDEXEDDB ---
     let db;
     const request = indexedDB.open("FinanzasDB", 1);
 
@@ -232,7 +228,6 @@
       renderAll();
     };
 
-    // --- NAVEGACIÓN Y TEMA ---
     function switchTab(tab) {
       document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
       document.getElementById(`sec-${tab}`).classList.remove('hidden');
@@ -247,11 +242,8 @@
       if(tab === 'metricas') renderMetricas();
     }
 
-    function toggleDarkMode() {
-      document.documentElement.classList.toggle('dark');
-    }
+    function toggleDarkMode() { document.documentElement.classList.toggle('dark'); }
 
-    // --- OPERACIONES DE BASE DE DATOS ---
     function getAll(storeName) {
       return new Promise((resolve) => {
         const tx = db.transaction(storeName, "readonly");
@@ -260,7 +252,6 @@
         req.onsuccess = () => resolve(req.result);
       });
     }
-
     function addRecord(storeName, data) {
       return new Promise((resolve) => {
         const tx = db.transaction(storeName, "readwrite");
@@ -268,7 +259,6 @@
         tx.oncomplete = () => resolve();
       });
     }
-
     function deleteRecord(storeName, id) {
       return new Promise((resolve) => {
         const tx = db.transaction(storeName, "readwrite");
@@ -276,7 +266,6 @@
         tx.oncomplete = () => resolve();
       });
     }
-
     function putRecord(storeName, data) {
       return new Promise((resolve) => {
         const tx = db.transaction(storeName, "readwrite");
@@ -285,7 +274,7 @@
       });
     }
 
-    // --- CAJA DIARIA ---
+    // --- CAJA ---
     async function guardarMovimiento(e) {
       e.preventDefault();
       const registro = {
@@ -296,8 +285,7 @@
         monto: parseFloat(document.getElementById('caja-monto').value)
       };
       await addRecord("caja", registro);
-      document.getElementById('caja-desc').value = '';
-      document.getElementById('caja-monto').value = '';
+      document.getElementById('caja-desc').value = ''; document.getElementById('caja-monto').value = '';
       renderCaja();
     }
 
@@ -306,28 +294,22 @@
       const mesFiltro = document.getElementById('filtro-mes').value;
       const tbody = document.getElementById('tabla-caja');
       tbody.innerHTML = '';
-
       let ing = 0, gas = 0;
       items.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
 
       items.forEach(item => {
         if (item.fecha.startsWith(mesFiltro)) {
-          if (item.tipo === 'Ingreso') ing += item.monto;
-          else gas += item.monto;
+          if (item.tipo === 'Ingreso') ing += item.monto; else gas += item.monto;
         }
-
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td class="p-4">${item.fecha}</td>
           <td class="p-4"><span class="px-2 py-1 rounded-md text-xs font-semibold ${item.tipo === 'Ingreso' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${item.tipo}</span></td>
-          <td class="p-4">${item.desc}</td>
-          <td class="p-4">${item.cat}</td>
+          <td class="p-4">${item.desc}</td><td class="p-4">${item.cat}</td>
           <td class="p-4 text-right font-medium ${item.tipo === 'Ingreso' ? 'text-emerald-500' : 'text-rose-500'}">$${item.monto.toFixed(2)}</td>
-          <td class="p-4 text-center"><button onclick="eliminarCaja(${item.id})" class="text-slate-400 hover:text-rose-500"><i class="fa-solid fa-trash"></i></button></td>
-        `;
+          <td class="p-4 text-center"><button onclick="eliminarCaja(${item.id})" class="text-slate-400 hover:text-rose-500"><i class="fa-solid fa-trash"></i></button></td>`;
         tbody.appendChild(tr);
       });
-
       document.getElementById('total-ingresos').innerText = `$${ing.toFixed(2)}`;
       document.getElementById('total-gastos').innerText = `$${gas.toFixed(2)}`;
       const net = ing - gas;
@@ -335,11 +317,7 @@
       elNet.innerText = `$${net.toFixed(2)}`;
       elNet.className = `text-2xl font-bold mt-1 ${net >= 0 ? 'text-emerald-500' : 'text-rose-500'}`;
     }
-
-    async function eliminarCaja(id) {
-      await deleteRecord("caja", id);
-      renderCaja();
-    }
+    async function eliminarCaja(id) { await deleteRecord("caja", id); renderCaja(); }
 
     // --- OPERACIONES ---
     async function guardarOperacion(e) {
@@ -354,9 +332,7 @@
         interes: parseFloat(document.getElementById('op-interes').value) || 0
       };
       await addRecord("operaciones", op);
-      document.getElementById('op-activo').value = '';
-      document.getElementById('op-cantidad').value = '';
-      document.getElementById('op-precio').value = '';
+      document.getElementById('op-activo').value = ''; document.getElementById('op-cantidad').value = ''; document.getElementById('op-precio').value = '';
       renderOperaciones();
     }
 
@@ -364,161 +340,159 @@
       const items = await getAll("operaciones");
       const tbody = document.getElementById('tabla-operaciones');
       tbody.innerHTML = '';
-
       let capital = 0, flujo = 0, intereses = 0;
       items.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
 
       items.forEach(op => {
         const totalOp = (op.cantidad * op.precio);
         if (op.tipo === 'Compra') {
-          capital += totalOp + op.comision;
-          flujo -= (totalOp + op.comision);
+          capital += totalOp + op.comision; flujo -= (totalOp + op.comision);
         } else {
-          capital -= totalOp;
-          flujo += (totalOp - op.comision);
+          capital -= totalOp; flujo += (totalOp - op.comision);
         }
         intereses += op.interes;
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td class="p-4">${op.fecha}</td>
-          <td class="p-4 font-bold">${op.activo}</td>
+          <td class="p-4">${op.fecha}</td><td class="p-4 font-bold">${op.activo}</td>
           <td class="p-4"><span class="px-2 py-1 rounded-md text-xs font-semibold ${op.tipo === 'Compra' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'}">${op.tipo}</span></td>
-          <td class="p-4 text-right">${op.cantidad}</td>
-          <td class="p-4 text-right">$${op.precio.toFixed(2)}</td>
-          <td class="p-4 text-right">$${op.comision.toFixed(2)}</td>
-          <td class="p-4 text-right text-emerald-500">$${op.interes.toFixed(2)}</td>
-          <td class="p-4 text-center"><button onclick="eliminarOp(${op.id})" class="text-slate-400 hover:text-rose-500"><i class="fa-solid fa-trash"></i></button></td>
-        `;
+          <td class="p-4 text-right">${op.cantidad}</td><td class="p-4 text-right">$${op.precio.toFixed(2)}</td>
+          <td class="p-4 text-right">$${op.comision.toFixed(2)}</td><td class="p-4 text-right text-emerald-500">$${op.interes.toFixed(2)}</td>
+          <td class="p-4 text-center"><button onclick="eliminarOp(${op.id})" class="text-slate-400 hover:text-rose-500"><i class="fa-solid fa-trash"></i></button></td>`;
         tbody.appendChild(tr);
       });
-
       document.getElementById('op-capital').innerText = `$${capital.toFixed(2)}`;
       document.getElementById('op-flujo').innerText = `$${flujo.toFixed(2)}`;
       document.getElementById('op-intereses').innerText = `$${intereses.toFixed(2)}`;
     }
+    async function eliminarOp(id) { await deleteRecord("operaciones", id); renderOperaciones(); }
 
-    async function eliminarOp(id) {
-      await deleteRecord("operaciones", id);
-      renderOperaciones();
+    // --- CARGAR MASIVAMENTE (CSV) ---
+    function parseNumberArg(val) {
+      if (!val) return 0;
+      // Reemplaza comas por puntos para que Javascript entienda los decimales argentinos.
+      return parseFloat(val.replace(',', '.').replace(/[^0-9.-]/g, '')) || 0; 
     }
 
-    // --- CARTERA (PORTAFOLIO) ---
+    function importarCSV(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const text = e.target.result;
+        // Detecta si Excel separó las columnas por comas o por punto y coma
+        const separador = text.includes(';') ? ';' : ',';
+        const rows = text.split('\n');
+        
+        let cargados = 0;
+        
+        // Empieza en 1 para saltar la fila de títulos (encabezados)
+        for (let i = 1; i < rows.length; i++) {
+          const row = rows[i].trim();
+          if (!row) continue;
+          
+          const cols = row.split(separador);
+          if (cols.length >= 5) {
+            const op = {
+              fecha: cols[0].trim(),
+              activo: cols[1].toUpperCase().trim(),
+              tipo: cols[2].trim(), // "Compra" o "Venta"
+              cantidad: parseNumberArg(cols[3]),
+              precio: parseNumberArg(cols[4]),
+              comision: parseNumberArg(cols[5] || '0'),
+              interes: parseNumberArg(cols[6] || '0')
+            };
+            
+            // Solo guarda si los datos principales son válidos
+            if(op.fecha && op.activo && op.cantidad > 0 && op.precio >= 0) {
+              await addRecord("operaciones", op);
+              cargados++;
+            }
+          }
+        }
+        event.target.value = ''; // Limpiar el input
+        renderOperaciones();
+        alert(`¡Éxito! Se cargaron ${cargados} operaciones correctamente.`);
+      };
+      reader.readAsText(file);
+    }
+
+    // --- CARTERA ---
     async function renderCartera() {
       const ops = await getAll("operaciones");
       const preciosArr = await getAll("precios");
       const preciosMap = {};
       preciosArr.forEach(p => preciosMap[p.ticker] = p.precio);
-
-      // Calcular Precio Promedio Ponderado de Compra
       const portafolio = {};
       ops.sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
 
       ops.forEach(op => {
         if (!portafolio[op.activo]) portafolio[op.activo] = { cantidad: 0, costoTotal: 0 };
         const p = portafolio[op.activo];
-
         if (op.tipo === 'Compra') {
-          p.cantidad += op.cantidad;
-          p.costoTotal += (op.cantidad * op.precio) + op.comision;
+          p.cantidad += op.cantidad; p.costoTotal += (op.cantidad * op.precio) + op.comision;
         } else if (op.tipo === 'Venta') {
           if (p.cantidad > 0) {
             const precioPromedio = p.costoTotal / p.cantidad;
-            p.cantidad -= op.cantidad;
-            p.costoTotal -= (op.cantidad * precioPromedio);
+            p.cantidad -= op.cantidad; p.costoTotal -= (op.cantidad * precioPromedio);
           }
         }
       });
 
       const tbody = document.getElementById('tabla-cartera');
       tbody.innerHTML = '';
-
       for (const ticker in portafolio) {
         const item = portafolio[ticker];
-        if (item.cantidad <= 0.00001) continue; // Posición cerrada
-
+        if (item.cantidad <= 0.00001) continue; 
         const ppp = item.costoTotal / item.cantidad;
         const precioActual = preciosMap[ticker] || ppp;
         const valorActual = item.cantidad * precioActual;
         const ganancia = valorActual - item.costoTotal;
         const gananciaPct = item.costoTotal > 0 ? (ganancia / item.costoTotal) * 100 : 0;
-
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td class="p-4 font-bold">${ticker}</td>
-          <td class="p-4 text-right">${item.cantidad.toFixed(4)}</td>
+          <td class="p-4 font-bold">${ticker}</td><td class="p-4 text-right">${item.cantidad.toFixed(4)}</td>
           <td class="p-4 text-right">$${ppp.toFixed(2)}</td>
-          <td class="p-4 text-right">
-            <input type="number" step="any" value="${precioActual}" onchange="actualizarPrecio('${ticker}', this.value)" class="w-28 text-right bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-1 text-sm" />
-          </td>
+          <td class="p-4 text-right"><input type="number" step="any" value="${precioActual}" onchange="actualizarPrecio('${ticker}', this.value)" class="w-28 text-right bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-1 text-sm" /></td>
           <td class="p-4 text-right font-semibold">$${valorActual.toFixed(2)}</td>
-          <td class="p-4 text-right font-semibold ${ganancia >= 0 ? 'text-emerald-500' : 'text-rose-500'}">
-            $${ganancia.toFixed(2)} (${gananciaPct.toFixed(2)}%)
-          </td>
-        `;
+          <td class="p-4 text-right font-semibold ${ganancia >= 0 ? 'text-emerald-500' : 'text-rose-500'}">$${ganancia.toFixed(2)} (${gananciaPct.toFixed(2)}%)</td>`;
         tbody.appendChild(tr);
       }
     }
-
     async function actualizarPrecio(ticker, precio) {
-      await putRecord("precios", { ticker: ticker, precio: parseFloat(precio) || 0 });
-      renderCartera();
+      await putRecord("precios", { ticker: ticker, precio: parseFloat(precio) || 0 }); renderCartera();
     }
 
     // --- MÉTRICAS ---
-    let chartCajaInstance = null;
-    let chartCarteraInstance = null;
-
+    let chartCajaInstance = null, chartCarteraInstance = null;
     async function renderMetricas() {
-      const cajaItems = await getAll("caja");
-      const ops = await getAll("operaciones");
-      const preciosArr = await getAll("precios");
-      const preciosMap = {};
+      const cajaItems = await getAll("caja"); const ops = await getAll("operaciones");
+      const preciosArr = await getAll("precios"); const preciosMap = {};
       preciosArr.forEach(p => preciosMap[p.ticker] = p.precio);
-
-      // Gráfica 1: Ingresos vs Gastos por Mes
       const mesesMap = {};
       cajaItems.forEach(i => {
         const m = i.fecha.slice(0, 7);
         if (!mesesMap[m]) mesesMap[m] = { ing: 0, gas: 0 };
-        if (i.tipo === 'Ingreso') mesesMap[m].ing += i.monto;
-        else mesesMap[m].gas += i.monto;
+        if (i.tipo === 'Ingreso') mesesMap[m].ing += i.monto; else mesesMap[m].gas += i.monto;
       });
-
       const meses = Object.keys(mesesMap).sort();
-      const ingresosData = meses.map(m => mesesMap[m].ing);
-      const gastosData = meses.map(m => mesesMap[m].gas);
+      const ingresosData = meses.map(m => mesesMap[m].ing); const gastosData = meses.map(m => mesesMap[m].gas);
 
       if (chartCajaInstance) chartCajaInstance.destroy();
       chartCajaInstance = new Chart(document.getElementById('chart-caja'), {
-        type: 'bar',
-        data: {
-          labels: meses,
-          datasets: [
-            { label: 'Ingresos', data: ingresosData, backgroundColor: '#10b981' },
-            { label: 'Gastos', data: gastosData, backgroundColor: '#f43f5e' }
-          ]
-        },
+        type: 'bar', data: { labels: meses, datasets: [{ label: 'Ingresos', data: ingresosData, backgroundColor: '#10b981' }, { label: 'Gastos', data: gastosData, backgroundColor: '#f43f5e' }] },
         options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
       });
 
-      // Gráfica 2: Distribución de Portafolio
       const portafolio = {};
       ops.forEach(op => {
         if (!portafolio[op.activo]) portafolio[op.activo] = { cantidad: 0, costoTotal: 0 };
         const p = portafolio[op.activo];
-        if (op.tipo === 'Compra') {
-          p.cantidad += op.cantidad;
-          p.costoTotal += (op.cantidad * op.precio) + op.comision;
-        } else if (op.tipo === 'Venta' && p.cantidad > 0) {
-          const ppp = p.costoTotal / p.cantidad;
-          p.cantidad -= op.cantidad;
-          p.costoTotal -= (op.cantidad * ppp);
-        }
+        if (op.tipo === 'Compra') { p.cantidad += op.cantidad; p.costoTotal += (op.cantidad * op.precio) + op.comision; } 
+        else if (op.tipo === 'Venta' && p.cantidad > 0) { const ppp = p.costoTotal / p.cantidad; p.cantidad -= op.cantidad; p.costoTotal -= (op.cantidad * ppp); }
       });
-
-      const tickers = [];
-      const valores = [];
+      const tickers = [], valores = [];
       for (const t in portafolio) {
         if (portafolio[t].cantidad > 0.00001) {
           tickers.push(t);
@@ -526,27 +500,16 @@
           valores.push(portafolio[t].cantidad * pAct);
         }
       }
-
       if (chartCarteraInstance) chartCarteraInstance.destroy();
       chartCarteraInstance = new Chart(document.getElementById('chart-cartera'), {
-        type: 'doughnut',
-        data: {
-          labels: tickers,
-          datasets: [{ data: valores, backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#6366f1'] }]
-        },
+        type: 'doughnut', data: { labels: tickers, datasets: [{ data: valores, backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#6366f1'] }] },
         options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
       });
     }
 
-    function renderAll() {
-      renderCaja();
-      renderOperaciones();
-    }
+    function renderAll() { renderCaja(); renderOperaciones(); }
 
-    // Registro del Service Worker para PWA
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
-    }
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
   </script>
 </body>
 </html>
