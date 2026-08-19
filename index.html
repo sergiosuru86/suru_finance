@@ -112,6 +112,9 @@
     <section id="sec-operaciones" class="space-y-6 hidden">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h2 class="text-2xl font-bold">Operaciones Financieras</h2>
+        <button onclick="vaciarOperaciones()" class="text-xs bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 px-3 py-1.5 rounded-lg hover:bg-rose-100 transition">
+          <i class="fa-solid fa-trash-can mr-1"></i> Vaciar todas las operaciones
+        </button>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -129,11 +132,10 @@
         </div>
       </div>
 
-      <!-- NUEVO: Módulo de Importación CSV -->
       <div class="bg-blue-50 dark:bg-slate-800/80 border border-blue-200 dark:border-slate-700 p-5 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
           <h4 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-file-csv text-primary"></i> Importar operaciones masivas</h4>
-          <p class="text-xs text-slate-500 mt-1">Sube un archivo Excel guardado como CSV. Orden de columnas obligatorio (con encabezados en la primera fila): <br><strong class="dark:text-slate-300">Fecha (AAAA-MM-DD), Activo, Tipo (Compra/Venta), Cantidad, Precio, Comision, Intereses</strong></p>
+          <p class="text-xs text-slate-500 mt-1">Sube tu archivo CSV. Lee automáticamente los encabezados de columna:<br><strong class="dark:text-slate-300">Fecha, Activo, Tipo, Cantidad, Precio</strong> (Comisión e Intereses son opcionales).</p>
         </div>
         <input type="file" accept=".csv" onchange="importarCSV(event)" class="text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-primary file:text-white hover:file:bg-blue-600 transition cursor-pointer" />
       </div>
@@ -266,6 +268,13 @@
         tx.oncomplete = () => resolve();
       });
     }
+    function clearStore(storeName) {
+      return new Promise((resolve) => {
+        const tx = db.transaction(storeName, "readwrite");
+        tx.objectStore(storeName).clear();
+        tx.oncomplete = () => resolve();
+      });
+    }
     function putRecord(storeName, data) {
       return new Promise((resolve) => {
         const tx = db.transaction(storeName, "readwrite");
@@ -367,11 +376,44 @@
     }
     async function eliminarOp(id) { await deleteRecord("operaciones", id); renderOperaciones(); }
 
-    // --- CARGAR MASIVAMENTE (CSV) ---
+    async function vaciarOperaciones() {
+      if (confirm('¿Seguro que deseas borrar todas las operaciones registradas para volver a importar desde cero?')) {
+        await clearStore("operaciones");
+        renderOperaciones();
+      }
+    }
+
+    // --- LECTOR DE CSV INTELIGENTE (POR ENCABEZADOS DE COLUMNA) ---
     function parseNumberArg(val) {
       if (!val) return 0;
-      // Reemplaza comas por puntos para que Javascript entienda los decimales argentinos.
-      return parseFloat(val.replace(',', '.').replace(/[^0-9.-]/g, '')) || 0; 
+      let s = String(val).trim().replace(/[$ \t]/g, '');
+      if (!s) return 0;
+      if (s.includes('.') && s.includes(',')) {
+        if (s.indexOf('.') < s.indexOf(',')) s = s.replace(/\./g, '').replace(',', '.');
+        else s = s.replace(/,/g, '');
+      } else if (s.includes(',')) {
+        s = s.replace(',', '.');
+      }
+      return parseFloat(s) || 0;
+    }
+
+    function parseCSVLine(line, separador) {
+      const result = [];
+      let start = 0;
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        if (line[i] === '"') inQuotes = !inQuotes;
+        else if (line[i] === separador && !inQuotes) {
+          let cell = line.substring(start, i).trim();
+          if (cell.startsWith('"') && cell.endsWith('"')) cell = cell.slice(1, -1);
+          result.push(cell);
+          start = i + 1;
+        }
+      }
+      let lastCell = line.substring(start).trim();
+      if (lastCell.startsWith('"') && lastCell.endsWith('"')) lastCell = lastCell.slice(1, -1);
+      result.push(lastCell);
+      return result;
     }
 
     function importarCSV(event) {
@@ -381,37 +423,57 @@
       const reader = new FileReader();
       reader.onload = async function(e) {
         const text = e.target.result;
-        // Detecta si Excel separó las columnas por comas o por punto y coma
-        const separador = text.includes(';') ? ';' : ',';
-        const rows = text.split('\n');
+        const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+        if (lines.length < 2) {
+          alert('El archivo no contiene filas de datos.');
+          return;
+        }
+        
+        const headerLine = lines[0];
+        let separador = ',';
+        if (headerLine.includes(';')) separador = ';';
+        else if (headerLine.includes('\t')) separador = '\t';
+        
+        const headers = parseCSVLine(headerLine.toLowerCase(), separador);
+        
+        const idxFecha = headers.findIndex(h => h.includes('fecha') || h.includes('date'));
+        const idxActivo = headers.findIndex(h => h.includes('activo') || h.includes('ticker') || h.includes('especie') || h.includes('simbolo') || h.includes('símbolo'));
+        const idxTipo = headers.findIndex(h => h.includes('tipo') || h.includes('operacion') || h.includes('operación') || h.includes('accion') || h.includes('acción'));
+        const idxCantidad = headers.findIndex(h => h.includes('cantidad') || h.includes('nominal') || h.includes('qty'));
+        const idxPrecio = headers.findIndex(h => h.includes('precio') || h.includes('p.unit') || h.includes('price') || h.includes('unitario'));
+        const idxComision = headers.findIndex(h => h.includes('comision') || h.includes('comisión') || h.includes('fee'));
+        const idxInteres = headers.findIndex(h => h.includes('interes') || h.includes('interés') || h.includes('dividend'));
         
         let cargados = 0;
         
-        // Empieza en 1 para saltar la fila de títulos (encabezados)
-        for (let i = 1; i < rows.length; i++) {
-          const row = rows[i].trim();
-          if (!row) continue;
+        for (let i = 1; i < lines.length; i++) {
+          const cols = parseCSVLine(lines[i], separador);
           
-          const cols = row.split(separador);
-          if (cols.length >= 5) {
+          const fecha = idxFecha !== -1 && cols[idxFecha] ? cols[idxFecha] : cols[0];
+          const activo = idxActivo !== -1 && cols[idxActivo] ? cols[idxActivo] : cols[1];
+          const tipo = idxTipo !== -1 && cols[idxTipo] ? cols[idxTipo] : cols[2];
+          const cantidad = parseNumberArg(idxCantidad !== -1 ? cols[idxCantidad] : cols[3]);
+          const precio = parseNumberArg(idxPrecio !== -1 ? cols[idxPrecio] : cols[4]);
+          
+          const comision = idxComision !== -1 ? parseNumberArg(cols[idxComision]) : 0;
+          const interes = idxInteres !== -1 ? parseNumberArg(cols[idxInteres]) : 0;
+          
+          if (fecha && activo && cantidad > 0) {
             const op = {
-              fecha: cols[0].trim(),
-              activo: cols[1].toUpperCase().trim(),
-              tipo: cols[2].trim(), // "Compra" o "Venta"
-              cantidad: parseNumberArg(cols[3]),
-              precio: parseNumberArg(cols[4]),
-              comision: parseNumberArg(cols[5] || '0'),
-              interes: parseNumberArg(cols[6] || '0')
+              fecha: fecha.trim(),
+              activo: activo.toUpperCase().trim(),
+              tipo: (tipo && tipo.toLowerCase().includes('vent')) ? 'Venta' : 'Compra',
+              cantidad: cantidad,
+              precio: precio,
+              comision: comision,
+              interes: interes
             };
-            
-            // Solo guarda si los datos principales son válidos
-            if(op.fecha && op.activo && op.cantidad > 0 && op.precio >= 0) {
-              await addRecord("operaciones", op);
-              cargados++;
-            }
+            await addRecord("operaciones", op);
+            cargados++;
           }
         }
-        event.target.value = ''; // Limpiar el input
+        
+        event.target.value = '';
         renderOperaciones();
         alert(`¡Éxito! Se cargaron ${cargados} operaciones correctamente.`);
       };
