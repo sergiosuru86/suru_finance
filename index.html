@@ -506,10 +506,3 @@
         options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
       });
     }
-
-    function renderAll() { renderCaja(); renderOperaciones(); }
-
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
-  </script>
-</body>
-</html>
