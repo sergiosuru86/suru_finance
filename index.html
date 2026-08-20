@@ -10,6 +10,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  
+  <!-- LIBRERÍA DE GRÁFICOS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     /* TEMAS DE COLORES */
@@ -65,17 +68,13 @@
       <h1 id="header-title" class="text-2xl font-serif font-semibold text-vmain">Buenos días</h1>
     </div>
     <div class="flex items-center gap-3">
-      <!-- Cambio de Tema -->
       <button onclick="toggleTheme()" class="w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted bg-vcard shadow-sm active:scale-95 transition-transform">
         <i class="fa-solid fa-palette"></i>
       </button>
-      
-      <!-- BOTÓN OCULTO CSV (¡AHORA CONECTADO!) -->
       <label for="csv-upload" class="w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted cursor-pointer bg-vcard shadow-sm active:scale-95 transition-transform">
         <i class="fa-solid fa-sliders"></i>
         <input type="file" id="csv-upload" class="hidden" accept=".csv" onchange="importarCSV(event)" />
       </label>
-      
       <div class="w-10 h-10 rounded-full bg-vaccent flex items-center justify-center text-white font-bold text-sm shadow-sm">CF</div>
     </div>
   </header>
@@ -154,22 +153,10 @@
         </div>
 
         <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-vmuted uppercase mb-1">Cantidad</label>
-            <input type="number" step="any" id="op-cantidad" required placeholder="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" />
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-vmuted uppercase mb-1">Precio Unit. ($)</label>
-            <input type="number" step="any" id="op-precio" required placeholder="0.00" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" />
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-vmuted uppercase mb-1">Comisión ($)</label>
-            <input type="number" step="any" id="op-comision" value="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" />
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-vmuted uppercase mb-1">Intereses ($)</label>
-            <input type="number" step="any" id="op-interes" value="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" />
-          </div>
+          <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Cantidad</label><input type="number" step="any" id="op-cantidad" required placeholder="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" /></div>
+          <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Precio Unit.</label><input type="number" step="any" id="op-precio" required placeholder="0.00" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" /></div>
+          <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Comisión</label><input type="number" step="any" id="op-comision" value="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" /></div>
+          <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Intereses</label><input type="number" step="any" id="op-interes" value="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" /></div>
         </div>
         <button type="submit" class="w-full bg-vaccent text-white font-semibold py-4 rounded-xl shadow-md active:scale-95 transition-transform mt-2">Guardar Operación</button>
       </form>
@@ -185,8 +172,11 @@
   </nav>
 
   <script>
-    // --- 1. BASE DE DATOS ---
     let db;
+    let chartCajaInst = null;
+    let chartPieInst = null;
+    let chartLineInst = null;
+
     const request = indexedDB.open("CapitalFlowDB", 2);
     request.onupgradeneeded = (e) => {
       db = e.target.result;
@@ -208,42 +198,19 @@
         req.onsuccess = () => resolve(req.result);
       });
     }
-    function addRecord(store, data) {
-      return new Promise((resolve) => {
-        const tx = db.transaction(store, "readwrite");
-        tx.objectStore(store).add(data);
-        tx.oncomplete = () => resolve();
-      });
-    }
-    function deleteRecord(store, id) {
-      return new Promise((resolve) => {
-        const tx = db.transaction(store, "readwrite");
-        tx.objectStore(store).delete(id);
-        tx.oncomplete = () => resolve();
-      });
-    }
-    function clearStore(store) {
-      return new Promise((resolve) => {
-        const tx = db.transaction(store, "readwrite");
-        tx.objectStore(store).clear();
-        tx.oncomplete = () => resolve();
-      });
-    }
-    function putRecord(store, data) {
-      return new Promise((resolve) => {
-        const tx = db.transaction(store, "readwrite");
-        tx.objectStore(store).put(data);
-        tx.oncomplete = () => resolve();
-      });
-    }
+    function addRecord(store, data) { return new Promise((resolve) => { const tx = db.transaction(store, "readwrite"); tx.objectStore(store).add(data); tx.oncomplete = () => resolve(); }); }
+    function deleteRecord(store, id) { return new Promise((resolve) => { const tx = db.transaction(store, "readwrite"); tx.objectStore(store).delete(id); tx.oncomplete = () => resolve(); }); }
+    function clearStore(store) { return new Promise((resolve) => { const tx = db.transaction(store, "readwrite"); tx.objectStore(store).clear(); tx.oncomplete = () => resolve(); }); }
+    function putRecord(store, data) { return new Promise((resolve) => { const tx = db.transaction(store, "readwrite"); tx.objectStore(store).put(data); tx.oncomplete = () => resolve(); }); }
 
-    // --- 2. TEMAS Y UI ---
     const themes = ['', 'theme-pro', 'theme-premium', 'theme-adaptive'];
     let currentThemeIndex = 0;
     function toggleTheme() {
       document.body.classList.remove('theme-pro', 'theme-premium', 'theme-adaptive');
       currentThemeIndex = (currentThemeIndex + 1) % themes.length;
       if (themes[currentThemeIndex]) document.body.classList.add(themes[currentThemeIndex]);
+      // Si estamos en métricas, redibujar gráficos para que tomen los nuevos colores
+      if (document.getElementById('header-title').innerText.includes('Métrica')) updateMetricas();
     }
     
     const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
@@ -251,17 +218,12 @@
     const mesActualText = `${meses[fechaActual.getMonth()]} DE ${fechaActual.getFullYear()}`;
     const mesActualFiltro = fechaActual.toISOString().slice(0, 7);
 
-    function formatMoney(num) {
-      return "$" + num.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-    function formatCrypto(num) {
-      return parseFloat(num.toFixed(4)).toString();
-    }
+    function formatMoney(num) { return "$" + num.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+    function formatCrypto(num) { return parseFloat(num.toFixed(4)).toString(); }
 
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); document.getElementById(id).classList.add('flex'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
 
-    // --- 3. VISTAS HTML ---
     const views = {
       'resumen': `
         <div class="animate-[fadeIn_0.3s_ease-out] space-y-6">
@@ -289,17 +251,13 @@
           <div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">CAJA DIARIA</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Que el dinero tenga contexto.</h2><p class="text-sm text-vmuted leading-relaxed">Anota ingresos y gastos sin convertir tu vida en una planilla.</p></div>
           <button onclick="openModal('modal-caja')" class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity"><i class="fa-solid fa-plus"></i> Nuevo movimiento</button>
           
-          <div class="flex justify-between items-center mt-6 mb-2">
-            <h3 class="font-bold text-vmain">Historial del mes</h3>
-            <span id="caja-count" class="text-xs text-vmuted bg-vcard px-2 py-1 rounded-md border border-vborder">0 registros</span>
-          </div>
+          <div class="flex justify-between items-center mt-6 mb-2"><h3 class="font-bold text-vmain">Historial del mes</h3><span id="caja-count" class="text-xs text-vmuted bg-vcard px-2 py-1 rounded-md border border-vborder">0 registros</span></div>
           <div id="caja-lista" class="space-y-3 pb-8"></div>
         </div>`,
 
       'operaciones': `
         <div class="animate-[fadeIn_0.3s_ease-out] space-y-6">
-          <div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">OPERACIONES</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Cada decisión deja una huella.</h2><p class="text-sm text-vmuted leading-relaxed">Un historial limpio para entender cuánto capital pusiste, cuánto fluyó y qué intereses volvió a traer.</p></div>
-          
+          <div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">OPERACIONES</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Cada decisión deja una huella.</h2></div>
           <button onclick="openModal('modal-operacion')" class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity"><i class="fa-solid fa-plus"></i> Nueva operación</button>
 
           <div class="grid grid-cols-1 gap-3">
@@ -317,8 +275,7 @@
 
       'cartera': `
         <div class="animate-[fadeIn_0.3s_ease-out] space-y-6">
-          <div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">CARTERA</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Lo que estás construyendo.</h2><p class="text-sm text-vmuted leading-relaxed">Posiciones consolidadas desde tus operaciones, con precio medio y una lectura honesta de lo que hoy valen.</p></div>
-          
+          <div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">CARTERA</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Lo que estás construyendo.</h2></div>
           <button onclick="document.querySelector('.nav-item:nth-child(3)').click(); setTimeout(()=>openModal('modal-operacion'), 300);" class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity"><i class="fa-solid fa-plus"></i> Registrar operación</button>
 
           <div class="grid grid-cols-1 gap-3">
@@ -328,12 +285,43 @@
           </div>
           
           <div class="flex justify-between items-center mt-6 mb-2">
-            <h3 class="font-bold text-vmain">Posiciones</h3>
-            <span class="text-xs text-vmuted">Toca el precio para editar</span>
+            <h3 class="font-bold text-vmain">Posiciones</h3><span class="text-xs text-vmuted">Toca el precio para editar</span>
           </div>
           <div id="cart-lista" class="space-y-4 pb-8"></div>
         </div>`,
-      'metricas': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">MÉTRICAS</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">El tiempo también compone.</h2></div><p class="text-vmuted text-sm">Pronto conectaremos las gráficas...</p></div>`
+
+      'metricas': `
+        <div class="animate-[fadeIn_0.3s_ease-out] space-y-8 pb-10">
+          <div>
+            <p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">MÉTRICAS / HISTÓRICO</p>
+            <h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">El tiempo también compone.</h2>
+          </div>
+
+          <!-- Indicadores Consolidados -->
+          <div class="grid grid-cols-2 gap-3">
+            <div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder transition-colors"><p class="text-[10px] text-vmuted uppercase mb-1">Capital Histórico</p><p id="met-cap" class="text-lg font-bold text-vmain">$0.00</p></div>
+            <div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder transition-colors"><p class="text-[10px] text-vmuted uppercase mb-1">Intereses Totales</p><p id="met-int" class="text-lg font-bold text-vup">$0.00</p></div>
+            <div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder transition-colors col-span-2 text-center"><p class="text-[10px] text-vmuted uppercase mb-1">P/L Total (Latente + Intereses)</p><p id="met-pl" class="text-2xl font-bold text-vmain">$0.00</p></div>
+          </div>
+
+          <!-- Gráficos -->
+          <div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder transition-colors">
+            <h3 class="text-sm font-bold text-vmain mb-4">Ingresos vs Gastos</h3>
+            <div class="relative h-48 w-full"><canvas id="chart-caja"></canvas></div>
+          </div>
+
+          <div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder transition-colors">
+            <h3 class="text-sm font-bold text-vmain mb-4">Distribución de Cartera</h3>
+            <div class="relative h-48 w-full"><canvas id="chart-pie"></canvas></div>
+          </div>
+
+          <div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder transition-colors">
+            <h3 class="text-sm font-bold text-vmain mb-1">Ritmo de Crecimiento</h3>
+            <p class="text-xs text-vmuted mb-4">Aportes acumulados vs. Intereses ganados.</p>
+            <div class="relative h-48 w-full"><canvas id="chart-line"></canvas></div>
+          </div>
+        </div>
+      `
     };
     
     const headerTitles = { 'resumen': 'Buenos días', 'caja': 'Caja diaria', 'operaciones': 'Operaciones', 'cartera': 'Cartera', 'metricas': 'Métricas' };
@@ -348,13 +336,12 @@
       if(tabName === 'caja') updateCaja();
       if(tabName === 'operaciones') updateOperaciones();
       if(tabName === 'cartera') updateCartera();
+      if(tabName === 'metricas') updateMetricas();
     }
 
-    // --- 4. FUNCIONES DE ACTUALIZACIÓN (EL MOTOR) ---
     async function guardarMovimiento(e) {
       e.preventDefault();
-      const tipo = document.querySelector('input[name="tipo-mov"]:checked').value;
-      await addRecord("caja", { fecha: document.getElementById('caja-fecha').value, tipo: tipo, desc: document.getElementById('caja-desc').value, monto: parseFloat(document.getElementById('caja-monto').value) });
+      await addRecord("caja", { fecha: document.getElementById('caja-fecha').value, tipo: document.querySelector('input[name="tipo-mov"]:checked').value, desc: document.getElementById('caja-desc').value, monto: parseFloat(document.getElementById('caja-monto').value) });
       document.getElementById('caja-desc').value = ''; document.getElementById('caja-monto').value = ''; closeModal('modal-caja');
       if(document.getElementById('header-title').innerText.includes('Buenos')) updateResumen();
       if(document.getElementById('header-title').innerText.includes('Caja')) updateCaja();
@@ -362,18 +349,8 @@
 
     async function guardarOperacion(e) {
       e.preventDefault();
-      const op = {
-        fecha: document.getElementById('op-fecha').value,
-        activo: document.getElementById('op-activo').value.toUpperCase().trim(),
-        tipo: document.querySelector('input[name="op-tipo"]:checked').value,
-        cantidad: parseFloat(document.getElementById('op-cantidad').value),
-        precio: parseFloat(document.getElementById('op-precio').value),
-        comision: parseFloat(document.getElementById('op-comision').value) || 0,
-        interes: parseFloat(document.getElementById('op-interes').value) || 0
-      };
-      await addRecord("operaciones", op);
-      document.getElementById('op-activo').value = ''; document.getElementById('op-cantidad').value = ''; document.getElementById('op-precio').value = '';
-      closeModal('modal-operacion');
+      await addRecord("operaciones", { fecha: document.getElementById('op-fecha').value, activo: document.getElementById('op-activo').value.toUpperCase().trim(), tipo: document.querySelector('input[name="op-tipo"]:checked').value, cantidad: parseFloat(document.getElementById('op-cantidad').value), precio: parseFloat(document.getElementById('op-precio').value), comision: parseFloat(document.getElementById('op-comision').value) || 0, interes: parseFloat(document.getElementById('op-interes').value) || 0 });
+      document.getElementById('op-activo').value = ''; document.getElementById('op-cantidad').value = ''; document.getElementById('op-precio').value = ''; closeModal('modal-operacion');
       if(document.getElementById('header-title').innerText.includes('Operacion')) updateOperaciones();
     }
 
@@ -381,43 +358,21 @@
     async function vaciarOperaciones() { if(confirm('¿Borrar todas las operaciones?')) { await clearStore("operaciones"); updateOperaciones(); } }
 
     async function updateResumen() {
-      if(!db) return;
-      const items = await getAll("caja");
-      let ing = 0, gas = 0, count = 0;
-      items.forEach(item => {
-        if (item.fecha.startsWith(mesActualFiltro)) {
-          if (item.tipo === 'Ingreso') ing += item.monto; else gas += item.monto;
-          count++;
-        }
-      });
+      if(!db) return; const items = await getAll("caja"); let ing = 0, gas = 0, count = 0;
+      items.forEach(item => { if (item.fecha.startsWith(mesActualFiltro)) { if (item.tipo === 'Ingreso') ing += item.monto; else gas += item.monto; count++; } });
       if(document.getElementById('res-balance')) {
         document.getElementById('res-balance').innerText = formatMoney(ing - gas);
-        document.getElementById('res-ingresos').innerText = formatMoney(ing);
-        document.getElementById('res-gastos').innerText = formatMoney(gas);
-        document.getElementById('res-count').innerText = `${count} movimientos`;
+        document.getElementById('res-ingresos').innerText = formatMoney(ing); document.getElementById('res-gastos').innerText = formatMoney(gas); document.getElementById('res-count').innerText = `${count} movimientos`;
       }
     }
 
     async function updateCaja() {
-      if(!db) return;
-      const items = await getAll("caja");
-      const lista = document.getElementById('caja-lista');
-      if(!lista) return;
-      lista.innerHTML = '';
-      let count = 0;
-      items.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+      if(!db) return; const items = await getAll("caja"); const lista = document.getElementById('caja-lista'); if(!lista) return;
+      lista.innerHTML = ''; let count = 0; items.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
       items.forEach(item => {
         if (item.fecha.startsWith(mesActualFiltro)) {
-          count++;
-          const isIng = item.tipo === 'Ingreso';
-          lista.innerHTML += `
-            <div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder flex justify-between items-center">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full ${isIng?'bg-vup/10 text-vup':'bg-vdown/10 text-vdown'} flex items-center justify-center"><i class="fa-solid ${isIng?'fa-arrow-down-left':'fa-arrow-up-right'}"></i></div>
-                <div><p class="font-bold text-vmain text-sm">${item.desc}</p><p class="text-xs text-vmuted">${item.fecha}</p></div>
-              </div>
-              <p class="font-semibold ${isIng?'text-vup':'text-vdown'}">${isIng?'+':'-'}${formatMoney(item.monto)}</p>
-            </div>`;
+          count++; const isIng = item.tipo === 'Ingreso';
+          lista.innerHTML += `<div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder flex justify-between items-center"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full ${isIng?'bg-vup/10 text-vup':'bg-vdown/10 text-vdown'} flex items-center justify-center"><i class="fa-solid ${isIng?'fa-arrow-down-left':'fa-arrow-up-right'}"></i></div><div><p class="font-bold text-vmain text-sm">${item.desc}</p><p class="text-xs text-vmuted">${item.fecha}</p></div></div><p class="font-semibold ${isIng?'text-vup':'text-vdown'}">${isIng?'+':'-'}${formatMoney(item.monto)}</p></div>`;
         }
       });
       document.getElementById('caja-count').innerText = `${count} registros`;
@@ -425,188 +380,193 @@
     }
 
     async function updateOperaciones() {
-      if(!db) return;
-      const items = await getAll("operaciones");
-      const lista = document.getElementById('op-lista');
-      if(!lista) return;
-      
-      let capital = 0, flujo = 0, interes = 0;
-      lista.innerHTML = '';
-      items.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
-      
+      if(!db) return; const items = await getAll("operaciones"); const lista = document.getElementById('op-lista'); if(!lista) return;
+      let capital = 0, flujo = 0, interes = 0; lista.innerHTML = ''; items.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
       items.forEach(op => {
         const total = (op.cantidad * op.precio);
-        if (op.tipo === 'Compra') { capital += total + op.comision; flujo -= (total + op.comision); } 
-        else { capital -= total; flujo += (total - op.comision); }
-        interes += op.interes;
-
-        const isCompra = op.tipo === 'Compra';
-        lista.innerHTML += `
-          <div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder mb-3 relative overflow-hidden">
-            <div class="flex justify-between items-start mb-2">
-              <div>
-                <span class="text-[10px] font-bold ${isCompra?'text-vhero bg-vhero/10':'text-vnav bg-vnav/10'} px-2 py-0.5 rounded-sm uppercase tracking-wider">${op.tipo}</span>
-                <h4 class="font-serif font-bold text-lg text-vmain mt-1">${op.activo}</h4>
-              </div>
-              <div class="text-right">
-                <p class="font-bold text-vmain text-sm">${formatMoney(total)}</p>
-                <p class="text-[10px] text-vmuted">${formatCrypto(op.cantidad)} x ${formatMoney(op.precio)}</p>
-              </div>
-            </div>
-            <div class="flex justify-between items-end mt-3 border-t border-vborder pt-2">
-              <p class="text-[10px] text-vmuted">${op.fecha}</p>
-              <button onclick="eliminarOp(${op.id})" class="text-vdown text-sm hover:opacity-70"><i class="fa-solid fa-trash-can"></i></button>
-            </div>
-          </div>`;
+        if (op.tipo === 'Compra') { capital += total + op.comision; flujo -= (total + op.comision); } else { capital -= total; flujo += (total - op.comision); }
+        interes += op.interes; const isCompra = op.tipo === 'Compra';
+        lista.innerHTML += `<div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder mb-3 relative overflow-hidden"><div class="flex justify-between items-start mb-2"><div><span class="text-[10px] font-bold ${isCompra?'text-vhero bg-vhero/10':'text-vnav bg-vnav/10'} px-2 py-0.5 rounded-sm uppercase tracking-wider">${op.tipo}</span><h4 class="font-serif font-bold text-lg text-vmain mt-1">${op.activo}</h4></div><div class="text-right"><p class="font-bold text-vmain text-sm">${formatMoney(total)}</p><p class="text-[10px] text-vmuted">${formatCrypto(op.cantidad)} x ${formatMoney(op.precio)}</p></div></div><div class="flex justify-between items-end mt-3 border-t border-vborder pt-2"><p class="text-[10px] text-vmuted">${op.fecha}</p><button onclick="eliminarOp(${op.id})" class="text-vdown text-sm hover:opacity-70"><i class="fa-solid fa-trash-can"></i></button></div></div>`;
       });
-
-      document.getElementById('op-capital').innerText = formatMoney(capital);
-      document.getElementById('op-flujo').innerText = formatMoney(flujo);
-      document.getElementById('op-interes').innerText = formatMoney(interes);
-
-      if(items.length === 0) lista.innerHTML = `<div class="mt-8 flex flex-col items-center justify-center text-center"><div class="w-16 h-16 bg-vcard rounded-2xl shadow-sm border border-vborder flex items-center justify-center text-vaccent text-2xl mb-4"><i class="fa-solid fa-arrow-trend-up"></i></div><h4 class="font-bold text-vmain mb-1">Aún no hay operaciones</h4><p class="text-xs text-vmuted max-w-xs">Registrá tu primera compra.</p></div>`;
+      document.getElementById('op-capital').innerText = formatMoney(capital); document.getElementById('op-flujo').innerText = formatMoney(flujo); document.getElementById('op-interes').innerText = formatMoney(interes);
+      if(items.length === 0) lista.innerHTML = `<div class="mt-8 flex flex-col items-center justify-center text-center"><div class="w-16 h-16 bg-vcard rounded-2xl shadow-sm border border-vborder flex items-center justify-center text-vaccent text-2xl mb-4"><i class="fa-solid fa-arrow-trend-up"></i></div><h4 class="font-bold text-vmain mb-1">Aún no hay operaciones</h4></div>`;
     }
 
     async function updateCartera() {
+      if(!db) return; const ops = await getAll("operaciones"); const preciosArr = await getAll("precios"); const preciosMap = {}; preciosArr.forEach(p => preciosMap[p.ticker] = p.precio);
+      const portafolio = {}; ops.sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
+      ops.forEach(op => {
+        if (!portafolio[op.activo]) portafolio[op.activo] = { cantidad: 0, costoTotal: 0 }; const p = portafolio[op.activo];
+        if (op.tipo === 'Compra') { p.cantidad += op.cantidad; p.costoTotal += (op.cantidad * op.precio) + op.comision; } 
+        else if (op.tipo === 'Venta') { if (p.cantidad > 0) { const ppp = p.costoTotal / p.cantidad; p.cantidad -= op.cantidad; p.costoTotal -= (op.cantidad * ppp); } }
+      });
+      const lista = document.getElementById('cart-lista'); if(!lista) return; lista.innerHTML = '';
+      let capInv = 0, valMercado = 0, posiciones = 0;
+      for (const ticker in portafolio) {
+        const item = portafolio[ticker]; if (item.cantidad <= 0.00001) continue; posiciones++;
+        const ppp = item.costoTotal / item.cantidad; const precioActual = preciosMap[ticker] || ppp; const valorActual = item.cantidad * precioActual; const ganancia = valorActual - item.costoTotal; const isUp = ganancia >= 0; capInv += item.costoTotal; valMercado += valorActual;
+        lista.innerHTML += `<div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><div class="flex justify-between items-center mb-4"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-vbody border border-vborder flex items-center justify-center font-bold text-vmain text-sm shadow-sm">${ticker.slice(0,3)}</div><div><h4 class="font-serif font-bold text-lg text-vmain">${ticker}</h4><p class="text-[10px] text-vmuted uppercase">${formatCrypto(item.cantidad)} unidades</p></div></div><div class="text-right"><p class="font-bold text-vmain text-sm">${formatMoney(valorActual)}</p><div class="flex items-center justify-end gap-1 mt-1"><span class="text-[10px] font-bold ${isUp?'text-vup bg-vup/10':'text-vdown bg-vdown/10'} px-1.5 py-0.5 rounded-sm">${isUp?'+':''}${formatMoney(ganancia)}</span></div></div></div><div class="flex justify-between bg-vbody rounded-xl p-3 border border-vborder text-xs"><div><p class="text-vmuted mb-1">Precio Compra</p><p class="font-semibold text-vmain">${formatMoney(ppp)}</p></div><div class="text-right"><p class="text-vmuted mb-1">Precio Actual <i class="fa-solid fa-pen text-[9px]"></i></p><input type="number" step="any" value="${precioActual}" onchange="actualizarPrecio('${ticker}', this.value)" class="w-20 text-right bg-transparent border-b border-vmuted font-semibold text-vmain outline-none focus:border-vaccent" /></div></div></div>`;
+      }
+      document.getElementById('cart-capital').innerText = formatMoney(capInv); document.getElementById('cart-pos').innerText = `${posiciones} posiciones`; document.getElementById('cart-valor').innerText = formatMoney(valMercado);
+      const pl = valMercado - capInv; const elPl = document.getElementById('cart-pl'); elPl.innerText = formatMoney(pl); elPl.className = `text-2xl font-semibold mb-1 ${pl>=0 ? 'text-vup' : 'text-vdown'}`;
+      if(posiciones === 0) lista.innerHTML = `<div class="mt-8 flex flex-col items-center justify-center text-center"><div class="w-16 h-16 bg-vcard rounded-2xl shadow-sm border border-vborder flex items-center justify-center text-vaccent text-2xl mb-4"><i class="fa-solid fa-suitcase"></i></div><h4 class="font-bold text-vmain mb-1">Tu cartera está vacía</h4></div>`;
+    }
+
+    async function actualizarPrecio(ticker, precio) { await putRecord("precios", { ticker: ticker, precio: parseFloat(precio) || 0 }); updateCartera(); }
+
+    // --- ACTUALIZACIÓN DE MÉTRICAS (CHART.JS) ---
+    async function updateMetricas() {
       if(!db) return;
+      const caja = await getAll("caja");
       const ops = await getAll("operaciones");
       const preciosArr = await getAll("precios");
       const preciosMap = {};
       preciosArr.forEach(p => preciosMap[p.ticker] = p.precio);
-      
+
+      // Leemos los colores del tema actual
+      const style = getComputedStyle(document.body);
+      const colorUp = style.getPropertyValue('--up-color').trim();
+      const colorDown = style.getPropertyValue('--down-color').trim();
+      const colorAccent = style.getPropertyValue('--accent').trim();
+      const colorText = style.getPropertyValue('--text-main').trim();
+      const colorMuted = style.getPropertyValue('--text-muted').trim();
+
+      // 1. Gráfico Caja
+      const mesesCaja = {};
+      caja.forEach(i => {
+        const m = i.fecha.slice(0, 7);
+        if (!mesesCaja[m]) mesesCaja[m] = { ing: 0, gas: 0 };
+        if (i.tipo === 'Ingreso') mesesCaja[m].ing += i.monto; else mesesCaja[m].gas += i.monto;
+      });
+      const labelsCaja = Object.keys(mesesCaja).sort();
+
+      if(chartCajaInst) chartCajaInst.destroy();
+      chartCajaInst = new Chart(document.getElementById('chart-caja'), {
+        type: 'bar',
+        data: {
+          labels: labelsCaja,
+          datasets: [
+            { label: 'Ingresos', data: labelsCaja.map(m => mesesCaja[m].ing), backgroundColor: colorUp },
+            { label: 'Gastos', data: labelsCaja.map(m => mesesCaja[m].gas), backgroundColor: colorDown }
+          ]
+        },
+        options: { maintainAspectRatio: false, plugins: { legend: { labels: { color: colorText } } }, scales: { x: { ticks: {color: colorMuted} }, y: { ticks: {color: colorMuted} } } }
+      });
+
+      // 2. Gráfico Cartera (Doughnut) & Cálculos de Rentabilidad
       const portafolio = {};
-      ops.sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
+      let capInvertido = 0;
+      let interesTotal = 0;
+      
+      ops.sort((a,b) => new Date(a.fecha) - new Date(b.fecha)); // Orden histórico vital
+
+      // Acumuladores mensuales para el gráfico de líneas
+      const mesesOps = {};
+      let capAcum = 0, intAcum = 0;
 
       ops.forEach(op => {
         if (!portafolio[op.activo]) portafolio[op.activo] = { cantidad: 0, costoTotal: 0 };
         const p = portafolio[op.activo];
-        if (op.tipo === 'Compra') { p.cantidad += op.cantidad; p.costoTotal += (op.cantidad * op.precio) + op.comision; } 
-        else if (op.tipo === 'Venta') {
-          if (p.cantidad > 0) {
-            const ppp = p.costoTotal / p.cantidad;
-            p.cantidad -= op.cantidad; p.costoTotal -= (op.cantidad * ppp);
-          }
+        const montoOp = op.cantidad * op.precio;
+        
+        if (op.tipo === 'Compra') { 
+            p.cantidad += op.cantidad; p.costoTotal += montoOp + op.comision; 
+            capInvertido += montoOp + op.comision; capAcum += montoOp + op.comision;
+        } else if (op.tipo === 'Venta') {
+            if (p.cantidad > 0) {
+                const ppp = p.costoTotal / p.cantidad;
+                p.cantidad -= op.cantidad; p.costoTotal -= (op.cantidad * ppp);
+            }
+            capInvertido -= montoOp; capAcum -= montoOp;
         }
+        interesTotal += op.interes; intAcum += op.interes;
+
+        // Snapshot del mes para el gráfico lineal
+        const m = op.fecha.slice(0, 7);
+        mesesOps[m] = { cap: capAcum, int: intAcum };
       });
 
-      const lista = document.getElementById('cart-lista');
-      if(!lista) return;
-      lista.innerHTML = '';
-      
-      let capInv = 0, valMercado = 0, posiciones = 0;
+      let valMercado = 0;
+      const labelsPie = [], dataPie = [];
+      const bgColors = [colorAccent, colorUp, colorDown, '#8b5cf6', '#0ea5e9', '#f59e0b'];
+      let colorIndex = 0;
 
       for (const ticker in portafolio) {
-        const item = portafolio[ticker];
-        if (item.cantidad <= 0.00001) continue; 
-        posiciones++;
-        
-        const ppp = item.costoTotal / item.cantidad;
-        const precioActual = preciosMap[ticker] || ppp;
-        const valorActual = item.cantidad * precioActual;
-        const ganancia = valorActual - item.costoTotal;
-        const gananciaPct = item.costoTotal > 0 ? (ganancia / item.costoTotal) * 100 : 0;
-        const isUp = ganancia >= 0;
-
-        capInv += item.costoTotal;
-        valMercado += valorActual;
-
-        lista.innerHTML += `
-          <div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder">
-            <div class="flex justify-between items-center mb-4">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-vbody border border-vborder flex items-center justify-center font-bold text-vmain text-sm shadow-sm">${ticker.slice(0,3)}</div>
-                <div><h4 class="font-serif font-bold text-lg text-vmain">${ticker}</h4><p class="text-[10px] text-vmuted uppercase">${formatCrypto(item.cantidad)} unidades</p></div>
-              </div>
-              <div class="text-right">
-                <p class="font-bold text-vmain text-sm">${formatMoney(valorActual)}</p>
-                <div class="flex items-center justify-end gap-1 mt-1">
-                  <span class="text-[10px] font-bold ${isUp?'text-vup bg-vup/10':'text-vdown bg-vdown/10'} px-1.5 py-0.5 rounded-sm">${isUp?'+':''}${formatMoney(ganancia)}</span>
-                </div>
-              </div>
-            </div>
-            
-            <div class="flex justify-between bg-vbody rounded-xl p-3 border border-vborder text-xs">
-              <div><p class="text-vmuted mb-1">Precio Compra</p><p class="font-semibold text-vmain">${formatMoney(ppp)}</p></div>
-              <div class="text-right"><p class="text-vmuted mb-1">Precio Actual <i class="fa-solid fa-pen text-[9px]"></i></p>
-                <input type="number" step="any" value="${precioActual}" onchange="actualizarPrecio('${ticker}', this.value)" class="w-20 text-right bg-transparent border-b border-vmuted font-semibold text-vmain outline-none focus:border-vaccent" />
-              </div>
-            </div>
-          </div>`;
+        const p = portafolio[ticker];
+        if (p.cantidad > 0.00001) {
+          labelsPie.push(ticker);
+          const precioAct = preciosMap[ticker] || (p.costoTotal / p.cantidad);
+          const valor = p.cantidad * precioAct;
+          dataPie.push(valor);
+          valMercado += valor;
+        }
       }
 
-      document.getElementById('cart-capital').innerText = formatMoney(capInv);
-      document.getElementById('cart-pos').innerText = `${posiciones} posiciones`;
-      document.getElementById('cart-valor').innerText = formatMoney(valMercado);
+      if(chartPieInst) chartPieInst.destroy();
+      chartPieInst = new Chart(document.getElementById('chart-pie'), {
+        type: 'doughnut',
+        data: { labels: labelsPie, datasets: [{ data: dataPie, backgroundColor: bgColors }] },
+        options: { maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: colorText } } } }
+      });
+
+      // 3. Gráfico de Líneas (Capital vs Intereses - El poder del tiempo)
+      const labelsLine = Object.keys(mesesOps).sort();
       
-      const pl = valMercado - capInv;
-      const elPl = document.getElementById('cart-pl');
-      elPl.innerText = formatMoney(pl);
-      elPl.className = `text-2xl font-semibold mb-1 ${pl>=0 ? 'text-vup' : 'text-vdown'}`;
+      if(chartLineInst) chartLineInst.destroy();
+      chartLineInst = new Chart(document.getElementById('chart-line'), {
+        type: 'line',
+        data: {
+          labels: labelsLine,
+          datasets: [
+            { label: 'Aportes Acum.', data: labelsLine.map(m => mesesOps[m].cap), borderColor: colorText, backgroundColor: colorText, tension: 0.3 },
+            { label: 'Intereses Ganados', data: labelsLine.map(m => mesesOps[m].int), borderColor: colorAccent, backgroundColor: colorAccent, tension: 0.3 }
+          ]
+        },
+        options: { maintainAspectRatio: false, plugins: { legend: { labels: { color: colorText } } }, scales: { x: { ticks: {color: colorMuted} }, y: { ticks: {color: colorMuted} } } }
+      });
 
-      if(posiciones === 0) lista.innerHTML = `<div class="mt-8 flex flex-col items-center justify-center text-center"><div class="w-16 h-16 bg-vcard rounded-2xl shadow-sm border border-vborder flex items-center justify-center text-vaccent text-2xl mb-4"><i class="fa-solid fa-suitcase"></i></div><h4 class="font-bold text-vmain mb-1">Tu cartera está vacía</h4></div>`;
-    }
-
-    async function actualizarPrecio(ticker, precio) {
-      await putRecord("precios", { ticker: ticker, precio: parseFloat(precio) || 0 }); updateCartera();
+      // Imprimir Indicadores
+      document.getElementById('met-cap').innerText = formatMoney(capInvertido);
+      document.getElementById('met-int').innerText = formatMoney(interesTotal);
+      const plTotal = (valMercado - capInvertido) + interesTotal;
+      const elPl = document.getElementById('met-pl');
+      elPl.innerText = formatMoney(plTotal);
+      elPl.className = `text-2xl font-bold ${plTotal >= 0 ? 'text-vup' : 'text-vdown'}`;
     }
 
     // --- CARGA CSV ---
     function parseNumberArg(val) {
       if (!val) return 0;
-      let s = String(val).trim().replace(/[$ \t]/g, '');
-      if (!s) return 0;
-      if (s.includes('.') && s.includes(',')) {
-        if (s.indexOf('.') < s.indexOf(',')) s = s.replace(/\./g, '').replace(',', '.');
-        else s = s.replace(/,/g, '');
-      } else if (s.includes(',')) s = s.replace(',', '.');
+      let s = String(val).trim().replace(/[$ \t]/g, ''); if (!s) return 0;
+      if (s.includes('.') && s.includes(',')) { if (s.indexOf('.') < s.indexOf(',')) s = s.replace(/\./g, '').replace(',', '.'); else s = s.replace(/,/g, ''); } 
+      else if (s.includes(',')) s = s.replace(',', '.');
       return parseFloat(s) || 0;
     }
     function parseCSVLine(line, sep) {
       const res = []; let start = 0, inQ = false;
       for (let i = 0; i < line.length; i++) {
         if (line[i] === '"') inQ = !inQ;
-        else if (line[i] === sep && !inQ) {
-          let cell = line.substring(start, i).trim();
-          if (cell.startsWith('"') && cell.endsWith('"')) cell = cell.slice(1, -1);
-          res.push(cell); start = i + 1;
-        }
+        else if (line[i] === sep && !inQ) { let cell = line.substring(start, i).trim(); if (cell.startsWith('"') && cell.endsWith('"')) cell = cell.slice(1, -1); res.push(cell); start = i + 1; }
       }
-      let last = line.substring(start).trim();
-      if (last.startsWith('"') && last.endsWith('"')) last = last.slice(1, -1);
-      res.push(last); return res;
+      let last = line.substring(start).trim(); if (last.startsWith('"') && last.endsWith('"')) last = last.slice(1, -1); res.push(last); return res;
     }
     function importarCSV(event) {
-      const file = event.target.files[0];
-      if (!file) return;
+      const file = event.target.files[0]; if (!file) return;
       const reader = new FileReader();
       reader.onload = async function(e) {
-        const text = e.target.result;
-        const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+        const text = e.target.result; const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
         if (lines.length < 2) return alert('Archivo vacío');
-        
         let sep = ','; if (lines[0].includes(';')) sep = ';';
         const headers = parseCSVLine(lines[0].toLowerCase(), sep);
-        
         const iF = headers.findIndex(h => h.includes('fecha')), iA = headers.findIndex(h => h.includes('activo')), iT = headers.findIndex(h => h.includes('tipo'));
-        const iC = headers.findIndex(h => h.includes('cantidad')), iP = headers.findIndex(h => h.includes('precio'));
-        const iCom = headers.findIndex(h => h.includes('comision')), iInt = headers.findIndex(h => h.includes('interes'));
-        
+        const iC = headers.findIndex(h => h.includes('cantidad')), iP = headers.findIndex(h => h.includes('precio')), iCom = headers.findIndex(h => h.includes('comision')), iInt = headers.findIndex(h => h.includes('interes'));
         let cargados = 0;
         for (let i = 1; i < lines.length; i++) {
           const cols = parseCSVLine(lines[i], sep);
           const f = iF!==-1?cols[iF]:cols[0], a = iA!==-1?cols[iA]:cols[1], c = parseNumberArg(iC!==-1?cols[iC]:cols[3]), p = parseNumberArg(iP!==-1?cols[iP]:cols[4]);
-          if (f && a && c > 0) {
-            await addRecord("operaciones", {
-              fecha: f.trim(), activo: a.toUpperCase().trim(),
-              tipo: (iT!==-1?cols[iT]:cols[2]).toLowerCase().includes('vent') ? 'Venta' : 'Compra',
-              cantidad: c, precio: p,
-              comision: iCom!==-1 ? parseNumberArg(cols[iCom]) : 0, interes: iInt!==-1 ? parseNumberArg(cols[iInt]) : 0
-            });
-            cargados++;
-          }
+          if (f && a && c > 0) { await addRecord("operaciones", { fecha: f.trim(), activo: a.toUpperCase().trim(), tipo: (iT!==-1?cols[iT]:cols[2]).toLowerCase().includes('vent') ? 'Venta' : 'Compra', cantidad: c, precio: p, comision: iCom!==-1 ? parseNumberArg(cols[iCom]) : 0, interes: iInt!==-1 ? parseNumberArg(cols[iInt]) : 0 }); cargados++; }
         }
-        event.target.value = ''; 
-        if(document.getElementById('header-title').innerText.includes('Operacion')) updateOperaciones();
+        event.target.value = ''; if(document.getElementById('header-title').innerText.includes('Operacion')) updateOperaciones();
         alert(`¡Se cargaron ${cargados} operaciones!`);
       };
       reader.readAsText(file);
