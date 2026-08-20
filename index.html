@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Capital Flow</title>
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,71 +13,474 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    :root { --bg-body: #f9f8f4; --bg-card: #ffffff; --bg-nav: #1c212d; --bg-hero: #2a3041; --text-main: #1c212d; --text-muted: #6b7280; --accent: #347b59; --up-color: #347b59; --down-color: #e74c3c; --card-border: #f3f4f6; --nav-active: #b4d374; --nav-inactive: #9ca3af; }
-    body.theme-pro { --bg-body: #0f172a; --bg-card: #1e293b; --bg-nav: #020617; --bg-hero: #0ea5e9; --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #06b6d4; --up-color: #22c55e; --down-color: #ef4444; --card-border: #334155; --nav-active: #06b6d4; --nav-inactive: #64748b; }
-    body.theme-premium { --bg-body: #1f2229; --bg-card: #2a2e37; --bg-nav: #111317; --bg-hero: #b45309; --text-main: #fffff0; --text-muted: #9ca3af; --accent: #f59e0b; --up-color: #65a30d; --down-color: #be123c; --card-border: #374151; --nav-active: #fcd34d; --nav-inactive: #6b7280; }
-    body.theme-adaptive { --bg-body: #09090b; --bg-card: #18181b; --bg-nav: #000000; --bg-hero: #6d28d9; --text-main: #fafafa; --text-muted: #a1a1aa; --accent: #8b5cf6; --up-color: #10b981; --down-color: #f43f5e; --card-border: #27272a; --nav-active: #c4b5fd; --nav-inactive: #52525b; }
+    /* TEMAS DE COLORES */
+    :root {
+      --bg-body: #f9f8f4; --bg-card: #ffffff; --bg-nav: #1c212d; --bg-hero: #2a3041;
+      --text-main: #1c212d; --text-muted: #6b7280; --accent: #347b59; --up-color: #347b59;
+      --down-color: #e74c3c; --card-border: #f3f4f6; --nav-active: #b4d374; --nav-inactive: #9ca3af;
+    }
+    body.theme-pro {
+      --bg-body: #0f172a; --bg-card: #1e293b; --bg-nav: #020617; --bg-hero: #0ea5e9;
+      --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #06b6d4; --up-color: #22c55e;
+      --down-color: #ef4444; --card-border: #334155; --nav-active: #06b6d4; --nav-inactive: #64748b;
+    }
+    body.theme-premium {
+      --bg-body: #1f2229; --bg-card: #2a2e37; --bg-nav: #111317; --bg-hero: #b45309;
+      --text-main: #fffff0; --text-muted: #9ca3af; --accent: #f59e0b; --up-color: #65a30d;
+      --down-color: #be123c; --card-border: #374151; --nav-active: #fcd34d; --nav-inactive: #6b7280;
+    }
+    body.theme-adaptive {
+      --bg-body: #09090b; --bg-card: #18181b; --bg-nav: #000000; --bg-hero: #6d28d9;
+      --text-main: #fafafa; --text-muted: #a1a1aa; --accent: #8b5cf6; --up-color: #10b981;
+      --down-color: #f43f5e; --card-border: #27272a; --nav-active: #c4b5fd; --nav-inactive: #52525b;
+    }
+
     body { background-color: var(--bg-body); color: var(--text-main); transition: background-color 0.3s, color 0.3s; }
     .nav-item.active { color: var(--nav-active); }
     .nav-item:not(.active) { color: var(--nav-inactive); }
+    .nav-item:not(.active):hover { opacity: 0.8; }
     ::-webkit-scrollbar { display: none; }
   </style>
+
   <script>
-    tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'] }, colors: { vbody: 'var(--bg-body)', vcard: 'var(--bg-card)', vnav: 'var(--bg-nav)', vhero: 'var(--bg-hero)', vmain: 'var(--text-main)', vmuted: 'var(--text-muted)', vaccent: 'var(--accent)', vup: 'var(--up-color)', vdown: 'var(--down-color)', vborder: 'var(--card-border)' } } } }
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
+          colors: {
+            vbody: 'var(--bg-body)', vcard: 'var(--bg-card)', vnav: 'var(--bg-nav)',
+            vhero: 'var(--bg-hero)', vmain: 'var(--text-main)', vmuted: 'var(--text-muted)',
+            vaccent: 'var(--accent)', vup: 'var(--up-color)', vdown: 'var(--down-color)',
+            vborder: 'var(--card-border)'
+          }
+        }
+      }
+    }
   </script>
 </head>
 <body class="min-h-screen flex flex-col font-sans transition-colors duration-300">
-  
+
+  <!-- PANTALLA DE LOGIN / REGISTRO -->
   <div id="auth-screen" class="fixed inset-0 bg-vbody z-[200] flex flex-col justify-center items-center px-6 transition-colors duration-300">
     <div class="w-full max-w-sm">
-      <div class="text-center mb-10"><div class="w-16 h-16 bg-vaccent text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg"><i class="fa-solid fa-layer-group"></i></div><h1 class="font-serif text-4xl font-bold text-vmain tracking-tight">Capital Flow</h1><p class="text-vmuted text-sm mt-2 font-medium">Tu espacio personal, protegido.</p></div>
+      <div class="text-center mb-10">
+        <div class="w-16 h-16 bg-vaccent text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg"><i class="fa-solid fa-layer-group"></i></div>
+        <h1 class="font-serif text-4xl font-bold text-vmain tracking-tight">Capital Flow</h1>
+        <p class="text-vmuted text-sm mt-2 font-medium">Tu espacio personal, protegido.</p>
+      </div>
+
       <div class="bg-vcard p-6 rounded-3xl shadow-xl border border-vborder">
-        <div class="flex border-b border-vborder mb-6"><button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent">Iniciar Sesión</button><button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted">Crear Cuenta</button></div>
-        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4"><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Usuario</label><input type="text" id="login-user" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Contraseña</label><input type="password" id="login-pass" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none" /></div><p id="login-error" class="text-vdown text-xs hidden">Usuario o contraseña incorrectos.</p><button type="submit" class="w-full bg-vaccent text-white font-bold py-3.5 rounded-xl mt-2">Entrar</button></form>
-        <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden"><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Elige un Usuario</label><input type="text" id="reg-user" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Crea una Contraseña</label><input type="password" id="reg-pass" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none" /></div><p id="reg-error" class="text-vdown text-xs hidden">El usuario ya existe.</p><button type="submit" class="w-full bg-vmain text-vbody font-bold py-3.5 rounded-xl mt-2">Registrarme</button></form>
+        <!-- Pestañas Login/Registro -->
+        <div class="flex border-b border-vborder mb-6">
+          <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent transition-all">Iniciar Sesión</button>
+          <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted hover:text-vmain transition-all">Crear Cuenta</button>
+        </div>
+
+        <!-- Formulario Iniciar Sesión -->
+        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
+          <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Usuario</label>
+          <input type="text" id="login-user" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none focus:border-vaccent" /></div>
+          <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Contraseña</label>
+          <input type="password" id="login-pass" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none focus:border-vaccent" /></div>
+          <p id="login-error" class="text-vdown text-xs hidden font-medium">Usuario o contraseña incorrectos.</p>
+          <button type="submit" class="w-full bg-vaccent text-white font-bold py-3.5 rounded-xl shadow-md active:scale-95 transition-transform mt-2">Entrar</button>
+        </form>
+
+        <!-- Formulario Registro -->
+        <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+          <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Elige un Usuario</label>
+          <input type="text" id="reg-user" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none focus:border-vaccent" /></div>
+          <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Crea una Contraseña</label>
+          <input type="password" id="reg-pass" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none focus:border-vaccent" /></div>
+          <p id="reg-error" class="text-vdown text-xs hidden font-medium">El usuario ya existe.</p>
+          <button type="submit" class="w-full bg-vmain text-vbody font-bold py-3.5 rounded-xl shadow-md active:scale-95 transition-transform mt-2">Registrarme</button>
+        </form>
       </div>
     </div>
   </div>
 
+  <!-- APLICACIÓN PRINCIPAL (Oculta hasta loguearse) -->
   <div id="app-container" class="hidden flex-col min-h-screen w-full pb-24">
-    <header class="p-5 flex justify-between items-center bg-vbody sticky top-0 z-10 transition-colors">
-      <div><p class="text-[10px] text-vmuted font-medium uppercase mb-1">Finanzas / <span id="display-username">Personal</span></p><h1 id="header-title" class="text-2xl font-serif font-semibold text-vmain">Buenos días</h1></div>
-      <div class="flex items-center gap-3"><button onclick="toggleTheme()" class="w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted bg-vcard shadow-sm"><i class="fa-solid fa-palette"></i></button><label for="csv-upload" class="cursor-pointer w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted bg-vcard shadow-sm"><i class="fa-solid fa-sliders"></i><input type="file" id="csv-upload" class="hidden" accept=".csv" onchange="importarCSV(event)" /></label><div id="user-avatar" class="w-10 h-10 rounded-full bg-vaccent flex items-center justify-center text-white font-bold text-sm shadow-sm">CF</div></div>
+    
+    <header class="p-5 flex justify-between items-center z-10 bg-vbody sticky top-0 transition-colors duration-300">
+      <div>
+        <p class="text-[10px] text-vmuted font-medium uppercase tracking-wider mb-1">Finanzas / <span id="display-username">Personal</span></p>
+        <h1 id="header-title" class="text-2xl font-serif font-semibold text-vmain">Buenos días</h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="toggleTheme()" class="w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted bg-vcard shadow-sm active:scale-95 transition-transform">
+          <i class="fa-solid fa-palette"></i>
+        </button>
+        
+        <label for="csv-upload" class="w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted cursor-pointer bg-vcard shadow-sm active:scale-95 transition-transform">
+          <i class="fa-solid fa-sliders"></i>
+          <input type="file" id="csv-upload" class="hidden" accept=".csv" onchange="importarCSV(event)" />
+        </label>
+        
+        <!-- Menú de Usuario -->
+        <div class="relative">
+          <button onclick="document.getElementById('user-menu').classList.toggle('hidden')" class="w-10 h-10 rounded-full bg-vaccent flex items-center justify-center text-white font-bold text-sm shadow-sm border-2 border-transparent focus:border-vmain transition-all" id="user-avatar">
+            CF
+          </button>
+          <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-vcard border border-vborder rounded-2xl shadow-xl overflow-hidden z-50">
+            <div class="p-4 border-b border-vborder"><p class="text-xs text-vmuted font-semibold uppercase">Sesión iniciada</p><p id="menu-username" class="font-bold text-vmain truncate">Usuario</p></div>
+            <button onclick="logout()" class="w-full text-left px-4 py-3 text-sm font-bold text-vdown hover:bg-vdown/10 transition-colors"><i class="fa-solid fa-right-from-bracket mr-2"></i> Cerrar sesión</button>
+          </div>
+        </div>
+      </div>
     </header>
+
     <main class="flex-1 px-5" id="main-content"></main>
-    <nav class="fixed bottom-0 w-full bg-vnav flex justify-between items-center px-4 py-3 pb-5 z-50">
-      <button onclick="changeTab('resumen', this)" class="nav-item active flex flex-col items-center w-14"><i class="fa-solid fa-house text-lg mb-1.5"></i><span class="text-[9px] font-semibold">Resumen</span></button>
-      <button onclick="changeTab('caja', this)" class="nav-item flex flex-col items-center w-14"><i class="fa-solid fa-wallet text-lg mb-1.5"></i><span class="text-[9px] font-semibold">Caja</span></button>
-      <button onclick="changeTab('operaciones', this)" class="nav-item flex flex-col items-center w-14"><i class="fa-solid fa-arrow-trend-up text-lg mb-1.5"></i><span class="text-[9px] font-semibold">Operar</span></button>
-      <button onclick="changeTab('cartera', this)" class="nav-item flex flex-col items-center w-14"><i class="fa-solid fa-suitcase text-lg mb-1.5"></i><span class="text-[9px] font-semibold">Cartera</span></button>
-      <button onclick="changeTab('metricas', this)" class="nav-item flex flex-col items-center w-14"><i class="fa-solid fa-chart-simple text-lg mb-1.5"></i><span class="text-[9px] font-semibold">Métricas</span></button>
+
+    <!-- MODALES DE CARGA -->
+    <div id="modal-caja" class="fixed inset-0 bg-black/60 z-[100] hidden flex-col justify-end sm:justify-center items-center transition-opacity">
+      <div class="bg-vcard w-full sm:w-96 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-[slideUp_0.3s_ease-out]">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="font-serif text-2xl font-semibold text-vmain">Nuevo Movimiento</h3>
+          <button onclick="closeModal('modal-caja')" class="text-vmuted hover:text-vdown text-xl"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form onsubmit="guardarMovimiento(event)" class="space-y-4">
+          <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Tipo</label><div class="grid grid-cols-2 gap-2"><label class="cursor-pointer"><input type="radio" name="tipo-mov" value="Ingreso" class="peer hidden" checked><div class="text-center p-3 rounded-xl border border-vborder text-vmuted peer-checked:bg-vup/10 peer-checked:text-vup peer-checked:border-vup transition-all font-medium">Ingreso</div></label><label class="cursor-pointer"><input type="radio" name="tipo-mov" value="Gasto" class="peer hidden"><div class="text-center p-3 rounded-xl border border-vborder text-vmuted peer-checked:bg-vdown/10 peer-checked:text-vdown peer-checked:border-vdown transition-all font-medium">Gasto</div></label></div></div>
+          <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Fecha</label><input type="date" id="caja-fecha" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none focus:border-vaccent" /></div>
+          <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Descripción</label><input type="text" id="caja-desc" required placeholder="Ej: Venta 3D o Supermercado" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none focus:border-vaccent" /></div>
+          <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Monto ($)</label><input type="number" step="any" id="caja-monto" required placeholder="0.00" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none focus:border-vaccent text-lg font-bold" /></div>
+          <button type="submit" class="w-full bg-vaccent text-white font-semibold py-4 rounded-xl shadow-md active:scale-95 transition-transform mt-2">Guardar</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="modal-operacion" class="fixed inset-0 bg-black/60 z-[100] hidden flex-col justify-end sm:justify-center items-center transition-opacity max-h-screen overflow-y-auto pt-20">
+      <div class="bg-vcard w-full sm:w-[400px] rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-[slideUp_0.3s_ease-out] mb-10">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="font-serif text-2xl font-semibold text-vmain">Registrar Operación</h3>
+          <button onclick="closeModal('modal-operacion')" class="text-vmuted hover:text-vdown text-xl"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form onsubmit="guardarOperacion(event)" class="space-y-4">
+          <div class="grid grid-cols-2 gap-3"><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Fecha</label><input type="date" id="op-fecha" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Activo (Ticker)</label><input type="text" id="op-activo" required placeholder="Ej: AAPL" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent uppercase" /></div></div>
+          <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Tipo</label><div class="grid grid-cols-2 gap-2"><label class="cursor-pointer"><input type="radio" name="op-tipo" value="Compra" class="peer hidden" checked><div class="text-center p-2.5 rounded-xl border border-vborder text-vmuted peer-checked:bg-vhero peer-checked:text-white peer-checked:border-vhero transition-all font-medium">Compra</div></label><label class="cursor-pointer"><input type="radio" name="op-tipo" value="Venta" class="peer hidden"><div class="text-center p-2.5 rounded-xl border border-vborder text-vmuted peer-checked:bg-vnav peer-checked:text-white peer-checked:border-vnav transition-all font-medium">Venta</div></label></div></div>
+          <div class="grid grid-cols-2 gap-3"><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Cantidad</label><input type="number" step="any" id="op-cantidad" required placeholder="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Precio Unit.</label><input type="number" step="any" id="op-precio" required placeholder="0.00" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Comisión</label><input type="number" step="any" id="op-comision" value="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Intereses</label><input type="number" step="any" id="op-interes" value="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" /></div></div>
+          <button type="submit" class="w-full bg-vaccent text-white font-semibold py-4 rounded-xl shadow-md active:scale-95 transition-transform mt-2">Guardar Operación</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- NAV INFERIOR -->
+    <nav class="fixed bottom-0 w-full bg-vnav flex justify-between items-center px-4 py-3 pb-5 z-50 transition-colors duration-300">
+      <button onclick="changeTab('resumen', this)" class="nav-item active flex flex-col items-center transition-colors w-14"><i class="fa-solid fa-house text-lg mb-1.5"></i><span class="text-[9px] font-semibold tracking-wide">Resumen</span></button>
+      <button onclick="changeTab('caja', this)" class="nav-item flex flex-col items-center transition-colors w-14"><i class="fa-solid fa-wallet text-lg mb-1.5"></i><span class="text-[9px] font-semibold tracking-wide">Caja</span></button>
+      <button onclick="changeTab('operaciones', this)" class="nav-item flex flex-col items-center transition-colors w-14"><i class="fa-solid fa-arrow-trend-up text-lg mb-1.5"></i><span class="text-[9px] font-semibold tracking-wide">Operar</span></button>
+      <button onclick="changeTab('cartera', this)" class="nav-item flex flex-col items-center transition-colors w-14"><i class="fa-solid fa-suitcase text-lg mb-1.5"></i><span class="text-[9px] font-semibold tracking-wide">Cartera</span></button>
+      <button onclick="changeTab('metricas', this)" class="nav-item flex flex-col items-center transition-colors w-14"><i class="fa-solid fa-chart-simple text-lg mb-1.5"></i><span class="text-[9px] font-semibold tracking-wide">Métricas</span></button>
     </nav>
   </div>
 
   <script>
-    let db, currentUser = null, chartCajaInst = null, chartPieInst = null, chartLineInst = null;
-    const req = indexedDB.open("CapitalFlowDB", 3);
-    req.onupgradeneeded = (e) => { db = e.target.result; if(!db.objectStoreNames.contains("usuarios")) db.createObjectStore("usuarios", {keyPath:"username"}); if(!db.objectStoreNames.contains("caja")) db.createObjectStore("caja", {keyPath:"id", autoIncrement:true}); if(!db.objectStoreNames.contains("operaciones")) db.createObjectStore("operaciones", {keyPath:"id", autoIncrement:true}); if(!db.objectStoreNames.contains("precios")) db.createObjectStore("precios", {keyPath:"ticker"}); };
-    req.onsuccess = (e) => { db = e.target.result; const sUser = localStorage.getItem('cf_user'); if(sUser) startSession(sUser); };
+    // --- 1. USUARIOS Y BASE DE DATOS ---
+    let db;
+    let currentUser = null; 
+    let chartCajaInst = null, chartPieInst = null, chartLineInst = null;
 
-    function getStore(s) { return db.transaction(s, "readwrite").objectStore(s); }
-    function getUserRecords(s) { return new Promise(r => { getStore(s).getAll().onsuccess = (e) => r(e.target.result.filter(o => o.userId === currentUser)); }); }
-    function addRecord(s, d) { d.userId = currentUser; getStore(s).add(d); }
-    function putRecord(s, d) { d.userId = currentUser; getStore(s).put(d); }
-    function deleteRecord(s, id) { getStore(s).delete(id); }
-    function clearUserStore(s) { getStore(s).getAll().onsuccess = (e) => { e.target.result.filter(o => o.userId === currentUser).forEach(o => getStore(s).delete(o.id)); }; }
+    // Actualizamos DB a la versión 3 para agregar usuarios
+    const request = indexedDB.open("CapitalFlowDB", 3);
+    request.onupgradeneeded = (e) => {
+      db = e.target.result;
+      if (!db.objectStoreNames.contains("usuarios")) db.createObjectStore("usuarios", { keyPath: "username" });
+      if (!db.objectStoreNames.contains("caja")) db.createObjectStore("caja", { keyPath: "id", autoIncrement: true });
+      if (!db.objectStoreNames.contains("operaciones")) db.createObjectStore("operaciones", { keyPath: "id", autoIncrement: true });
+      if (!db.objectStoreNames.contains("precios")) db.createObjectStore("precios", { keyPath: "ticker" });
+    };
+    request.onsuccess = (e) => {
+      db = e.target.result;
+      // Comprobar si hay sesión iniciada en localStorage
+      const savedUser = localStorage.getItem('cf_user');
+      if(savedUser) {
+        startSession(savedUser);
+      }
+    };
 
-    function toggleTheme() { const b = document.body; const themes = ['', 'theme-pro', 'theme-premium', 'theme-adaptive']; let i = themes.indexOf(b.className.split(' ').find(c => themes.includes(c))) || 0; b.classList.remove(themes[i]); i = (i + 1) % themes.length; b.classList.add(themes[i]); if(document.getElementById('header-title').innerText.includes('Métrica')) updateMetricas(); }
-    function switchAuthTab(t) { document.getElementById('tab-login').className = t==='login' ? 'flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent' : 'flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted'; document.getElementById('tab-register').className = t==='register' ? 'flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent' : 'flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted'; document.getElementById('form-login').classList.toggle('hidden', t!=='login'); document.getElementById('form-register').classList.toggle('hidden', t!=='register'); }
-    function startSession(u) { currentUser = u; localStorage.setItem('cf_user', u); document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('app-container').classList.remove('hidden'); document.getElementById('app-container').classList.add('flex'); document.getElementById('display-username').innerText = u; document.getElementById('user-avatar').innerText = u.substring(0,2).toUpperCase(); changeTab('resumen', document.querySelector('.nav-item')); }
-    function logout() { localStorage.removeItem('cf_user'); location.reload(); }
+    // Funciones de Base de Datos Modificadas para filtrar por USUARIO
+    function getStoreAll(store) {
+      return new Promise((resolve) => {
+        const tx = db.transaction(store, "readonly");
+        const req = tx.objectStore(store).getAll();
+        req.onsuccess = () => resolve(req.result);
+      });
+    }
+
+    async function getUserRecords(store) {
+      const all = await getStoreAll(store);
+      // Filtramos para que solo devuelva los datos del usuario actual
+      return all.filter(r => r.userId === currentUser);
+    }
+
+    function addRecord(store, data) {
+      return new Promise((resolve) => {
+        // Le inyectamos la etiqueta del usuario a cada dato nuevo
+        data.userId = currentUser;
+        const tx = db.transaction(store, "readwrite");
+        tx.objectStore(store).add(data);
+        tx.oncomplete = () => resolve();
+      });
+    }
+
+    function putRecord(store, data) {
+      return new Promise((resolve) => {
+        data.userId = currentUser;
+        const tx = db.transaction(store, "readwrite");
+        tx.objectStore(store).put(data);
+        tx.oncomplete = () => resolve();
+      });
+    }
+
+    function deleteRecord(store, id) { return new Promise((resolve) => { const tx = db.transaction(store, "readwrite"); tx.objectStore(store).delete(id); tx.oncomplete = () => resolve(); }); }
     
-    // -- Lógica de navegación y vistas (simplificada) --
-    const views = { 'resumen': '<div class="space-y-6">...</div>', 'caja': '<div class="space-y-6">...</div>', 'operaciones': '<div class="space-y-6">...</div>', 'cartera': '<div class="space-y-6">...</div>', 'metricas': '<div class="space-y-8 pb-10">...</div>' }; // [Pegar aquí los HTMLs de la respuesta anterior]
-    function changeTab(t, e) { /* Lógica de cambio de tab */ }
+    // Al vaciar operaciones, solo borramos las del usuario actual
+    async function vaciarMisOperaciones() {
+      if(confirm('¿Seguro? Esto borrará tus operaciones, pero no las de otros usuarios.')) {
+        const allOps = await getStoreAll("operaciones");
+        const myOps = allOps.filter(r => r.userId === currentUser);
+        const tx = db.transaction("operaciones", "readwrite");
+        const store = tx.objectStore("operaciones");
+        myOps.forEach(op => store.delete(op.id));
+        tx.oncomplete = () => updateOperaciones();
+      }
+    }
 
-    // --- Service Worker ---
-    if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
+    // --- 2. LÓGICA DE LOGIN / REGISTRO ---
+    function switchAuthTab(tab) {
+      const btnLog = document.getElementById('tab-login');
+      const btnReg = document.getElementById('tab-register');
+      const formLog = document.getElementById('form-login');
+      const formReg = document.getElementById('form-register');
+      
+      if(tab === 'login') {
+        btnLog.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent transition-all";
+        btnReg.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted hover:text-vmain transition-all";
+        formLog.classList.remove('hidden'); formReg.classList.add('hidden');
+      } else {
+        btnReg.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent transition-all";
+        btnLog.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted hover:text-vmain transition-all";
+        formReg.classList.remove('hidden'); formLog.classList.add('hidden');
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const user = document.getElementById('reg-user').value.trim();
+      const pass = document.getElementById('reg-pass').value;
+      const errorMsg = document.getElementById('reg-error');
+      
+      const tx = db.transaction("usuarios", "readwrite");
+      const store = tx.objectStore("usuarios");
+      const req = store.get(user);
+      
+      req.onsuccess = () => {
+        if(req.result) { errorMsg.classList.remove('hidden'); } // Usuario ya existe
+        else {
+          store.add({ username: user, password: pass });
+          errorMsg.classList.add('hidden');
+          startSession(user);
+        }
+      };
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const user = document.getElementById('login-user').value.trim();
+      const pass = document.getElementById('login-pass').value;
+      const errorMsg = document.getElementById('login-error');
+
+      const tx = db.transaction("usuarios", "readonly");
+      const store = tx.objectStore("usuarios");
+      const req = store.get(user);
+      
+      req.onsuccess = () => {
+        if(req.result && req.result.password === pass) {
+          errorMsg.classList.add('hidden');
+          startSession(user);
+        } else {
+          errorMsg.classList.remove('hidden');
+        }
+      };
+    }
+
+    function startSession(user) {
+      currentUser = user;
+      localStorage.setItem('cf_user', user);
+      document.getElementById('auth-screen').classList.add('hidden');
+      document.getElementById('app-container').classList.remove('hidden');
+      document.getElementById('app-container').classList.add('flex');
+      
+      // Actualizar UI del usuario
+      document.getElementById('display-username').innerText = user;
+      document.getElementById('menu-username').innerText = user;
+      document.getElementById('user-avatar').innerText = user.substring(0,2).toUpperCase();
+      
+      document.getElementById('caja-fecha').valueAsDate = new Date();
+      document.getElementById('op-fecha').valueAsDate = new Date();
+      
+      // Resetear al tab de inicio
+      document.querySelector('.nav-item').click();
+    }
+
+    function logout() {
+      currentUser = null;
+      localStorage.removeItem('cf_user');
+      document.getElementById('user-menu').classList.add('hidden');
+      document.getElementById('app-container').classList.add('hidden');
+      document.getElementById('app-container').classList.remove('flex');
+      document.getElementById('auth-screen').classList.remove('hidden');
+      document.getElementById('login-user').value = '';
+      document.getElementById('login-pass').value = '';
+    }
+
+    // --- 3. TEMAS Y FECHAS ---
+    const themes = ['', 'theme-pro', 'theme-premium', 'theme-adaptive'];
+    let currentThemeIndex = 0;
+    function toggleTheme() {
+      document.body.classList.remove('theme-pro', 'theme-premium', 'theme-adaptive');
+      currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+      if (themes[currentThemeIndex]) document.body.classList.add(themes[currentThemeIndex]);
+      if (document.getElementById('header-title').innerText.includes('Métrica')) updateMetricas();
+    }
+    
+    const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+    const fechaActual = new Date();
+    const mesActualText = `${meses[fechaActual.getMonth()]} DE ${fechaActual.getFullYear()}`;
+    const mesActualFiltro = fechaActual.toISOString().slice(0, 7);
+
+    function formatMoney(num) { return "$" + num.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+    function formatCrypto(num) { return parseFloat(num.toFixed(4)).toString(); }
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); document.getElementById(id).classList.add('flex'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
+
+    // --- 4. VISTAS HTML (Sin cambios visuales) ---
+    const views = {
+      'resumen': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">${mesActualText}</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Tu dinero, en perspectiva.</h2><p class="text-sm text-vmuted leading-relaxed">Una lectura breve de lo que entró, lo que salió y lo que estás construyendo.</p></div><button onclick="openModal('modal-caja')" class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity"><i class="fa-solid fa-plus"></i> Añadir movimiento</button><div class="bg-vhero text-white p-6 rounded-[2rem] shadow-md relative overflow-hidden transition-colors duration-300"><div class="absolute -right-10 -bottom-10 w-48 h-48 border-[15px] border-white/5 rounded-full"></div><p class="text-[10px] font-bold text-[var(--nav-active)] tracking-widest uppercase mb-2 relative z-10">BALANCE DEL MES</p><h3 class="font-serif text-3xl mb-4 relative z-10 w-3/4 leading-snug">Lo que queda después de vivir.</h3><p id="res-balance" class="text-3xl font-medium mb-1 relative z-10">$0.00</p><p id="res-count" class="text-xs text-white/50 relative z-10">0 movimientos</p></div><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder flex justify-between items-start transition-colors duration-300"><div><p class="text-xs text-vmuted mb-2">Ingresos</p><p id="res-ingresos" class="text-2xl font-semibold text-vup mb-1">$0.00</p></div><i class="fa-solid fa-arrow-down-left text-vup text-sm bg-vup/10 p-1.5 rounded-md"></i></div><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder flex justify-between items-start transition-colors duration-300"><div><p class="text-xs text-vmuted mb-2">Gastos</p><p id="res-gastos" class="text-2xl font-semibold text-vdown mb-1">$0.00</p></div><i class="fa-solid fa-arrow-up-right text-vdown text-sm bg-vdown/10 p-1.5 rounded-md"></i></div></div>`,
+      'caja': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">CAJA DIARIA</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Que el dinero tenga contexto.</h2></div><button onclick="openModal('modal-caja')" class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm"><i class="fa-solid fa-plus"></i> Nuevo movimiento</button><div class="flex justify-between items-center mt-6 mb-2"><h3 class="font-bold text-vmain">Historial del mes</h3><span id="caja-count" class="text-xs text-vmuted bg-vcard px-2 py-1 rounded-md border border-vborder">0 registros</span></div><div id="caja-lista" class="space-y-3 pb-8"></div></div>`,
+      'operaciones': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">OPERACIONES</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Cada decisión deja una huella.</h2></div><button onclick="openModal('modal-operacion')" class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm"><i class="fa-solid fa-plus"></i> Nueva operación</button><div class="grid grid-cols-1 gap-3"><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><p class="text-xs text-vmuted mb-2">Capital comprado</p><p id="op-capital" class="text-2xl font-semibold text-vmain mb-1">$0.00</p></div><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><p class="text-xs text-vmuted mb-2">Flujo neto</p><p id="op-flujo" class="text-2xl font-semibold text-vmain mb-1">$0.00</p></div><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><p class="text-xs text-vmuted mb-2">Intereses / Div.</p><p id="op-interes" class="text-2xl font-semibold text-vup mb-1">$0.00</p></div></div><div class="flex justify-between items-center mt-6 mb-2"><h3 class="font-bold text-vmain">Historial</h3><button onclick="vaciarMisOperaciones()" class="text-vdown text-sm hover:opacity-70"><i class="fa-solid fa-trash-can"></i></button></div><div id="op-lista" class="space-y-3 pb-8"></div></div>`,
+      'cartera': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">CARTERA</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Lo que estás construyendo.</h2></div><button onclick="document.querySelector('.nav-item:nth-child(3)').click(); setTimeout(()=>openModal('modal-operacion'), 300);" class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm"><i class="fa-solid fa-plus"></i> Registrar operación</button><div class="grid grid-cols-1 gap-3"><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><p class="text-xs text-vmuted mb-2">Capital invertido</p><p id="cart-capital" class="text-2xl font-semibold text-vmain mb-1">$0.00</p><p id="cart-pos" class="text-xs text-vmuted/70">0 posiciones</p></div><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><p class="text-xs text-vmuted mb-2">Valor mercado</p><p id="cart-valor" class="text-2xl font-semibold text-vmain mb-1">$0.00</p></div><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><p class="text-xs text-vmuted mb-2">P/L no realizado</p><p id="cart-pl" class="text-2xl font-semibold text-vmain mb-1">$0.00</p></div></div><div class="flex justify-between items-center mt-6 mb-2"><h3 class="font-bold text-vmain">Posiciones</h3></div><div id="cart-lista" class="space-y-4 pb-8"></div></div>`,
+      'metricas': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-8 pb-10"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">MÉTRICAS</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">El tiempo compone.</h2></div><div class="grid grid-cols-2 gap-3"><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] text-vmuted uppercase mb-1">Cap. Histórico</p><p id="met-cap" class="text-lg font-bold text-vmain">$0.00</p></div><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] text-vmuted uppercase mb-1">Int. Totales</p><p id="met-int" class="text-lg font-bold text-vup">$0.00</p></div><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder col-span-2 text-center"><p class="text-[10px] text-vmuted uppercase mb-1">P/L Total (Latente + Interés)</p><p id="met-pl" class="text-2xl font-bold text-vmain">$0.00</p></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder"><h3 class="text-sm font-bold text-vmain mb-4">Ingresos vs Gastos</h3><div class="relative h-48 w-full"><canvas id="chart-caja"></canvas></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder"><h3 class="text-sm font-bold text-vmain mb-4">Distribución Cartera</h3><div class="relative h-48 w-full"><canvas id="chart-pie"></canvas></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder"><h3 class="text-sm font-bold text-vmain mb-1">Ritmo Aportes</h3><div class="relative h-48 w-full"><canvas id="chart-line"></canvas></div></div></div>`
+    };
+    
+    const headerTitles = { 'resumen': 'Buenos días', 'caja': 'Caja diaria', 'operaciones': 'Operaciones', 'cartera': 'Cartera', 'metricas': 'Métricas' };
+
+    function changeTab(tabName, element) {
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      if(element) element.classList.add('active');
+      document.getElementById('header-title').innerText = headerTitles[tabName];
+      document.getElementById('main-content').innerHTML = views[tabName];
+      document.getElementById('user-menu').classList.add('hidden'); // Ocultar menú si estaba abierto
+      
+      if(tabName === 'resumen') updateResumen();
+      if(tabName === 'caja') updateCaja();
+      if(tabName === 'operaciones') updateOperaciones();
+      if(tabName === 'cartera') updateCartera();
+      if(tabName === 'metricas') updateMetricas();
+    }
+
+    // --- 5. FUNCIONES DE ACTUALIZACIÓN CON FILTRO POR USUARIO ---
+    async function guardarMovimiento(e) {
+      e.preventDefault(); await addRecord("caja", { fecha: document.getElementById('caja-fecha').value, tipo: document.querySelector('input[name="tipo-mov"]:checked').value, desc: document.getElementById('caja-desc').value, monto: parseFloat(document.getElementById('caja-monto').value) });
+      document.getElementById('caja-desc').value = ''; document.getElementById('caja-monto').value = ''; closeModal('modal-caja'); updateResumen(); updateCaja();
+    }
+    async function guardarOperacion(e) {
+      e.preventDefault(); await addRecord("operaciones", { fecha: document.getElementById('op-fecha').value, activo: document.getElementById('op-activo').value.toUpperCase().trim(), tipo: document.querySelector('input[name="op-tipo"]:checked').value, cantidad: parseFloat(document.getElementById('op-cantidad').value), precio: parseFloat(document.getElementById('op-precio').value), comision: parseFloat(document.getElementById('op-comision').value) || 0, interes: parseFloat(document.getElementById('op-interes').value) || 0 });
+      document.getElementById('op-activo').value = ''; document.getElementById('op-cantidad').value = ''; document.getElementById('op-precio').value = ''; closeModal('modal-operacion'); updateOperaciones();
+    }
+    async function eliminarOp(id) { await deleteRecord("operaciones", id); updateOperaciones(); }
+
+    async function updateResumen() {
+      const items = await getUserRecords("caja"); let ing = 0, gas = 0, count = 0;
+      items.forEach(item => { if (item.fecha.startsWith(mesActualFiltro)) { if (item.tipo === 'Ingreso') ing += item.monto; else gas += item.monto; count++; } });
+      if(document.getElementById('res-balance')) { document.getElementById('res-balance').innerText = formatMoney(ing - gas); document.getElementById('res-ingresos').innerText = formatMoney(ing); document.getElementById('res-gastos').innerText = formatMoney(gas); document.getElementById('res-count').innerText = `${count} movimientos`; }
+    }
+
+    async function updateCaja() {
+      const items = await getUserRecords("caja"); const lista = document.getElementById('caja-lista'); if(!lista) return;
+      lista.innerHTML = ''; let count = 0; items.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+      items.forEach(item => { if (item.fecha.startsWith(mesActualFiltro)) { count++; const isIng = item.tipo === 'Ingreso'; lista.innerHTML += `<div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder flex justify-between items-center"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full ${isIng?'bg-vup/10 text-vup':'bg-vdown/10 text-vdown'} flex items-center justify-center"><i class="fa-solid ${isIng?'fa-arrow-down-left':'fa-arrow-up-right'}"></i></div><div><p class="font-bold text-vmain text-sm">${item.desc}</p><p class="text-xs text-vmuted">${item.fecha}</p></div></div><p class="font-semibold ${isIng?'text-vup':'text-vdown'}">${isIng?'+':'-'}${formatMoney(item.monto)}</p></div>`; } });
+      document.getElementById('caja-count').innerText = `${count} registros`; if(count===0) lista.innerHTML = `<div class="mt-8 flex flex-col text-center"><h4 class="font-bold text-vmain">Vacío</h4></div>`;
+    }
+
+    async function updateOperaciones() {
+      const items = await getUserRecords("operaciones"); const lista = document.getElementById('op-lista'); if(!lista) return;
+      let cap = 0, flu = 0, int = 0; lista.innerHTML = ''; items.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+      items.forEach(op => { const t = (op.cantidad * op.precio); if (op.tipo === 'Compra') { cap += t + op.comision; flu -= (t + op.comision); } else { cap -= t; flu += (t - op.comision); } int += op.interes; const isC = op.tipo === 'Compra'; lista.innerHTML += `<div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder mb-3"><div class="flex justify-between items-start mb-2"><div><span class="text-[10px] font-bold ${isC?'text-vhero bg-vhero/10':'text-vnav bg-vnav/10'} px-2 py-0.5 rounded-sm uppercase tracking-wider">${op.tipo}</span><h4 class="font-serif font-bold text-lg text-vmain mt-1">${op.activo}</h4></div><div class="text-right"><p class="font-bold text-vmain text-sm">${formatMoney(t)}</p><p class="text-[10px] text-vmuted">${formatCrypto(op.cantidad)} x ${formatMoney(op.precio)}</p></div></div><div class="flex justify-between items-end mt-3 border-t border-vborder pt-2"><p class="text-[10px] text-vmuted">${op.fecha}</p><button onclick="eliminarOp(${op.id})" class="text-vdown text-sm hover:opacity-70"><i class="fa-solid fa-trash-can"></i></button></div></div>`; });
+      document.getElementById('op-capital').innerText = formatMoney(cap); document.getElementById('op-flujo').innerText = formatMoney(flu); document.getElementById('op-interes').innerText = formatMoney(int);
+    }
+
+    async function updateCartera() {
+      const ops = await getUserRecords("operaciones"); const preciosArr = await getUserRecords("precios"); const pMap = {}; preciosArr.forEach(p => pMap[p.ticker] = p.precio);
+      const portafolio = {}; ops.sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
+      ops.forEach(op => { if (!portafolio[op.activo]) portafolio[op.activo] = { cant: 0, costo: 0 }; const p = portafolio[op.activo]; if (op.tipo === 'Compra') { p.cant += op.cantidad; p.costo += (op.cantidad * op.precio) + op.comision; } else if (op.tipo === 'Venta') { if (p.cant > 0) { const ppp = p.costo / p.cant; p.cant -= op.cantidad; p.costo -= (op.cantidad * ppp); } } });
+      const lista = document.getElementById('cart-lista'); if(!lista) return; lista.innerHTML = ''; let cInv = 0, vMerc = 0, pos = 0;
+      for (const t in portafolio) {
+        const item = portafolio[t]; if (item.cant <= 0.00001) continue; pos++;
+        const ppp = item.costo / item.cant; const pAct = pMap[t] || ppp; const vAct = item.cant * pAct; const gan = vAct - item.costo; const isUp = gan >= 0; cInv += item.costo; vMerc += vAct;
+        lista.innerHTML += `<div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><div class="flex justify-between items-center mb-4"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-vbody border border-vborder flex items-center justify-center font-bold text-vmain text-sm shadow-sm">${t.slice(0,3)}</div><div><h4 class="font-serif font-bold text-lg text-vmain">${t}</h4></div></div><div class="text-right"><p class="font-bold text-vmain text-sm">${formatMoney(vAct)}</p><span class="text-[10px] font-bold ${isUp?'text-vup bg-vup/10':'text-vdown bg-vdown/10'} px-1.5 py-0.5 rounded-sm">${isUp?'+':''}${formatMoney(gan)}</span></div></div><div class="flex justify-between bg-vbody rounded-xl p-3 border border-vborder text-xs"><div><p class="text-vmuted mb-1">Precio Compra</p><p class="font-semibold text-vmain">${formatMoney(ppp)}</p></div><div class="text-right"><p class="text-vmuted mb-1">Actual <i class="fa-solid fa-pen text-[9px]"></i></p><input type="number" step="any" value="${pAct}" onchange="actualizarPrecio('${t}', this.value)" class="w-20 text-right bg-transparent border-b border-vmuted font-semibold text-vmain outline-none focus:border-vaccent" /></div></div></div>`;
+      }
+      document.getElementById('cart-capital').innerText = formatMoney(cInv); document.getElementById('cart-pos').innerText = `${pos} posiciones`; document.getElementById('cart-valor').innerText = formatMoney(vMerc);
+      const pl = vMerc - cInv; const elPl = document.getElementById('cart-pl'); elPl.innerText = formatMoney(pl); elPl.className = `text-2xl font-semibold mb-1 ${pl>=0 ? 'text-vup' : 'text-vdown'}`;
+    }
+
+    async function actualizarPrecio(t, p) { await putRecord("precios", { ticker: t, precio: parseFloat(p) || 0 }); updateCartera(); }
+
+    async function updateMetricas() {
+      const caja = await getUserRecords("caja"); const ops = await getUserRecords("operaciones"); const pArr = await getUserRecords("precios"); const pMap = {}; pArr.forEach(p => pMap[p.ticker] = p.precio);
+      const style = getComputedStyle(document.body); const cUp = style.getPropertyValue('--up-color').trim(), cDown = style.getPropertyValue('--down-color').trim(), cAcc = style.getPropertyValue('--accent').trim(), cText = style.getPropertyValue('--text-main').trim(), cMuted = style.getPropertyValue('--text-muted').trim();
+
+      const mesesCaja = {}; caja.forEach(i => { const m = i.fecha.slice(0,7); if (!mesesCaja[m]) mesesCaja[m]={ing:0,gas:0}; if(i.tipo==='Ingreso') mesesCaja[m].ing+=i.monto; else mesesCaja[m].gas+=i.monto; });
+      const lCaja = Object.keys(mesesCaja).sort();
+      if(chartCajaInst) chartCajaInst.destroy(); chartCajaInst = new Chart(document.getElementById('chart-caja'), { type: 'bar', data: { labels: lCaja, datasets: [{label:'Ingresos', data: lCaja.map(m=>mesesCaja[m].ing), backgroundColor: cUp}, {label:'Gastos', data: lCaja.map(m=>mesesCaja[m].gas), backgroundColor: cDown}] }, options:{maintainAspectRatio:false, plugins:{legend:{labels:{color:cText}}}, scales:{x:{ticks:{color:cMuted}},y:{ticks:{color:cMuted}}}} });
+
+      const pf = {}; let cIn = 0, iTot = 0, capAc = 0, intAc = 0; const mOps = {}; ops.sort((a,b)=>new Date(a.fecha)-new Date(b.fecha));
+      ops.forEach(op => {
+        if (!pf[op.activo]) pf[op.activo] = {c:0, ct:0}; const p=pf[op.activo]; const mo = op.cantidad*op.precio;
+        if(op.tipo==='Compra') { p.c+=op.cantidad; p.ct+=mo+op.comision; cIn+=mo+op.comision; capAc+=mo+op.comision; }
+        else { if (p.c>0) { const ppp = p.ct/p.c; p.c-=op.cantidad; p.ct-=(op.cantidad*ppp); } cIn-=mo; capAc-=mo; }
+        iTot+=op.interes; intAc+=op.interes; const m=op.fecha.slice(0,7); mOps[m] = {cap:capAc, int:intAc};
+      });
+      let vMer = 0; const lPie = [], dPie = [];
+      for(const t in pf){ const p=pf[t]; if(p.c>0.00001) { lPie.push(t); const va=p.c*(pMap[t]||(p.ct/p.c)); dPie.push(va); vMer+=va; } }
+      if(chartPieInst) chartPieInst.destroy(); chartPieInst = new Chart(document.getElementById('chart-pie'), { type: 'doughnut', data:{labels:lPie, datasets:[{data:dPie, backgroundColor:[cAcc, cUp, cDown, '#8b5cf6', '#0ea5e9']}]}, options:{maintainAspectRatio:false, plugins:{legend:{position:'right',labels:{color:cText}}}} });
+
+      const lLine = Object.keys(mOps).sort();
+      if(chartLineInst) chartLineInst.destroy(); chartLineInst = new Chart(document.getElementById('chart-line'), { type: 'line', data:{labels:lLine, datasets:[{label:'Aportes', data:lLine.map(m=>mOps[m].cap), borderColor:cText, tension:0.3}, {label:'Intereses', data:lLine.map(m=>mOps[m].int), borderColor:cAcc, tension:0.3}]}, options:{maintainAspectRatio:false, plugins:{legend:{labels:{color:cText}}}, scales:{x:{ticks:{color:cMuted}},y:{ticks:{color:cMuted}}}} });
+
+      document.getElementById('met-cap').innerText = formatMoney(cIn); document.getElementById('met-int').innerText = formatMoney(iTot); const plt = (vMer-cIn)+iTot;
+      const ep = document.getElementById('met-pl'); ep.innerText = formatMoney(plt); ep.className = `text-2xl font-bold ${plt>=0?'text-vup':'text-vdown'}`;
+    }
+
+    // --- CARGA CSV ---
+    function parseNumberArg(val) { if (!val) return 0; let s = String(val).trim().replace(/[$ \t]/g, ''); if (!s) return 0; if (s.includes('.') && s.includes(',')) { if (s.indexOf('.') < s.indexOf(',')) s = s.replace(/\./g, '').replace(',', '.'); else s = s.replace(/,/g, ''); } else if (s.includes(',')) s = s.replace(',', '.'); return parseFloat(s) || 0; }
+    function parseCSVLine(line, sep) { const res = []; let st = 0, inQ = false; for (let i=0; i<line.length; i++) { if(line[i]==='"') inQ=!inQ; else if(line[i]===sep && !inQ) { let cell=line.substring(st, i).trim(); if(cell.startsWith('"')&&cell.endsWith('"')) cell=cell.slice(1,-1); res.push(cell); st=i+1; } } let last=line.substring(st).trim(); if(last.startsWith('"')&&last.endsWith('"')) last=last.slice(1,-1); res.push(last); return res; }
+    function importarCSV(event) {
+      const file = event.target.files[0]; if (!file) return; const reader = new FileReader();
+      reader.onload = async function(e) {
+        const text = e.target.result; const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+        if(lines.length<2) return alert('Archivo vacío'); let sep = ','; if(lines[0].includes(';')) sep = ';'; const head = parseCSVLine(lines[0].toLowerCase(), sep);
+        const iF=head.findIndex(h=>h.includes('fecha')), iA=head.findIndex(h=>h.includes('activo')), iT=head.findIndex(h=>h.includes('tipo')), iC=head.findIndex(h=>h.includes('cantidad')), iP=head.findIndex(h=>h.includes('precio')), iCom=head.findIndex(h=>h.includes('comision')), iInt=head.findIndex(h=>h.includes('interes'));
+        let cargados = 0;
+        for (let i=1; i<lines.length; i++) {
+          const cols=parseCSVLine(lines[i], sep); const f=iF!==-1?cols[iF]:cols[0], a=iA!==-1?cols[iA]:cols[1], c=parseNumberArg(iC!==-1?cols[iC]:cols[3]), p=parseNumberArg(iP!==-1?cols[iP]:cols[4]);
+          if(f&&a&&c>0) { await addRecord("operaciones", { fecha: f.trim(), activo: a.toUpperCase().trim(), tipo: (iT!==-1?cols[iT]:cols[2]).toLowerCase().includes('vent')?'Venta':'Compra', cantidad: c, precio: p, comision: iCom!==-1?parseNumberArg(cols[iCom]):0, interes: iInt!==-1?parseNumberArg(cols[iInt]):0 }); cargados++; }
+        }
+        event.target.value = ''; updateOperaciones(); alert(`Se cargaron ${cargados} operaciones a tu perfil.`);
+      }; reader.readAsText(file);
+    }
   </script>
+<script>
+    // Iniciar el Service Worker para PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('Service Worker Registrado'))
+          .catch(err => console.error('Error en Service Worker:', err));
+      });
+    }
+  </script>
+</body>
+</html>
 </body>
 </html>
