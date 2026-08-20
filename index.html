@@ -5,93 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Capital Flow</title>
   
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Iconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
-  <!-- Fuentes Premium -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 
   <style>
-    /* 1. TEMA EDITORIAL (Por defecto - El de tus capturas) */
+    /* TEMAS DE COLORES */
     :root {
-      --bg-body: #f9f8f4;      /* Fondo crema */
-      --bg-card: #ffffff;      /* Tarjetas blancas */
-      --bg-nav: #1c212d;       /* Barra inferior azul oscuro */
-      --bg-hero: #2a3041;      /* Tarjeta Balance oscuro */
-      --text-main: #1c212d;    /* Texto principal oscuro */
-      --text-muted: #6b7280;   /* Texto secundario gris */
-      --accent: #347b59;       /* Botones Verde Bosque */
-      --up-color: #347b59;     /* Ingresos */
-      --down-color: #e74c3c;   /* Gastos rojo */
-      --card-border: #f3f4f6;  /* Bordes suaves */
-      --nav-active: #b4d374;   /* Verde Lima */
-      --nav-inactive: #9ca3af; /* Gris nav */
+      --bg-body: #f9f8f4; --bg-card: #ffffff; --bg-nav: #1c212d; --bg-hero: #2a3041;
+      --text-main: #1c212d; --text-muted: #6b7280; --accent: #347b59; --up-color: #347b59;
+      --down-color: #e74c3c; --card-border: #f3f4f6; --nav-active: #b4d374; --nav-inactive: #9ca3af;
     }
-
-    /* 2. TEMA PRO TRADER (Azul/Celeste) */
     body.theme-pro {
-      --bg-body: #0f172a;
-      --bg-card: #1e293b;
-      --bg-nav: #020617;
-      --bg-hero: #0ea5e9;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --accent: #06b6d4;
-      --up-color: #22c55e;
-      --down-color: #ef4444;
-      --card-border: #334155;
-      --nav-active: #06b6d4;
-      --nav-inactive: #64748b;
+      --bg-body: #0f172a; --bg-card: #1e293b; --bg-nav: #020617; --bg-hero: #0ea5e9;
+      --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #06b6d4; --up-color: #22c55e;
+      --down-color: #ef4444; --card-border: #334155; --nav-active: #06b6d4; --nav-inactive: #64748b;
     }
-
-    /* 3. TEMA PREMIUM WEALTH (Gris Oscuro/Dorado) */
     body.theme-premium {
-      --bg-body: #1f2229;
-      --bg-card: #2a2e37;
-      --bg-nav: #111317;
-      --bg-hero: #b45309;
-      --text-main: #fffff0;
-      --text-muted: #9ca3af;
-      --accent: #f59e0b;
-      --up-color: #65a30d;
-      --down-color: #be123c;
-      --card-border: #374151;
-      --nav-active: #fcd34d;
-      --nav-inactive: #6b7280;
+      --bg-body: #1f2229; --bg-card: #2a2e37; --bg-nav: #111317; --bg-hero: #b45309;
+      --text-main: #fffff0; --text-muted: #9ca3af; --accent: #f59e0b; --up-color: #65a30d;
+      --down-color: #be123c; --card-border: #374151; --nav-active: #fcd34d; --nav-inactive: #6b7280;
     }
-
-    /* 4. TEMA ADAPTIVE TECH (Negro/Violeta) */
     body.theme-adaptive {
-      --bg-body: #09090b;
-      --bg-card: #18181b;
-      --bg-nav: #000000;
-      --bg-hero: #6d28d9;
-      --text-main: #fafafa;
-      --text-muted: #a1a1aa;
-      --accent: #8b5cf6;
-      --up-color: #10b981;
-      --down-color: #f43f5e;
-      --card-border: #27272a;
-      --nav-active: #c4b5fd;
-      --nav-inactive: #52525b;
+      --bg-body: #09090b; --bg-card: #18181b; --bg-nav: #000000; --bg-hero: #6d28d9;
+      --text-main: #fafafa; --text-muted: #a1a1aa; --accent: #8b5cf6; --up-color: #10b981;
+      --down-color: #f43f5e; --card-border: #27272a; --nav-active: #c4b5fd; --nav-inactive: #52525b;
     }
 
-    body { 
-      background-color: var(--bg-body); 
-      color: var(--text-main);
-      transition: background-color 0.3s, color 0.3s;
-    }
-    
-    /* Clases de navegación dinámicas */
+    body { background-color: var(--bg-body); color: var(--text-main); transition: background-color 0.3s, color 0.3s; }
     .nav-item.active { color: var(--nav-active); }
     .nav-item:not(.active) { color: var(--nav-inactive); }
     .nav-item:not(.active):hover { opacity: 0.8; }
-
     ::-webkit-scrollbar { display: none; }
   </style>
 
@@ -99,21 +45,11 @@
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            serif: ['Playfair Display', 'serif'],
-          },
+          fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
           colors: {
-            // Mapeamos los colores de Tailwind a nuestras variables de diseño
-            vbody: 'var(--bg-body)',
-            vcard: 'var(--bg-card)',
-            vnav: 'var(--bg-nav)',
-            vhero: 'var(--bg-hero)',
-            vmain: 'var(--text-main)',
-            vmuted: 'var(--text-muted)',
-            vaccent: 'var(--accent)',
-            vup: 'var(--up-color)',
-            vdown: 'var(--down-color)',
+            vbody: 'var(--bg-body)', vcard: 'var(--bg-card)', vnav: 'var(--bg-nav)',
+            vhero: 'var(--bg-hero)', vmain: 'var(--text-main)', vmuted: 'var(--text-muted)',
+            vaccent: 'var(--accent)', vup: 'var(--up-color)', vdown: 'var(--down-color)',
             vborder: 'var(--card-border)'
           }
         }
@@ -123,246 +59,272 @@
 </head>
 <body class="min-h-screen flex flex-col font-sans pb-24 relative transition-colors duration-300">
 
-  <!-- Cabecera -->
   <header class="p-5 flex justify-between items-center z-10 bg-vbody sticky top-0 transition-colors duration-300">
     <div>
       <p class="text-[10px] text-vmuted font-medium uppercase tracking-wider mb-1">Finanzas / Espacio Personal</p>
       <h1 id="header-title" class="text-2xl font-serif font-semibold text-vmain">Buenos días</h1>
     </div>
-    
     <div class="flex items-center gap-3">
-      <!-- Botón para alternar paletas de colores -->
       <button onclick="toggleTheme()" class="w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted bg-vcard shadow-sm active:scale-95 transition-transform">
         <i class="fa-solid fa-palette"></i>
       </button>
-
-      <!-- BOTÓN OCULTO CSV: Solo el icono de sliders -->
       <label for="csv-upload" class="w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted cursor-pointer bg-vcard shadow-sm active:scale-95 transition-transform">
         <i class="fa-solid fa-sliders"></i>
-        <input type="file" id="csv-upload" class="hidden" accept=".csv" onchange="alert('¡Botón CSV oculto encontrado! Aquí importaremos el Excel.')" />
+        <input type="file" id="csv-upload" class="hidden" accept=".csv" onchange="alert('¡Botón CSV oculto! PRÓXIMO PASO: reactivar la carga de Excel.')" />
       </label>
-      
-      <!-- Icono de Usuario -->
-      <div class="w-10 h-10 rounded-full bg-vaccent flex items-center justify-center text-white font-bold text-sm shadow-sm">
-        CF
-      </div>
+      <div class="w-10 h-10 rounded-full bg-vaccent flex items-center justify-center text-white font-bold text-sm shadow-sm">CF</div>
     </div>
   </header>
 
-  <!-- Contenido Principal Dinámico -->
-  <main class="flex-1 px-5" id="main-content">
-    <!-- El contenido inicial se carga por JS -->
-  </main>
+  <main class="flex-1 px-5" id="main-content"></main>
 
-  <!-- Barra de Navegación Inferior -->
+  <!-- VENTANA EMERGENTE (MODAL) PARA NUEVO MOVIMIENTO -->
+  <div id="modal-caja" class="fixed inset-0 bg-black/60 z-[100] hidden flex-col justify-end sm:justify-center items-center transition-opacity">
+    <div class="bg-vcard w-full sm:w-96 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-[slideUp_0.3s_ease-out]">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="font-serif text-2xl font-semibold text-vmain">Nuevo Movimiento</h3>
+        <button onclick="closeModal('modal-caja')" class="text-vmuted hover:text-vdown text-xl"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="guardarMovimiento(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-vmuted uppercase mb-1">Tipo de movimiento</label>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="cursor-pointer">
+              <input type="radio" name="tipo-mov" value="Ingreso" class="peer hidden" checked>
+              <div class="text-center p-3 rounded-xl border border-vborder text-vmuted peer-checked:bg-vup/10 peer-checked:text-vup peer-checked:border-vup transition-all font-medium">Ingreso</div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="tipo-mov" value="Gasto" class="peer hidden">
+              <div class="text-center p-3 rounded-xl border border-vborder text-vmuted peer-checked:bg-vdown/10 peer-checked:text-vdown peer-checked:border-vdown transition-all font-medium">Gasto</div>
+            </label>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-vmuted uppercase mb-1">Fecha</label>
+          <input type="date" id="caja-fecha" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none focus:border-vaccent" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-vmuted uppercase mb-1">Descripción</label>
+          <input type="text" id="caja-desc" required placeholder="Ej: Venta de piezas 3D o Supermercado" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none focus:border-vaccent" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-vmuted uppercase mb-1">Monto ($)</label>
+          <input type="number" step="any" id="caja-monto" required placeholder="0.00" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none focus:border-vaccent text-lg font-bold" />
+        </div>
+        <button type="submit" class="w-full bg-vaccent text-white font-semibold py-4 rounded-xl shadow-md active:scale-95 transition-transform mt-2">
+          Guardar Movimiento
+        </button>
+      </form>
+    </div>
+  </div>
+
   <nav class="fixed bottom-0 w-full bg-vnav flex justify-between items-center px-4 py-3 pb-5 z-50 transition-colors duration-300">
-    
-    <button onclick="changeTab('resumen', this)" class="nav-item active flex flex-col items-center transition-colors w-14">
-      <i class="fa-solid fa-house text-lg mb-1.5"></i>
-      <span class="text-[9px] font-semibold tracking-wide">Resumen</span>
-    </button>
-
-    <button onclick="changeTab('caja', this)" class="nav-item flex flex-col items-center transition-colors w-14">
-      <i class="fa-solid fa-wallet text-lg mb-1.5"></i>
-      <span class="text-[9px] font-semibold tracking-wide">Caja</span>
-    </button>
-    
-    <button onclick="changeTab('operaciones', this)" class="nav-item flex flex-col items-center transition-colors w-14">
-      <i class="fa-solid fa-arrow-trend-up text-lg mb-1.5"></i>
-      <span class="text-[9px] font-semibold tracking-wide">Operar</span>
-    </button>
-
-    <button onclick="changeTab('cartera', this)" class="nav-item flex flex-col items-center transition-colors w-14">
-      <i class="fa-solid fa-suitcase text-lg mb-1.5"></i>
-      <span class="text-[9px] font-semibold tracking-wide">Cartera</span>
-    </button>
-    
-    <button onclick="changeTab('metricas', this)" class="nav-item flex flex-col items-center transition-colors w-14">
-      <i class="fa-solid fa-chart-simple text-lg mb-1.5"></i>
-      <span class="text-[9px] font-semibold tracking-wide">Métricas</span>
-    </button>
+    <button onclick="changeTab('resumen', this)" class="nav-item active flex flex-col items-center transition-colors w-14"><i class="fa-solid fa-house text-lg mb-1.5"></i><span class="text-[9px] font-semibold tracking-wide">Resumen</span></button>
+    <button onclick="changeTab('caja', this)" class="nav-item flex flex-col items-center transition-colors w-14"><i class="fa-solid fa-wallet text-lg mb-1.5"></i><span class="text-[9px] font-semibold tracking-wide">Caja</span></button>
+    <button onclick="changeTab('operaciones', this)" class="nav-item flex flex-col items-center transition-colors w-14"><i class="fa-solid fa-arrow-trend-up text-lg mb-1.5"></i><span class="text-[9px] font-semibold tracking-wide">Operar</span></button>
+    <button onclick="changeTab('cartera', this)" class="nav-item flex flex-col items-center transition-colors w-14"><i class="fa-solid fa-suitcase text-lg mb-1.5"></i><span class="text-[9px] font-semibold tracking-wide">Cartera</span></button>
+    <button onclick="changeTab('metricas', this)" class="nav-item flex flex-col items-center transition-colors w-14"><i class="fa-solid fa-chart-simple text-lg mb-1.5"></i><span class="text-[9px] font-semibold tracking-wide">Métricas</span></button>
   </nav>
 
   <script>
-    // Rotador de temas
-    const themes = ['', 'theme-pro', 'theme-premium', 'theme-adaptive'];
-    let currentThemeIndex = 0;
+    // --- 1. BASE DE DATOS ---
+    let db;
+    const request = indexedDB.open("CapitalFlowDB", 1);
+    request.onupgradeneeded = (e) => {
+      db = e.target.result;
+      if (!db.objectStoreNames.contains("caja")) db.createObjectStore("caja", { keyPath: "id", autoIncrement: true });
+      if (!db.objectStoreNames.contains("operaciones")) db.createObjectStore("operaciones", { keyPath: "id", autoIncrement: true });
+    };
+    request.onsuccess = (e) => {
+      db = e.target.result;
+      document.getElementById('caja-fecha').valueAsDate = new Date();
+      changeTab('resumen', document.querySelector('.nav-item.active')); // Render inicial
+    };
 
-    function toggleTheme() {
-      const body = document.body;
-      body.classList.remove('theme-pro', 'theme-premium', 'theme-adaptive');
-      
-      currentThemeIndex++;
-      if (currentThemeIndex >= themes.length) {
-        currentThemeIndex = 0; // Vuelve al editorial
-      }
-      
-      if (themes[currentThemeIndex] !== '') {
-        body.classList.add(themes[currentThemeIndex]);
-      }
+    function getAll(store) {
+      return new Promise((resolve) => {
+        const tx = db.transaction(store, "readonly");
+        const req = tx.objectStore(store).getAll();
+        req.onsuccess = () => resolve(req.result);
+      });
+    }
+    function addRecord(store, data) {
+      return new Promise((resolve) => {
+        const tx = db.transaction(store, "readwrite");
+        tx.objectStore(store).add(data);
+        tx.oncomplete = () => resolve();
+      });
     }
 
-    // Lógica para fechas dinámicas
+    // --- 2. LÓGICA DE INTERFAZ Y TEMAS ---
+    const themes = ['', 'theme-pro', 'theme-premium', 'theme-adaptive'];
+    let currentThemeIndex = 0;
+    function toggleTheme() {
+      document.body.classList.remove('theme-pro', 'theme-premium', 'theme-adaptive');
+      currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+      if (themes[currentThemeIndex]) document.body.classList.add(themes[currentThemeIndex]);
+    }
+
     const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
     const fechaActual = new Date();
     const mesActualText = `${meses[fechaActual.getMonth()]} DE ${fechaActual.getFullYear()}`;
+    const mesActualFiltro = fechaActual.toISOString().slice(0, 7); // "YYYY-MM"
 
-    // Vistas 
+    function formatMoney(num) {
+      return "$" + num.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Modal
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); document.getElementById(id).classList.add('flex'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
+
+    // --- 3. GUARDAR Y RENDERIZAR DATOS ---
+    async function guardarMovimiento(e) {
+      e.preventDefault();
+      const tipo = document.querySelector('input[name="tipo-mov"]:checked').value;
+      const registro = {
+        fecha: document.getElementById('caja-fecha').value,
+        tipo: tipo,
+        desc: document.getElementById('caja-desc').value,
+        monto: parseFloat(document.getElementById('caja-monto').value)
+      };
+      await addRecord("caja", registro);
+      document.getElementById('caja-desc').value = ''; 
+      document.getElementById('caja-monto').value = '';
+      closeModal('modal-caja');
+      
+      // Actualizar la vista en la que estemos
+      const currentTab = document.getElementById('header-title').innerText.toLowerCase();
+      if(currentTab.includes('buenos')) updateResumen();
+      if(currentTab.includes('caja')) updateCaja();
+    }
+
     const views = {
       'resumen': `
         <div class="animate-[fadeIn_0.3s_ease-out] space-y-6">
-          <div>
-            <p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">${mesActualText}</p>
-            <h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Tu dinero, en perspectiva.</h2>
-            <p class="text-sm text-vmuted leading-relaxed">Una lectura breve de lo que entró, lo que salió y lo que estás construyendo.</p>
-          </div>
+          <div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">${mesActualText}</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Tu dinero, en perspectiva.</h2><p class="text-sm text-vmuted leading-relaxed">Una lectura breve de lo que entró, lo que salió y lo que estás construyendo.</p></div>
+          <button onclick="openModal('modal-caja')" class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity"><i class="fa-solid fa-plus"></i> Añadir movimiento</button>
           
-          <button class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity">
-            <i class="fa-solid fa-plus"></i> Añadir movimiento
-          </button>
-
-          <!-- Tarjeta Balance Mes -->
           <div class="bg-vhero text-white p-6 rounded-[2rem] shadow-md relative overflow-hidden transition-colors duration-300">
             <div class="absolute -right-10 -bottom-10 w-48 h-48 border-[15px] border-white/5 rounded-full"></div>
-            <div class="absolute -right-20 -bottom-20 w-64 h-64 border-[15px] border-white/5 rounded-full"></div>
-            
             <p class="text-[10px] font-bold text-[var(--nav-active)] tracking-widest uppercase mb-2 relative z-10">BALANCE DEL MES</p>
-            <h3 class="font-serif text-3xl mb-4 relative z-10 w-3/4 leading-snug">Dinero despues de gastos.</h3>
-            <p class="text-3xl font-medium mb-1 relative z-10">$0,00</p>
-            <p class="text-xs text-white/50 relative z-10">0 movimientos registrados · ritmo positivo</p>
+            <h3 class="font-serif text-3xl mb-4 relative z-10 w-3/4 leading-snug">Lo que queda después de vivir.</h3>
+            <p id="res-balance" class="text-3xl font-medium mb-1 relative z-10">$0.00</p>
+            <p id="res-count" class="text-xs text-white/50 relative z-10">0 movimientos registrados</p>
           </div>
-
+          
           <div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder flex justify-between items-start transition-colors duration-300">
-            <div>
-              <p class="text-xs text-vmuted mb-2">Ingresos</p>
-              <p class="text-2xl font-semibold text-vup mb-1">$0,00</p>
-              <p class="text-xs text-vmuted/70">este mes</p>
-            </div>
+            <div><p class="text-xs text-vmuted mb-2">Ingresos</p><p id="res-ingresos" class="text-2xl font-semibold text-vup mb-1">$0.00</p><p class="text-xs text-vmuted/70">este mes</p></div>
             <i class="fa-solid fa-arrow-down-left text-vup text-sm bg-vup/10 p-1.5 rounded-md"></i>
           </div>
-
           <div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder flex justify-between items-start transition-colors duration-300">
-            <div>
-              <p class="text-xs text-vmuted mb-2">Gastos</p>
-              <p class="text-2xl font-semibold text-vdown mb-1">$0,00</p>
-              <p class="text-xs text-vmuted/70">este mes</p>
-            </div>
+            <div><p class="text-xs text-vmuted mb-2">Gastos</p><p id="res-gastos" class="text-2xl font-semibold text-vdown mb-1">$0.00</p><p class="text-xs text-vmuted/70">este mes</p></div>
             <i class="fa-solid fa-arrow-up-right text-vdown text-sm bg-vdown/10 p-1.5 rounded-md"></i>
           </div>
-        </div>
-      `,
+        </div>`,
       
       'caja': `
         <div class="animate-[fadeIn_0.3s_ease-out] space-y-6">
-          <div>
-            <p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">CAJA DIARIA</p>
-            <h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Que el dinero tenga contexto.</h2>
-            <p class="text-sm text-vmuted leading-relaxed">Anota ingresos y gastos sin convertir tu vida en una planilla. Cada movimiento cuenta una parte de la historia.</p>
+          <div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">CAJA DIARIA</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Que el dinero tenga contexto.</h2><p class="text-sm text-vmuted leading-relaxed">Anota ingresos y gastos sin convertir tu vida en una planilla.</p></div>
+          <button onclick="openModal('modal-caja')" class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity"><i class="fa-solid fa-plus"></i> Nuevo movimiento</button>
+          
+          <div class="flex justify-between items-center mt-6 mb-2">
+            <h3 class="font-bold text-vmain">Historial del mes</h3>
+            <span id="caja-count" class="text-xs text-vmuted bg-vcard px-2 py-1 rounded-md border border-vborder">0 registros</span>
           </div>
           
-          <button class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity">
-            <i class="fa-solid fa-plus"></i> Nuevo movimiento
-          </button>
-
-          <div class="mt-12 flex flex-col items-center justify-center text-center">
-            <div class="w-16 h-16 bg-vcard rounded-2xl shadow-sm border border-vborder flex items-center justify-center text-vaccent text-2xl mb-4 transition-colors">
-              <i class="fa-solid fa-wallet"></i>
-            </div>
-            <h4 class="font-bold text-vmain mb-2">Todavía no hay movimientos</h4>
-            <p class="text-sm text-vmuted max-w-xs">Registra tu primer ingreso o gasto para empezar a ver el pulso de tu caja.</p>
+          <div id="caja-lista" class="space-y-3 pb-8">
+            <!-- Los movimientos se inyectan acá -->
           </div>
-        </div>
-      `,
+        </div>`,
 
-      'operaciones': `
-        <div class="animate-[fadeIn_0.3s_ease-out] space-y-6">
-          <div>
-            <p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">OPERACIONES</p>
-            <h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Cada decisión deja una huella.</h2>
-            <p class="text-sm text-vmuted leading-relaxed">Un historial limpio para entender cuánto capital pusiste, cuánto fluyó y qué intereses volvió a traer.</p>
-          </div>
-          
-          <button class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity">
-            <i class="fa-solid fa-plus"></i> Nueva operación
-          </button>
-
-          <div class="grid grid-cols-1 gap-3">
-             <div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder transition-colors">
-              <p class="text-xs text-vmuted mb-2">Capital comprado</p>
-              <p class="text-2xl font-semibold text-vmain mb-1">$0,00</p>
-              <p class="text-xs text-vmuted/70">operaciones de compra</p>
-            </div>
-          </div>
-        </div>
-      `,
-
-      'cartera': `
-        <div class="animate-[fadeIn_0.3s_ease-out] space-y-6">
-          <div>
-            <p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">CARTERA</p>
-            <h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Lo que estás construyendo.</h2>
-            <p class="text-sm text-vmuted leading-relaxed">Posiciones consolidadas desde tus operaciones, con precio medio y una lectura honesta de lo que hoy valen.</p>
-          </div>
-          
-          <button class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity">
-            <i class="fa-solid fa-plus"></i> Registrar operación
-          </button>
-
-          <div class="grid grid-cols-1 gap-3">
-             <div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder transition-colors">
-              <p class="text-xs text-vmuted mb-2">Capital invertido</p>
-              <p class="text-2xl font-semibold text-vmain mb-1">$0,00</p>
-              <p class="text-xs text-vmuted/70">0 posiciones</p>
-            </div>
-          </div>
-        </div>
-      `,
-
-      'metricas': `
-        <div class="animate-[fadeIn_0.3s_ease-out] space-y-6">
-          <div>
-            <p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">MÉTRICAS / HISTÓRICO</p>
-            <h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">El tiempo también compone.</h2>
-            <p class="text-sm text-vmuted leading-relaxed">Mira el ritmo de tus ingresos, gastos, aportaciones e intereses sin perder de vista el conjunto.</p>
-          </div>
-
-          <div class="bg-vcard p-6 rounded-3xl shadow-sm border border-vborder h-64 flex flex-col justify-between transition-colors">
-            <div>
-               <h3 class="font-bold text-vmain">Ingresos vs gastos</h3>
-               <div class="flex gap-4 mt-2">
-                 <span class="text-xs text-vmuted"><span class="inline-block w-2 h-2 rounded-full bg-vaccent mr-1"></span>Ingresos</span>
-                 <span class="text-xs text-vmuted"><span class="inline-block w-2 h-2 rounded-full bg-vdown mr-1"></span>Gastos</span>
-               </div>
-            </div>
-            <div class="flex-1 flex items-center justify-center mt-4 border-b-2 border-vborder">
-               <p class="text-xs text-vmuted/50">Aquí irá el gráfico</p>
-            </div>
-          </div>
-        </div>
-      `
+      'operaciones': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">OPERACIONES</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Cada decisión deja una huella.</h2></div><p class="text-vmuted text-sm">Pronto conectaremos esta sección...</p></div>`,
+      'cartera': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">CARTERA</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Lo que estás construyendo.</h2></div><p class="text-vmuted text-sm">Pronto conectaremos esta sección...</p></div>`,
+      'metricas': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">MÉTRICAS</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">El tiempo también compone.</h2></div><p class="text-vmuted text-sm">Pronto conectaremos esta sección...</p></div>`
     };
 
-    const headerTitles = {
-      'resumen': 'Buenos días',
-      'caja': 'Caja diaria',
-      'operaciones': 'Operaciones',
-      'cartera': 'Cartera',
-      'metricas': 'Métricas'
-    };
+    const headerTitles = { 'resumen': 'Buenos días', 'caja': 'Caja diaria', 'operaciones': 'Operaciones', 'cartera': 'Cartera', 'metricas': 'Métricas' };
 
     function changeTab(tabName, element) {
-      document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
-      });
-      
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
       element.classList.add('active');
       document.getElementById('header-title').innerText = headerTitles[tabName];
       document.getElementById('main-content').innerHTML = views[tabName];
+      
+      if(tabName === 'resumen') updateResumen();
+      if(tabName === 'caja') updateCaja();
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('main-content').innerHTML = views['resumen'];
-    });
+    async function updateResumen() {
+      if(!db) return;
+      const items = await getAll("caja");
+      let ing = 0, gas = 0, count = 0;
+      
+      items.forEach(item => {
+        if (item.fecha.startsWith(mesActualFiltro)) {
+          if (item.tipo === 'Ingreso') ing += item.monto; else gas += item.monto;
+          count++;
+        }
+      });
+      const balance = ing - gas;
+      
+      const elBal = document.getElementById('res-balance');
+      if(elBal) {
+        elBal.innerText = formatMoney(balance);
+        document.getElementById('res-ingresos').innerText = formatMoney(ing);
+        document.getElementById('res-gastos').innerText = formatMoney(gas);
+        document.getElementById('res-count').innerText = `${count} movimientos registrados`;
+      }
+    }
+
+    async function updateCaja() {
+      if(!db) return;
+      const items = await getAll("caja");
+      const lista = document.getElementById('caja-lista');
+      if(!lista) return;
+      
+      lista.innerHTML = '';
+      let count = 0;
+      
+      // Ordenar más nuevos primero
+      items.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+      
+      items.forEach(item => {
+        if (item.fecha.startsWith(mesActualFiltro)) {
+          count++;
+          const esIngreso = item.tipo === 'Ingreso';
+          const colorText = esIngreso ? 'text-vup' : 'text-vdown';
+          const icon = esIngreso ? 'fa-arrow-down-left' : 'fa-arrow-up-right';
+          const bgIcon = esIngreso ? 'bg-vup/10' : 'bg-vdown/10';
+          
+          lista.innerHTML += `
+            <div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder flex justify-between items-center transition-colors">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full ${bgIcon} ${colorText} flex items-center justify-center">
+                  <i class="fa-solid ${icon}"></i>
+                </div>
+                <div>
+                  <p class="font-bold text-vmain text-sm">${item.desc}</p>
+                  <p class="text-xs text-vmuted">${item.fecha}</p>
+                </div>
+              </div>
+              <p class="font-semibold ${colorText}">${esIngreso ? '+' : '-'}${formatMoney(item.monto)}</p>
+            </div>
+          `;
+        }
+      });
+
+      document.getElementById('caja-count').innerText = `${count} registros`;
+
+      if(count === 0) {
+        lista.innerHTML = `
+          <div class="mt-8 flex flex-col items-center justify-center text-center">
+            <div class="w-16 h-16 bg-vcard rounded-2xl shadow-sm border border-vborder flex items-center justify-center text-vaccent text-2xl mb-4 transition-colors"><i class="fa-solid fa-wallet"></i></div>
+            <h4 class="font-bold text-vmain mb-1">Todavía no hay movimientos</h4>
+            <p class="text-xs text-vmuted max-w-xs">Registra tu primer ingreso o gasto.</p>
+          </div>`;
+      }
+    }
   </script>
 </body>
 </html>
