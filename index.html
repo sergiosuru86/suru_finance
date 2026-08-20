@@ -469,6 +469,17 @@
         event.target.value = ''; updateOperaciones(); alert(`Se cargaron ${cargados} operaciones a tu perfil.`);
       }; reader.readAsText(file);
     }
+  <script>
+    // Iniciar el Service Worker para PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('Service Worker Registrado'))
+          .catch(err => console.error('Error en Service Worker:', err));
+      });
+    }
   </script>
+</body>
+</html>
 </body>
 </html>
