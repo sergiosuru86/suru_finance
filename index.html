@@ -1,577 +1,149 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gestión Financiera & Portafolio</title>
-  
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#0f172a" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <link rel="apple-touch-icon" href="icon-192.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Mi App Financiera</title>
 
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: { extend: { colors: { primary: '#3b82f6' } } }
-    }
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Iconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-</head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col md:flex-row transition-colors duration-200">
 
-  <aside class="w-full md:w-64 bg-white dark:bg-slate-800 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-700 p-4 flex md:flex-col justify-between items-center md:items-stretch z-10">
-    <div>
-      <div class="flex items-center space-x-3 mb-6">
-        <div class="p-2 bg-primary text-white rounded-lg"><i class="fa-solid fa-chart-line text-xl"></i></div>
-        <h1 class="text-xl font-bold tracking-wide hidden sm:block md:block">FinanzasPro</h1>
-      </div>
-      <nav class="flex md:flex-col space-x-2 md:space-x-0 md:space-y-1">
-        <button onclick="switchTab('caja')" id="btn-caja" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-primary bg-blue-50 dark:bg-slate-700/50">
-          <i class="fa-solid fa-wallet w-5"></i><span>Caja Diaria</span>
-        </button>
-        <button onclick="switchTab('operaciones')" id="btn-operaciones" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/30">
-          <i class="fa-solid fa-right-left w-5"></i><span>Operaciones</span>
-        </button>
-        <button onclick="switchTab('cartera')" id="btn-cartera" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/30">
-          <i class="fa-solid fa-pie-chart w-5"></i><span>Cartera</span>
-        </button>
-        <button onclick="switchTab('metricas')" id="btn-metricas" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/30">
-          <i class="fa-solid fa-chart-simple w-5"></i><span>Métricas</span>
-        </button>
-      </nav>
-    </div>
-    <div class="pt-4 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center">
-      <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
-        <i class="fa-solid fa-moon dark:hidden"></i><i class="fa-solid fa-sun hidden dark:block"></i>
-      </button>
-    </div>
-  </aside>
+  <!-- Configuración de Colores Intercambiables -->
+  <style>
+    /* Tema 1: Pro Trader (Por defecto) */
+    :root {
+      --bg-main: #0f172a;      /* Azul medianoche */
+      --bg-card: #1e293b;      /* Azul pizarra */
+      --accent: #06b6d4;       /* Celeste neón */
+      --accent-hover: #0891b2;
+      --text-main: #f8fafc;    /* Blanco puro */
+      --text-muted: #94a3b8;   /* Gris azulado */
+      --color-up: #22c55e;     /* Verde brillante */
+      --color-down: #ef4444;   /* Rojo vibrante */
+    }
 
-  <main class="flex-1 p-4 md:p-8 overflow-y-auto">
+    /* Tema 3: Premium Wealth */
+    body.theme-premium {
+      --bg-main: #1f2229;      /* Gris carbón */
+      --bg-card: #2a2e37;      /* Ónix mate */
+      --accent: #f59e0b;       /* Dorado / Ámbar */
+      --accent-hover: #d97706;
+      --text-main: #fffff0;    /* Blanco marfil */
+      --text-muted: #9ca3af;   /* Gris neutro */
+      --color-up: #65a30d;     /* Verde musgo */
+      --color-down: #be123c;   /* Rojo burdeos */
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      transition: background-color 0.3s, color 0.3s;
+    }
     
-    <section id="sec-caja" class="space-y-6">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h2 class="text-2xl font-bold">Caja Diaria</h2>
-        <div class="flex items-center space-x-2">
-          <label for="filtro-mes" class="text-sm font-medium">Periodo:</label>
-          <input type="month" id="filtro-mes" onchange="renderCaja()" class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm" />
-        </div>
-      </div>
+    .bg-card { background-color: var(--bg-card); transition: background-color 0.3s; }
+    .text-muted { color: var(--text-muted); }
+    .text-accent { color: var(--accent); }
+    .bg-accent { background-color: var(--accent); }
+    .border-accent { border-color: var(--accent); }
+    
+    /* Efecto del botón flotante */
+    .fab-button {
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      transition: transform 0.2s;
+    }
+    .fab-button:active { transform: scale(0.95); }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans pb-20"> <!-- pb-20 deja espacio para la barra inferior -->
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Ingresos del Mes</p>
-          <p id="total-ingresos" class="text-2xl font-bold text-emerald-500 mt-1">$0.00</p>
-        </div>
-        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Gastos del Mes</p>
-          <p id="total-gastos" class="text-2xl font-bold text-rose-500 mt-1">$0.00</p>
-        </div>
-        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Balance Neto</p>
-          <p id="balance-neto" class="text-2xl font-bold mt-1">$0.00</p>
-        </div>
-      </div>
+  <!-- Cabecera -->
+  <header class="p-5 flex justify-between items-start bg-card shadow-md rounded-b-3xl">
+    <div class="pr-4">
+      <h1 class="text-2xl font-bold tracking-wide mb-2">Mi Portafolio</h1>
+      <p class="text-xs text-muted italic font-medium leading-relaxed">
+        "La riqueza es el resultado de pequeñas decisiones consistentes tomadas a lo largo del tiempo."
+      </p>
+    </div>
+    <!-- Botón para cambiar de Tema -->
+    <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-white shrink-0 shadow-lg">
+      <i class="fa-solid fa-palette"></i>
+    </button>
+  </header>
 
-      <form onsubmit="guardarMovimiento(event)" class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
-        <h3 class="text-lg font-semibold">Nuevo Registro</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-          <input type="date" id="caja-fecha" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm" />
-          <select id="caja-tipo" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm">
-            <option value="Ingreso">Ingreso</option>
-            <option value="Gasto">Gasto</option>
-          </select>
-          <input type="text" id="caja-desc" placeholder="Descripción" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm" />
-          <input type="text" id="caja-cat" placeholder="Categoría" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm" />
-          <input type="number" step="0.01" id="caja-monto" placeholder="Monto ($)" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm" />
-        </div>
-        <button type="submit" class="w-full sm:w-auto bg-primary text-white font-medium px-6 py-2.5 rounded-xl hover:bg-blue-600 transition">Agregar Registro</button>
-      </form>
-
-      <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
-        <table class="w-full text-left text-sm">
-          <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 uppercase text-xs">
-            <tr>
-              <th class="p-4">Fecha</th>
-              <th class="p-4">Tipo</th>
-              <th class="p-4">Descripción</th>
-              <th class="p-4">Categoría</th>
-              <th class="p-4 text-right">Monto</th>
-              <th class="p-4 text-center">Acción</th>
-            </tr>
-          </thead>
-          <tbody id="tabla-caja" class="divide-y divide-slate-200 dark:divide-slate-700"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <section id="sec-operaciones" class="space-y-6 hidden">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h2 class="text-2xl font-bold">Operaciones Financieras</h2>
-        <button onclick="vaciarOperaciones()" class="text-xs bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 px-3 py-1.5 rounded-lg hover:bg-rose-100 transition">
-          <i class="fa-solid fa-trash-can mr-1"></i> Vaciar todas las operaciones
-        </button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Capital Invertido Neto</p>
-          <p id="op-capital" class="text-2xl font-bold mt-1">$0.00</p>
-        </div>
-        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Flujo de Efectivo Neto</p>
-          <p id="op-flujo" class="text-2xl font-bold mt-1">$0.00</p>
-        </div>
-        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Intereses / Dividendos</p>
-          <p id="op-intereses" class="text-2xl font-bold text-emerald-500 mt-1">$0.00</p>
-        </div>
-      </div>
-
-      <div class="bg-blue-50 dark:bg-slate-800/80 border border-blue-200 dark:border-slate-700 p-5 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div>
-          <h4 class="font-semibold flex items-center gap-2"><i class="fa-solid fa-file-csv text-primary"></i> Importar operaciones masivas</h4>
-          <p class="text-xs text-slate-500 mt-1">Sube tu archivo CSV. Lee automáticamente los encabezados de columna:<br><strong class="dark:text-slate-300">Fecha, Activo, Tipo, Cantidad, Precio</strong> (Comisión e Intereses son opcionales).</p>
-        </div>
-        <input type="file" accept=".csv" onchange="importarCSV(event)" class="text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-primary file:text-white hover:file:bg-blue-600 transition cursor-pointer" />
-      </div>
-
-      <form onsubmit="guardarOperacion(event)" class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
-        <h3 class="text-lg font-semibold">Registrar Operación Manual</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <input type="date" id="op-fecha" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm" />
-          <input type="text" id="op-activo" placeholder="Activo (Ej: AAPL)" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm uppercase" />
-          <select id="op-tipo" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm">
-            <option value="Compra">Compra</option>
-            <option value="Venta">Venta</option>
-          </select>
-          <input type="number" step="any" id="op-cantidad" placeholder="Cantidad" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm" />
-          <input type="number" step="any" id="op-precio" placeholder="Precio Unitario ($)" required class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm" />
-          <input type="number" step="any" id="op-comision" placeholder="Comisión ($)" value="0" class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm" />
-          <input type="number" step="any" id="op-interes" placeholder="Intereses ($)" value="0" class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-sm" />
-        </div>
-        <button type="submit" class="w-full sm:w-auto bg-primary text-white font-medium px-6 py-2.5 rounded-xl hover:bg-blue-600 transition">Guardar Operación</button>
-      </form>
-
-      <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
-        <table class="w-full text-left text-sm">
-          <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 uppercase text-xs">
-            <tr>
-              <th class="p-4">Fecha</th>
-              <th class="p-4">Activo</th>
-              <th class="p-4">Tipo</th>
-              <th class="p-4 text-right">Cantidad</th>
-              <th class="p-4 text-right">P. Unitario</th>
-              <th class="p-4 text-right">Comisión</th>
-              <th class="p-4 text-right">Intereses</th>
-              <th class="p-4 text-center">Acción</th>
-            </tr>
-          </thead>
-          <tbody id="tabla-operaciones" class="divide-y divide-slate-200 dark:divide-slate-700"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <section id="sec-cartera" class="space-y-6 hidden">
-      <h2 class="text-2xl font-bold">Portafolio Activo</h2>
-      <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
-        <table class="w-full text-left text-sm">
-          <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 uppercase text-xs">
-            <tr>
-              <th class="p-4">Activo</th>
-              <th class="p-4 text-right">Tenencia</th>
-              <th class="p-4 text-right">Precio Prom. Compra</th>
-              <th class="p-4 text-right">Precio Actual ($)</th>
-              <th class="p-4 text-right">Valor Total Actual</th>
-              <th class="p-4 text-right">Ganancia / Pérdida</th>
-            </tr>
-          </thead>
-          <tbody id="tabla-cartera" class="divide-y divide-slate-200 dark:divide-slate-700"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <section id="sec-metricas" class="space-y-6 hidden">
-      <h2 class="text-2xl font-bold">Métricas e Histórico</h2>
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          <h3 class="text-lg font-semibold mb-4">Evolución Ingresos vs Gastos</h3>
-          <canvas id="chart-caja" class="w-full max-h-80"></canvas>
-        </div>
-        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          <h3 class="text-lg font-semibold mb-4">Distribución del Portafolio</h3>
-          <canvas id="chart-cartera" class="w-full max-h-80"></canvas>
-        </div>
-      </div>
-    </section>
+  <!-- Área de Contenido Principal (Aquí irán cambiando las pantallas) -->
+  <main class="flex-1 p-5" id="main-content">
+    
+    <!-- Pantalla de inicio de prueba -->
+    <div class="flex flex-col items-center justify-center h-64 text-center">
+      <i class="fa-solid fa-wallet text-6xl text-muted mb-4 opacity-50"></i>
+      <h2 class="text-xl font-semibold mb-2">Pantalla de Gastos</h2>
+      <p class="text-muted text-sm">Navegá con los botones de abajo para ver cómo cambian las secciones.</p>
+    </div>
 
   </main>
 
+  <!-- Barra de Navegación Inferior (Fija) -->
+  <nav class="fixed bottom-0 w-full bg-card shadow-[0_-5px_15px_rgba(0,0,0,0.2)] flex justify-between items-center px-2 py-3 rounded-t-3xl z-40">
+    
+    <button onclick="changeTab('gastos', this)" class="nav-item flex-1 flex flex-col items-center text-accent transition-colors">
+      <i class="fa-solid fa-money-bill-transfer text-xl mb-1"></i>
+      <span class="text-[10px] font-semibold uppercase tracking-wider">Caja</span>
+    </button>
+    
+    <button onclick="changeTab('operaciones', this)" class="nav-item flex-1 flex flex-col items-center text-muted transition-colors">
+      <i class="fa-solid fa-arrow-trend-up text-xl mb-1"></i>
+      <span class="text-[10px] font-semibold uppercase tracking-wider">Operar</span>
+    </button>
+
+    <!-- Espacio vacío en el medio para el Botón Flotante -->
+    <div class="w-16"></div>
+
+    <button onclick="changeTab('cartera', this)" class="nav-item flex-1 flex flex-col items-center text-muted transition-colors">
+      <i class="fa-solid fa-pie-chart text-xl mb-1"></i>
+      <span class="text-[10px] font-semibold uppercase tracking-wider">Cartera</span>
+    </button>
+    
+    <button onclick="changeTab('metricas', this)" class="nav-item flex-1 flex flex-col items-center text-muted transition-colors">
+      <i class="fa-solid fa-chart-simple text-xl mb-1"></i>
+      <span class="text-[10px] font-semibold uppercase tracking-wider">Métricas</span>
+    </button>
+  </nav>
+
+  <!-- Botón Flotante Central (Carga Rápida) -->
+  <button class="fab-button fixed bottom-8 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full bg-accent flex items-center justify-center text-white text-2xl z-50 border-4 border-[var(--bg-main)]">
+    <i class="fa-solid fa-plus"></i>
+  </button>
+
   <script>
-    let db;
-    const request = indexedDB.open("FinanzasDB", 1);
-
-    request.onupgradeneeded = (e) => {
-      db = e.target.result;
-      if (!db.objectStoreNames.contains("caja")) db.createObjectStore("caja", { keyPath: "id", autoIncrement: true });
-      if (!db.objectStoreNames.contains("operaciones")) db.createObjectStore("operaciones", { keyPath: "id", autoIncrement: true });
-      if (!db.objectStoreNames.contains("precios")) db.createObjectStore("precios", { keyPath: "ticker" });
-    };
-
-    request.onsuccess = (e) => {
-      db = e.target.result;
-      document.getElementById('caja-fecha').valueAsDate = new Date();
-      document.getElementById('op-fecha').valueAsDate = new Date();
-      document.getElementById('filtro-mes').value = new Date().toISOString().slice(0, 7);
-      renderAll();
-    };
-
-    function switchTab(tab) {
-      document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
-      document.getElementById(`sec-${tab}`).classList.remove('hidden');
-      document.querySelectorAll('.tab-btn').forEach(b => {
-        b.classList.remove('text-primary', 'bg-blue-50', 'dark:bg-slate-700/50');
-        b.classList.add('text-slate-500', 'dark:text-slate-400');
-      });
-      const activeBtn = document.getElementById(`btn-${tab}`);
-      activeBtn.classList.add('text-primary', 'bg-blue-50', 'dark:bg-slate-700/50');
-      
-      if(tab === 'cartera') renderCartera();
-      if(tab === 'metricas') renderMetricas();
+    // Lógica para cambiar entre los dos temas de diseño
+    function toggleTheme() {
+      document.body.classList.toggle('theme-premium');
     }
 
-    function toggleDarkMode() { document.documentElement.classList.toggle('dark'); }
-
-    function getAll(storeName) {
-      return new Promise((resolve) => {
-        const tx = db.transaction(storeName, "readonly");
-        const store = tx.objectStore(storeName);
-        const req = store.getAll();
-        req.onsuccess = () => resolve(req.result);
-      });
-    }
-    function addRecord(storeName, data) {
-      return new Promise((resolve) => {
-        const tx = db.transaction(storeName, "readwrite");
-        tx.objectStore(storeName).add(data);
-        tx.oncomplete = () => resolve();
-      });
-    }
-    function deleteRecord(storeName, id) {
-      return new Promise((resolve) => {
-        const tx = db.transaction(storeName, "readwrite");
-        tx.objectStore(storeName).delete(id);
-        tx.oncomplete = () => resolve();
-      });
-    }
-    function clearStore(storeName) {
-      return new Promise((resolve) => {
-        const tx = db.transaction(storeName, "readwrite");
-        tx.objectStore(storeName).clear();
-        tx.oncomplete = () => resolve();
-      });
-    }
-    function putRecord(storeName, data) {
-      return new Promise((resolve) => {
-        const tx = db.transaction(storeName, "readwrite");
-        tx.objectStore(storeName).put(data);
-        tx.oncomplete = () => resolve();
-      });
-    }
-
-    // --- CAJA ---
-    async function guardarMovimiento(e) {
-      e.preventDefault();
-      const registro = {
-        fecha: document.getElementById('caja-fecha').value,
-        tipo: document.getElementById('caja-tipo').value,
-        desc: document.getElementById('caja-desc').value,
-        cat: document.getElementById('caja-cat').value,
-        monto: parseFloat(document.getElementById('caja-monto').value)
-      };
-      await addRecord("caja", registro);
-      document.getElementById('caja-desc').value = ''; document.getElementById('caja-monto').value = '';
-      renderCaja();
-    }
-
-    async function renderCaja() {
-      const items = await getAll("caja");
-      const mesFiltro = document.getElementById('filtro-mes').value;
-      const tbody = document.getElementById('tabla-caja');
-      tbody.innerHTML = '';
-      let ing = 0, gas = 0;
-      items.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
-
+    // Lógica simple para iluminar el ícono seleccionado en la barra inferior
+    function changeTab(tabName, element) {
+      // 1. Quitar el color "encendido" a todos los botones
+      const items = document.querySelectorAll('.nav-item');
       items.forEach(item => {
-        if (item.fecha.startsWith(mesFiltro)) {
-          if (item.tipo === 'Ingreso') ing += item.monto; else gas += item.monto;
-        }
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="p-4">${item.fecha}</td>
-          <td class="p-4"><span class="px-2 py-1 rounded-md text-xs font-semibold ${item.tipo === 'Ingreso' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${item.tipo}</span></td>
-          <td class="p-4">${item.desc}</td><td class="p-4">${item.cat}</td>
-          <td class="p-4 text-right font-medium ${item.tipo === 'Ingreso' ? 'text-emerald-500' : 'text-rose-500'}">$${item.monto.toFixed(2)}</td>
-          <td class="p-4 text-center"><button onclick="eliminarCaja(${item.id})" class="text-slate-400 hover:text-rose-500"><i class="fa-solid fa-trash"></i></button></td>`;
-        tbody.appendChild(tr);
-      });
-      document.getElementById('total-ingresos').innerText = `$${ing.toFixed(2)}`;
-      document.getElementById('total-gastos').innerText = `$${gas.toFixed(2)}`;
-      const net = ing - gas;
-      const elNet = document.getElementById('balance-neto');
-      elNet.innerText = `$${net.toFixed(2)}`;
-      elNet.className = `text-2xl font-bold mt-1 ${net >= 0 ? 'text-emerald-500' : 'text-rose-500'}`;
-    }
-    async function eliminarCaja(id) { await deleteRecord("caja", id); renderCaja(); }
-
-    // --- OPERACIONES ---
-    async function guardarOperacion(e) {
-      e.preventDefault();
-      const op = {
-        fecha: document.getElementById('op-fecha').value,
-        activo: document.getElementById('op-activo').value.toUpperCase().trim(),
-        tipo: document.getElementById('op-tipo').value,
-        cantidad: parseFloat(document.getElementById('op-cantidad').value),
-        precio: parseFloat(document.getElementById('op-precio').value),
-        comision: parseFloat(document.getElementById('op-comision').value) || 0,
-        interes: parseFloat(document.getElementById('op-interes').value) || 0
-      };
-      await addRecord("operaciones", op);
-      document.getElementById('op-activo').value = ''; document.getElementById('op-cantidad').value = ''; document.getElementById('op-precio').value = '';
-      renderOperaciones();
-    }
-
-    async function renderOperaciones() {
-      const items = await getAll("operaciones");
-      const tbody = document.getElementById('tabla-operaciones');
-      tbody.innerHTML = '';
-      let capital = 0, flujo = 0, intereses = 0;
-      items.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
-
-      items.forEach(op => {
-        const totalOp = (op.cantidad * op.precio);
-        if (op.tipo === 'Compra') {
-          capital += totalOp + op.comision; flujo -= (totalOp + op.comision);
-        } else {
-          capital -= totalOp; flujo += (totalOp - op.comision);
-        }
-        intereses += op.interes;
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="p-4">${op.fecha}</td><td class="p-4 font-bold">${op.activo}</td>
-          <td class="p-4"><span class="px-2 py-1 rounded-md text-xs font-semibold ${op.tipo === 'Compra' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'}">${op.tipo}</span></td>
-          <td class="p-4 text-right">${op.cantidad}</td><td class="p-4 text-right">$${op.precio.toFixed(2)}</td>
-          <td class="p-4 text-right">$${op.comision.toFixed(2)}</td><td class="p-4 text-right text-emerald-500">$${op.interes.toFixed(2)}</td>
-          <td class="p-4 text-center"><button onclick="eliminarOp(${op.id})" class="text-slate-400 hover:text-rose-500"><i class="fa-solid fa-trash"></i></button></td>`;
-        tbody.appendChild(tr);
-      });
-      document.getElementById('op-capital').innerText = `$${capital.toFixed(2)}`;
-      document.getElementById('op-flujo').innerText = `$${flujo.toFixed(2)}`;
-      document.getElementById('op-intereses').innerText = `$${intereses.toFixed(2)}`;
-    }
-    async function eliminarOp(id) { await deleteRecord("operaciones", id); renderOperaciones(); }
-
-    async function vaciarOperaciones() {
-      if (confirm('¿Seguro que deseas borrar todas las operaciones registradas para volver a importar desde cero?')) {
-        await clearStore("operaciones");
-        renderOperaciones();
-      }
-    }
-
-    // --- LECTOR DE CSV INTELIGENTE (POR ENCABEZADOS DE COLUMNA) ---
-    function parseNumberArg(val) {
-      if (!val) return 0;
-      let s = String(val).trim().replace(/[$ \t]/g, '');
-      if (!s) return 0;
-      if (s.includes('.') && s.includes(',')) {
-        if (s.indexOf('.') < s.indexOf(',')) s = s.replace(/\./g, '').replace(',', '.');
-        else s = s.replace(/,/g, '');
-      } else if (s.includes(',')) {
-        s = s.replace(',', '.');
-      }
-      return parseFloat(s) || 0;
-    }
-
-    function parseCSVLine(line, separador) {
-      const result = [];
-      let start = 0;
-      let inQuotes = false;
-      for (let i = 0; i < line.length; i++) {
-        if (line[i] === '"') inQuotes = !inQuotes;
-        else if (line[i] === separador && !inQuotes) {
-          let cell = line.substring(start, i).trim();
-          if (cell.startsWith('"') && cell.endsWith('"')) cell = cell.slice(1, -1);
-          result.push(cell);
-          start = i + 1;
-        }
-      }
-      let lastCell = line.substring(start).trim();
-      if (lastCell.startsWith('"') && lastCell.endsWith('"')) lastCell = lastCell.slice(1, -1);
-      result.push(lastCell);
-      return result;
-    }
-
-    function importarCSV(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      
-      const reader = new FileReader();
-      reader.onload = async function(e) {
-        const text = e.target.result;
-        const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
-        if (lines.length < 2) {
-          alert('El archivo no contiene filas de datos.');
-          return;
-        }
-        
-        const headerLine = lines[0];
-        let separador = ',';
-        if (headerLine.includes(';')) separador = ';';
-        else if (headerLine.includes('\t')) separador = '\t';
-        
-        const headers = parseCSVLine(headerLine.toLowerCase(), separador);
-        
-        const idxFecha = headers.findIndex(h => h.includes('fecha') || h.includes('date'));
-        const idxActivo = headers.findIndex(h => h.includes('activo') || h.includes('ticker') || h.includes('especie') || h.includes('simbolo') || h.includes('símbolo'));
-        const idxTipo = headers.findIndex(h => h.includes('tipo') || h.includes('operacion') || h.includes('operación') || h.includes('accion') || h.includes('acción'));
-        const idxCantidad = headers.findIndex(h => h.includes('cantidad') || h.includes('nominal') || h.includes('qty'));
-        const idxPrecio = headers.findIndex(h => h.includes('precio') || h.includes('p.unit') || h.includes('price') || h.includes('unitario'));
-        const idxComision = headers.findIndex(h => h.includes('comision') || h.includes('comisión') || h.includes('fee'));
-        const idxInteres = headers.findIndex(h => h.includes('interes') || h.includes('interés') || h.includes('dividend'));
-        
-        let cargados = 0;
-        
-        for (let i = 1; i < lines.length; i++) {
-          const cols = parseCSVLine(lines[i], separador);
-          
-          const fecha = idxFecha !== -1 && cols[idxFecha] ? cols[idxFecha] : cols[0];
-          const activo = idxActivo !== -1 && cols[idxActivo] ? cols[idxActivo] : cols[1];
-          const tipo = idxTipo !== -1 && cols[idxTipo] ? cols[idxTipo] : cols[2];
-          const cantidad = parseNumberArg(idxCantidad !== -1 ? cols[idxCantidad] : cols[3]);
-          const precio = parseNumberArg(idxPrecio !== -1 ? cols[idxPrecio] : cols[4]);
-          
-          const comision = idxComision !== -1 ? parseNumberArg(cols[idxComision]) : 0;
-          const interes = idxInteres !== -1 ? parseNumberArg(cols[idxInteres]) : 0;
-          
-          if (fecha && activo && cantidad > 0) {
-            const op = {
-              fecha: fecha.trim(),
-              activo: activo.toUpperCase().trim(),
-              tipo: (tipo && tipo.toLowerCase().includes('vent')) ? 'Venta' : 'Compra',
-              cantidad: cantidad,
-              precio: precio,
-              comision: comision,
-              interes: interes
-            };
-            await addRecord("operaciones", op);
-            cargados++;
-          }
-        }
-        
-        event.target.value = '';
-        renderOperaciones();
-        alert(`¡Éxito! Se cargaron ${cargados} operaciones correctamente.`);
-      };
-      reader.readAsText(file);
-    }
-
-    // --- CARTERA ---
-    async function renderCartera() {
-      const ops = await getAll("operaciones");
-      const preciosArr = await getAll("precios");
-      const preciosMap = {};
-      preciosArr.forEach(p => preciosMap[p.ticker] = p.precio);
-      const portafolio = {};
-      ops.sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
-
-      ops.forEach(op => {
-        if (!portafolio[op.activo]) portafolio[op.activo] = { cantidad: 0, costoTotal: 0 };
-        const p = portafolio[op.activo];
-        if (op.tipo === 'Compra') {
-          p.cantidad += op.cantidad; p.costoTotal += (op.cantidad * op.precio) + op.comision;
-        } else if (op.tipo === 'Venta') {
-          if (p.cantidad > 0) {
-            const precioPromedio = p.costoTotal / p.cantidad;
-            p.cantidad -= op.cantidad; p.costoTotal -= (op.cantidad * precioPromedio);
-          }
-        }
+        item.classList.remove('text-accent');
+        item.classList.add('text-muted');
       });
 
-      const tbody = document.getElementById('tabla-cartera');
-      tbody.innerHTML = '';
-      for (const ticker in portafolio) {
-        const item = portafolio[ticker];
-        if (item.cantidad <= 0.00001) continue; 
-        const ppp = item.costoTotal / item.cantidad;
-        const precioActual = preciosMap[ticker] || ppp;
-        const valorActual = item.cantidad * precioActual;
-        const ganancia = valorActual - item.costoTotal;
-        const gananciaPct = item.costoTotal > 0 ? (ganancia / item.costoTotal) * 100 : 0;
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="p-4 font-bold">${ticker}</td><td class="p-4 text-right">${item.cantidad.toFixed(4)}</td>
-          <td class="p-4 text-right">$${ppp.toFixed(2)}</td>
-          <td class="p-4 text-right"><input type="number" step="any" value="${precioActual}" onchange="actualizarPrecio('${ticker}', this.value)" class="w-28 text-right bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-1 text-sm" /></td>
-          <td class="p-4 text-right font-semibold">$${valorActual.toFixed(2)}</td>
-          <td class="p-4 text-right font-semibold ${ganancia >= 0 ? 'text-emerald-500' : 'text-rose-500'}">$${ganancia.toFixed(2)} (${gananciaPct.toFixed(2)}%)</td>`;
-        tbody.appendChild(tr);
-      }
+      // 2. Encender el botón que tocamos
+      element.classList.remove('text-muted');
+      element.classList.add('text-accent');
+
+      // (Más adelante, aquí cambiaremos el contenido de la pantalla dependiendo del tabName)
+      document.getElementById('main-content').innerHTML = `
+        <div class="flex flex-col items-center justify-center h-64 text-center animate-[fadeIn_0.3s_ease-out]">
+          <h2 class="text-xl font-semibold mb-2">Pantalla: ${tabName.toUpperCase()}</h2>
+          <p class="text-muted text-sm">Aquí armaremos el diseño de esta sección.</p>
+        </div>
+      `;
     }
-    async function actualizarPrecio(ticker, precio) {
-      await putRecord("precios", { ticker: ticker, precio: parseFloat(precio) || 0 }); renderCartera();
-    }
-
-    // --- MÉTRICAS ---
-    let chartCajaInstance = null, chartCarteraInstance = null;
-    async function renderMetricas() {
-      const cajaItems = await getAll("caja"); const ops = await getAll("operaciones");
-      const preciosArr = await getAll("precios"); const preciosMap = {};
-      preciosArr.forEach(p => preciosMap[p.ticker] = p.precio);
-      const mesesMap = {};
-      cajaItems.forEach(i => {
-        const m = i.fecha.slice(0, 7);
-        if (!mesesMap[m]) mesesMap[m] = { ing: 0, gas: 0 };
-        if (i.tipo === 'Ingreso') mesesMap[m].ing += i.monto; else mesesMap[m].gas += i.monto;
-      });
-      const meses = Object.keys(mesesMap).sort();
-      const ingresosData = meses.map(m => mesesMap[m].ing); const gastosData = meses.map(m => mesesMap[m].gas);
-
-      if (chartCajaInstance) chartCajaInstance.destroy();
-      chartCajaInstance = new Chart(document.getElementById('chart-caja'), {
-        type: 'bar', data: { labels: meses, datasets: [{ label: 'Ingresos', data: ingresosData, backgroundColor: '#10b981' }, { label: 'Gastos', data: gastosData, backgroundColor: '#f43f5e' }] },
-        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
-      });
-
-      const portafolio = {};
-      ops.forEach(op => {
-        if (!portafolio[op.activo]) portafolio[op.activo] = { cantidad: 0, costoTotal: 0 };
-        const p = portafolio[op.activo];
-        if (op.tipo === 'Compra') { p.cantidad += op.cantidad; p.costoTotal += (op.cantidad * op.precio) + op.comision; } 
-        else if (op.tipo === 'Venta' && p.cantidad > 0) { const ppp = p.costoTotal / p.cantidad; p.cantidad -= op.cantidad; p.costoTotal -= (op.cantidad * ppp); }
-      });
-      const tickers = [], valores = [];
-      for (const t in portafolio) {
-        if (portafolio[t].cantidad > 0.00001) {
-          tickers.push(t);
-          const pAct = preciosMap[t] || (portafolio[t].costoTotal / portafolio[t].cantidad);
-          valores.push(portafolio[t].cantidad * pAct);
-        }
-      }
-      if (chartCarteraInstance) chartCarteraInstance.destroy();
-      chartCarteraInstance = new Chart(document.getElementById('chart-cartera'), {
-        type: 'doughnut', data: { labels: tickers, datasets: [{ data: valores, backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#6366f1'] }] },
-        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
-      });
-    }
-
-    function renderAll() { renderCaja(); renderOperaciones(); }
-
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
   </script>
 </body>
 </html>
