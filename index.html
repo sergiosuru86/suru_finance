@@ -4,37 +4,40 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Mi App Financiera</title>
-
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Iconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
-  <!-- Configuración de Colores Intercambiables -->
   <style>
-    /* Tema 1: Pro Trader (Por defecto) */
+    /* Tema 1: Pro Trader (Azul/Celeste) */
     :root {
-      --bg-main: #0f172a;      /* Azul medianoche */
-      --bg-card: #1e293b;      /* Azul pizarra */
-      --accent: #06b6d4;       /* Celeste neón */
-      --accent-hover: #0891b2;
-      --text-main: #f8fafc;    /* Blanco puro */
-      --text-muted: #94a3b8;   /* Gris azulado */
-      --color-up: #22c55e;     /* Verde brillante */
-      --color-down: #ef4444;   /* Rojo vibrante */
+      --bg-main: #0f172a;      
+      --bg-card: #1e293b;      
+      --accent: #06b6d4;       
+      --text-main: #f8fafc;    
+      --text-muted: #94a3b8;   
+      --color-up: #22c55e;     
+      --color-down: #ef4444;   
     }
 
-    /* Tema 3: Premium Wealth */
+    /* Tema 2: Premium Wealth (Gris/Dorado) */
     body.theme-premium {
-      --bg-main: #1f2229;      /* Gris carbón */
-      --bg-card: #2a2e37;      /* Ónix mate */
-      --accent: #f59e0b;       /* Dorado / Ámbar */
-      --accent-hover: #d97706;
-      --text-main: #fffff0;    /* Blanco marfil */
-      --text-muted: #9ca3af;   /* Gris neutro */
-      --color-up: #65a30d;     /* Verde musgo */
-      --color-down: #be123c;   /* Rojo burdeos */
+      --bg-main: #1f2229;      
+      --bg-card: #2a2e37;      
+      --accent: #f59e0b;       
+      --text-main: #fffff0;    
+      --text-muted: #9ca3af;   
+      --color-up: #65a30d;     
+      --color-down: #be123c;   
+    }
+
+    /* Tema 3: Adaptive Tech (Negro puro/Violeta) inspirado en interfaces web modernas */
+    body.theme-adaptive {
+      --bg-main: #09090b;      
+      --bg-card: #18181b;      
+      --accent: #8b5cf6;       
+      --text-main: #fafafa;    
+      --text-muted: #a1a1aa;   
+      --color-up: #10b981;     
+      --color-down: #f43f5e;   
     }
 
     body {
@@ -49,100 +52,173 @@
     .bg-accent { background-color: var(--accent); }
     .border-accent { border-color: var(--accent); }
     
-    /* Efecto del botón flotante */
+    /* Botón flotante abajo a la derecha */
     .fab-button {
       box-shadow: 0 4px 15px rgba(0,0,0,0.4);
       transition: transform 0.2s;
     }
     .fab-button:active { transform: scale(0.95); }
+
+    /* Ocultar barra de scroll para que parezca una app nativa */
+    ::-webkit-scrollbar { display: none; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans pb-20"> <!-- pb-20 deja espacio para la barra inferior -->
+<body class="min-h-screen flex flex-col font-sans pb-20 relative">
 
   <!-- Cabecera -->
-  <header class="p-5 flex justify-between items-start bg-card shadow-md rounded-b-3xl">
+  <header class="p-5 flex justify-between items-start bg-card shadow-md rounded-b-3xl z-10 relative">
     <div class="pr-4">
-      <h1 class="text-2xl font-bold tracking-wide mb-2">Mi Portafolio</h1>
+      <h1 class="text-2xl font-bold tracking-wide mb-1">Mi Portafolio</h1>
       <p class="text-xs text-muted italic font-medium leading-relaxed">
         "La riqueza es el resultado de pequeñas decisiones consistentes tomadas a lo largo del tiempo."
       </p>
     </div>
-    <!-- Botón para cambiar de Tema -->
-    <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-white shrink-0 shadow-lg">
-      <i class="fa-solid fa-palette"></i>
-    </button>
+    
+    <div class="flex flex-col items-center gap-4">
+      <!-- Botón de paleta de temas -->
+      <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-white shrink-0 shadow-lg">
+        <i class="fa-solid fa-palette"></i>
+      </button>
+
+      <!-- Botón OCULTO de Carga Masiva CSV -->
+      <!-- Es transparente y solo se nota si sabés que está ahí -->
+      <label for="csv-upload" class="cursor-pointer opacity-10 hover:opacity-100 transition-opacity">
+        <i class="fa-solid fa-file-csv text-xl text-muted"></i>
+        <input type="file" id="csv-upload" class="hidden" accept=".csv" onchange="alert('¡Has encontrado el botón oculto! Aquí conectaremos la función de Excel.')" />
+      </label>
+    </div>
   </header>
 
-  <!-- Área de Contenido Principal (Aquí irán cambiando las pantallas) -->
-  <main class="flex-1 p-5" id="main-content">
+  <!-- Contenido Principal -->
+  <main class="flex-1 p-5 overflow-y-auto" id="main-content">
     
-    <!-- Pantalla de inicio de prueba -->
-    <div class="flex flex-col items-center justify-center h-64 text-center">
-      <i class="fa-solid fa-wallet text-6xl text-muted mb-4 opacity-50"></i>
-      <h2 class="text-xl font-semibold mb-2">Pantalla de Gastos</h2>
-      <p class="text-muted text-sm">Navegá con los botones de abajo para ver cómo cambian las secciones.</p>
-    </div>
+    <!-- PESTAÑA: RESUMEN (Por defecto) -->
+    <div class="animate-[fadeIn_0.3s_ease-out] space-y-6">
+      
+      <!-- Tarjeta de Balance principal -->
+      <div class="bg-card p-6 rounded-3xl shadow-lg border-l-4 border-accent relative overflow-hidden">
+        <div class="absolute -right-6 -top-6 text-accent opacity-10 text-9xl">
+          <i class="fa-solid fa-wallet"></i>
+        </div>
+        <h2 class="text-sm font-semibold text-muted uppercase tracking-wider mb-2 relative z-10">Balance Consolidado</h2>
+        <p class="text-4xl font-bold text-accent relative z-10">$0.00</p>
+      </div>
 
+      <!-- Tarjetas de Acceso Rápido tipo panel -->
+      <div class="grid grid-cols-2 gap-4">
+        <button onclick="document.getElementById('nav-caja').click()" class="bg-card p-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-sm active:scale-95 transition-transform">
+          <div class="w-12 h-12 rounded-full bg-accent/10 text-accent flex items-center justify-center text-xl">
+            <i class="fa-solid fa-money-bill-transfer"></i>
+          </div>
+          <span class="text-sm font-semibold text-muted">Ir a Caja</span>
+        </button>
+
+        <button onclick="document.getElementById('nav-operaciones').click()" class="bg-card p-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-sm active:scale-95 transition-transform">
+          <div class="w-12 h-12 rounded-full bg-accent/10 text-accent flex items-center justify-center text-xl">
+            <i class="fa-solid fa-arrow-trend-up"></i>
+          </div>
+          <span class="text-sm font-semibold text-muted">Ir a Operaciones</span>
+        </button>
+      </div>
+      
+    </div>
   </main>
 
-  <!-- Barra de Navegación Inferior (Fija) -->
-  <nav class="fixed bottom-0 w-full bg-card shadow-[0_-5px_15px_rgba(0,0,0,0.2)] flex justify-between items-center px-2 py-3 rounded-t-3xl z-40">
-    
-    <button onclick="changeTab('gastos', this)" class="nav-item flex-1 flex flex-col items-center text-accent transition-colors">
-      <i class="fa-solid fa-money-bill-transfer text-xl mb-1"></i>
-      <span class="text-[10px] font-semibold uppercase tracking-wider">Caja</span>
-    </button>
-    
-    <button onclick="changeTab('operaciones', this)" class="nav-item flex-1 flex flex-col items-center text-muted transition-colors">
-      <i class="fa-solid fa-arrow-trend-up text-xl mb-1"></i>
-      <span class="text-[10px] font-semibold uppercase tracking-wider">Operar</span>
-    </button>
-
-    <!-- Espacio vacío en el medio para el Botón Flotante -->
-    <div class="w-16"></div>
-
-    <button onclick="changeTab('cartera', this)" class="nav-item flex-1 flex flex-col items-center text-muted transition-colors">
-      <i class="fa-solid fa-pie-chart text-xl mb-1"></i>
-      <span class="text-[10px] font-semibold uppercase tracking-wider">Cartera</span>
-    </button>
-    
-    <button onclick="changeTab('metricas', this)" class="nav-item flex-1 flex flex-col items-center text-muted transition-colors">
-      <i class="fa-solid fa-chart-simple text-xl mb-1"></i>
-      <span class="text-[10px] font-semibold uppercase tracking-wider">Métricas</span>
-    </button>
-  </nav>
-
-  <!-- Botón Flotante Central (Carga Rápida) -->
-  <button class="fab-button fixed bottom-8 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full bg-accent flex items-center justify-center text-white text-2xl z-50 border-4 border-[var(--bg-main)]">
+  <!-- Botón Flotante (Carga Rápida) abajo a la derecha -->
+  <button onclick="alert('Este botón centralizará las altas rápidas (ingresos, gastos o compras)')" class="fab-button fixed bottom-24 right-6 w-14 h-14 rounded-full bg-accent flex items-center justify-center text-white text-2xl z-50">
     <i class="fa-solid fa-plus"></i>
   </button>
 
+  <!-- Barra de Navegación Inferior (5 Pestañas) -->
+  <nav class="fixed bottom-0 w-full bg-card shadow-[0_-5px_15px_rgba(0,0,0,0.3)] flex justify-between items-center px-4 py-3 rounded-t-3xl z-40">
+    
+    <button id="nav-resumen" onclick="changeTab('resumen', this)" class="nav-item flex flex-col items-center text-accent transition-colors w-14">
+      <i class="fa-solid fa-house text-xl mb-1"></i>
+      <span class="text-[9px] font-bold uppercase tracking-wide">Resumen</span>
+    </button>
+
+    <button id="nav-caja" onclick="changeTab('caja', this)" class="nav-item flex flex-col items-center text-muted transition-colors w-14">
+      <i class="fa-solid fa-money-bill-transfer text-xl mb-1"></i>
+      <span class="text-[9px] font-bold uppercase tracking-wide">Caja</span>
+    </button>
+    
+    <button id="nav-operaciones" onclick="changeTab('operaciones', this)" class="nav-item flex flex-col items-center text-muted transition-colors w-14">
+      <i class="fa-solid fa-arrow-trend-up text-xl mb-1"></i>
+      <span class="text-[9px] font-bold uppercase tracking-wide">Operar</span>
+    </button>
+
+    <button id="nav-cartera" onclick="changeTab('cartera', this)" class="nav-item flex flex-col items-center text-muted transition-colors w-14">
+      <i class="fa-solid fa-pie-chart text-xl mb-1"></i>
+      <span class="text-[9px] font-bold uppercase tracking-wide">Cartera</span>
+    </button>
+    
+    <button id="nav-metricas" onclick="changeTab('metricas', this)" class="nav-item flex flex-col items-center text-muted transition-colors w-14">
+      <i class="fa-solid fa-chart-simple text-xl mb-1"></i>
+      <span class="text-[9px] font-bold uppercase tracking-wide">Métricas</span>
+    </button>
+  </nav>
+
   <script>
-    // Lógica para cambiar entre los dos temas de diseño
+    let currentTheme = 1;
+
     function toggleTheme() {
-      document.body.classList.toggle('theme-premium');
+      const body = document.body;
+      body.classList.remove('theme-premium', 'theme-adaptive');
+      currentTheme++;
+      
+      // Rotar entre 1, 2 y 3
+      if (currentTheme === 2) {
+        body.classList.add('theme-premium');
+      } else if (currentTheme === 3) {
+        body.classList.add('theme-adaptive');
+      } else {
+        currentTheme = 1; 
+      }
     }
 
-    // Lógica simple para iluminar el ícono seleccionado en la barra inferior
     function changeTab(tabName, element) {
-      // 1. Quitar el color "encendido" a todos los botones
-      const items = document.querySelectorAll('.nav-item');
-      items.forEach(item => {
+      // Quitar estilo activo a todos
+      document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('text-accent');
         item.classList.add('text-muted');
       });
-
-      // 2. Encender el botón que tocamos
+      
+      // Aplicar estilo activo al botón tocado
       element.classList.remove('text-muted');
       element.classList.add('text-accent');
 
-      // (Más adelante, aquí cambiaremos el contenido de la pantalla dependiendo del tabName)
-      document.getElementById('main-content').innerHTML = `
-        <div class="flex flex-col items-center justify-center h-64 text-center animate-[fadeIn_0.3s_ease-out]">
-          <h2 class="text-xl font-semibold mb-2">Pantalla: ${tabName.toUpperCase()}</h2>
-          <p class="text-muted text-sm">Aquí armaremos el diseño de esta sección.</p>
-        </div>
-      `;
+      const content = document.getElementById('main-content');
+      
+      if(tabName === 'resumen') {
+        content.innerHTML = `
+          <div class="animate-[fadeIn_0.3s_ease-out] space-y-6">
+            <div class="bg-card p-6 rounded-3xl shadow-lg border-l-4 border-accent relative overflow-hidden">
+              <div class="absolute -right-6 -top-6 text-accent opacity-10 text-9xl">
+                <i class="fa-solid fa-wallet"></i>
+              </div>
+              <h2 class="text-sm font-semibold text-muted uppercase tracking-wider mb-2 relative z-10">Balance Consolidado</h2>
+              <p class="text-4xl font-bold text-accent relative z-10">$0.00</p>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <button onclick="document.getElementById('nav-caja').click()" class="bg-card p-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-sm">
+                <div class="w-12 h-12 rounded-full bg-accent/10 text-accent flex items-center justify-center text-xl"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                <span class="text-sm font-semibold text-muted">Ir a Caja</span>
+              </button>
+              <button onclick="document.getElementById('nav-operaciones').click()" class="bg-card p-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-sm">
+                <div class="w-12 h-12 rounded-full bg-accent/10 text-accent flex items-center justify-center text-xl"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                <span class="text-sm font-semibold text-muted">Ir a Operaciones</span>
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        content.innerHTML = `
+          <div class="flex flex-col items-center justify-center h-64 text-center animate-[fadeIn_0.3s_ease-out]">
+            <h2 class="text-xl font-semibold mb-2">Pantalla: ${tabName.toUpperCase()}</h2>
+            <p class="text-muted text-sm">Aquí integraremos tu base de datos de ${tabName}.</p>
+          </div>
+        `;
+      }
     }
   </script>
 </body>
