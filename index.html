@@ -11,10 +11,89 @@
   <!-- Iconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-  <!-- Fuentes Premium (Serif y Sans-Serif) -->
+  <!-- Fuentes Premium -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+
+  <style>
+    /* 1. TEMA EDITORIAL (Por defecto - El de tus capturas) */
+    :root {
+      --bg-body: #f9f8f4;      /* Fondo crema */
+      --bg-card: #ffffff;      /* Tarjetas blancas */
+      --bg-nav: #1c212d;       /* Barra inferior azul oscuro */
+      --bg-hero: #2a3041;      /* Tarjeta Balance oscuro */
+      --text-main: #1c212d;    /* Texto principal oscuro */
+      --text-muted: #6b7280;   /* Texto secundario gris */
+      --accent: #347b59;       /* Botones Verde Bosque */
+      --up-color: #347b59;     /* Ingresos */
+      --down-color: #e74c3c;   /* Gastos rojo */
+      --card-border: #f3f4f6;  /* Bordes suaves */
+      --nav-active: #b4d374;   /* Verde Lima */
+      --nav-inactive: #9ca3af; /* Gris nav */
+    }
+
+    /* 2. TEMA PRO TRADER (Azul/Celeste) */
+    body.theme-pro {
+      --bg-body: #0f172a;
+      --bg-card: #1e293b;
+      --bg-nav: #020617;
+      --bg-hero: #0ea5e9;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #06b6d4;
+      --up-color: #22c55e;
+      --down-color: #ef4444;
+      --card-border: #334155;
+      --nav-active: #06b6d4;
+      --nav-inactive: #64748b;
+    }
+
+    /* 3. TEMA PREMIUM WEALTH (Gris Oscuro/Dorado) */
+    body.theme-premium {
+      --bg-body: #1f2229;
+      --bg-card: #2a2e37;
+      --bg-nav: #111317;
+      --bg-hero: #b45309;
+      --text-main: #fffff0;
+      --text-muted: #9ca3af;
+      --accent: #f59e0b;
+      --up-color: #65a30d;
+      --down-color: #be123c;
+      --card-border: #374151;
+      --nav-active: #fcd34d;
+      --nav-inactive: #6b7280;
+    }
+
+    /* 4. TEMA ADAPTIVE TECH (Negro/Violeta) */
+    body.theme-adaptive {
+      --bg-body: #09090b;
+      --bg-card: #18181b;
+      --bg-nav: #000000;
+      --bg-hero: #6d28d9;
+      --text-main: #fafafa;
+      --text-muted: #a1a1aa;
+      --accent: #8b5cf6;
+      --up-color: #10b981;
+      --down-color: #f43f5e;
+      --card-border: #27272a;
+      --nav-active: #c4b5fd;
+      --nav-inactive: #52525b;
+    }
+
+    body { 
+      background-color: var(--bg-body); 
+      color: var(--text-main);
+      transition: background-color 0.3s, color 0.3s;
+    }
+    
+    /* Clases de navegación dinámicas */
+    .nav-item.active { color: var(--nav-active); }
+    .nav-item:not(.active) { color: var(--nav-inactive); }
+    .nav-item:not(.active):hover { opacity: 0.8; }
+
+    ::-webkit-scrollbar { display: none; }
+  </style>
 
   <script>
     tailwind.config = {
@@ -25,43 +104,46 @@
             serif: ['Playfair Display', 'serif'],
           },
           colors: {
-            cream: '#f9f8f4',
-            navy: '#1c212d',
-            navyLight: '#2a3041',
-            forest: '#347b59',
-            forestLight: '#429b70',
-            lime: '#b4d374', // Color de pestaña activa
-            danger: '#e74c3c'
+            // Mapeamos los colores de Tailwind a nuestras variables de diseño
+            vbody: 'var(--bg-body)',
+            vcard: 'var(--bg-card)',
+            vnav: 'var(--bg-nav)',
+            vhero: 'var(--bg-hero)',
+            vmain: 'var(--text-main)',
+            vmuted: 'var(--text-muted)',
+            vaccent: 'var(--accent)',
+            vup: 'var(--up-color)',
+            vdown: 'var(--down-color)',
+            vborder: 'var(--card-border)'
           }
         }
       }
     }
   </script>
-
-  <style>
-    body { background-color: #f9f8f4; }
-    /* Ocultar scroll */
-    ::-webkit-scrollbar { display: none; }
-  </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans text-navy pb-24">
+<body class="min-h-screen flex flex-col font-sans pb-24 relative transition-colors duration-300">
 
   <!-- Cabecera -->
-  <header class="p-5 flex justify-between items-center z-10 bg-cream sticky top-0">
+  <header class="p-5 flex justify-between items-center z-10 bg-vbody sticky top-0 transition-colors duration-300">
     <div>
-      <p class="text-[10px] text-gray-500 font-medium uppercase tracking-wider mb-1">Finanzas / Espacio Personal</p>
-      <h1 id="header-title" class="text-2xl font-serif font-semibold">Buenos días</h1>
+      <p class="text-[10px] text-vmuted font-medium uppercase tracking-wider mb-1">Finanzas / Espacio Personal</p>
+      <h1 id="header-title" class="text-2xl font-serif font-semibold text-vmain">Buenos días</h1>
     </div>
     
     <div class="flex items-center gap-3">
-      <!-- BOTÓN OCULTO CSV: Parece de ajustes, pero es el input file -->
-      <label for="csv-upload" class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 cursor-pointer bg-white shadow-sm hover:bg-gray-50 transition">
+      <!-- Botón para alternar paletas de colores -->
+      <button onclick="toggleTheme()" class="w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted bg-vcard shadow-sm active:scale-95 transition-transform">
+        <i class="fa-solid fa-palette"></i>
+      </button>
+
+      <!-- BOTÓN OCULTO CSV: Solo el icono de sliders -->
+      <label for="csv-upload" class="w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted cursor-pointer bg-vcard shadow-sm active:scale-95 transition-transform">
         <i class="fa-solid fa-sliders"></i>
         <input type="file" id="csv-upload" class="hidden" accept=".csv" onchange="alert('¡Botón CSV oculto encontrado! Aquí importaremos el Excel.')" />
       </label>
       
       <!-- Icono de Usuario -->
-      <div class="w-10 h-10 rounded-full bg-forest flex items-center justify-center text-white font-bold text-sm shadow-sm">
+      <div class="w-10 h-10 rounded-full bg-vaccent flex items-center justify-center text-white font-bold text-sm shadow-sm">
         CF
       </div>
     </div>
@@ -69,87 +151,103 @@
 
   <!-- Contenido Principal Dinámico -->
   <main class="flex-1 px-5" id="main-content">
-    <!-- El contenido inicial se carga por JS (Resumen) -->
+    <!-- El contenido inicial se carga por JS -->
   </main>
 
-  <!-- Barra de Navegación Inferior Estilo App -->
-  <nav class="fixed bottom-0 w-full bg-navy text-gray-400 flex justify-between items-center px-4 py-3 pb-5 z-50">
+  <!-- Barra de Navegación Inferior -->
+  <nav class="fixed bottom-0 w-full bg-vnav flex justify-between items-center px-4 py-3 pb-5 z-50 transition-colors duration-300">
     
-    <button onclick="changeTab('resumen', this)" class="nav-item flex flex-col items-center transition-colors w-14 text-lime">
+    <button onclick="changeTab('resumen', this)" class="nav-item active flex flex-col items-center transition-colors w-14">
       <i class="fa-solid fa-house text-lg mb-1.5"></i>
       <span class="text-[9px] font-semibold tracking-wide">Resumen</span>
     </button>
 
-    <button onclick="changeTab('caja', this)" class="nav-item flex flex-col items-center transition-colors w-14 hover:text-gray-200">
+    <button onclick="changeTab('caja', this)" class="nav-item flex flex-col items-center transition-colors w-14">
       <i class="fa-solid fa-wallet text-lg mb-1.5"></i>
-      <span class="text-[9px] font-semibold tracking-wide">Caja diaria</span>
+      <span class="text-[9px] font-semibold tracking-wide">Caja</span>
     </button>
     
-    <button onclick="changeTab('operaciones', this)" class="nav-item flex flex-col items-center transition-colors w-14 hover:text-gray-200">
+    <button onclick="changeTab('operaciones', this)" class="nav-item flex flex-col items-center transition-colors w-14">
       <i class="fa-solid fa-arrow-trend-up text-lg mb-1.5"></i>
-      <span class="text-[9px] font-semibold tracking-wide">Operaciones</span>
+      <span class="text-[9px] font-semibold tracking-wide">Operar</span>
     </button>
 
-    <button onclick="changeTab('cartera', this)" class="nav-item flex flex-col items-center transition-colors w-14 hover:text-gray-200">
+    <button onclick="changeTab('cartera', this)" class="nav-item flex flex-col items-center transition-colors w-14">
       <i class="fa-solid fa-suitcase text-lg mb-1.5"></i>
       <span class="text-[9px] font-semibold tracking-wide">Cartera</span>
     </button>
     
-    <button onclick="changeTab('metricas', this)" class="nav-item flex flex-col items-center transition-colors w-14 hover:text-gray-200">
+    <button onclick="changeTab('metricas', this)" class="nav-item flex flex-col items-center transition-colors w-14">
       <i class="fa-solid fa-chart-simple text-lg mb-1.5"></i>
       <span class="text-[9px] font-semibold tracking-wide">Métricas</span>
     </button>
   </nav>
 
   <script>
-    // Fechas dinámicas para la UI
+    // Rotador de temas
+    const themes = ['', 'theme-pro', 'theme-premium', 'theme-adaptive'];
+    let currentThemeIndex = 0;
+
+    function toggleTheme() {
+      const body = document.body;
+      body.classList.remove('theme-pro', 'theme-premium', 'theme-adaptive');
+      
+      currentThemeIndex++;
+      if (currentThemeIndex >= themes.length) {
+        currentThemeIndex = 0; // Vuelve al editorial
+      }
+      
+      if (themes[currentThemeIndex] !== '') {
+        body.classList.add(themes[currentThemeIndex]);
+      }
+    }
+
+    // Lógica para fechas dinámicas
     const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
     const fechaActual = new Date();
     const mesActualText = `${meses[fechaActual.getMonth()]} DE ${fechaActual.getFullYear()}`;
 
-    // Diccionario con el HTML de cada pantalla según tus capturas
+    // Vistas 
     const views = {
       'resumen': `
         <div class="animate-[fadeIn_0.3s_ease-out] space-y-6">
           <div>
-            <p class="text-[10px] font-bold text-forest tracking-widest uppercase mb-2">${mesActualText}</p>
-            <h2 class="font-serif text-4xl leading-[1.1] text-navy mb-3 tracking-tight">Tu dinero, en perspectiva.</h2>
-            <p class="text-sm text-gray-600 leading-relaxed">Una lectura breve de lo que entró, lo que salió y lo que estás construyendo.</p>
+            <p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">${mesActualText}</p>
+            <h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Tu dinero, en perspectiva.</h2>
+            <p class="text-sm text-vmuted leading-relaxed">Una lectura breve de lo que entró, lo que salió y lo que estás construyendo.</p>
           </div>
           
-          <button class="bg-forest text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 hover:bg-forestLight transition shadow-sm">
+          <button class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity">
             <i class="fa-solid fa-plus"></i> Añadir movimiento
           </button>
 
           <!-- Tarjeta Balance Mes -->
-          <div class="bg-navyLight text-white p-6 rounded-[2rem] shadow-md relative overflow-hidden">
-            <!-- Círculos decorativos de fondo -->
+          <div class="bg-vhero text-white p-6 rounded-[2rem] shadow-md relative overflow-hidden transition-colors duration-300">
             <div class="absolute -right-10 -bottom-10 w-48 h-48 border-[15px] border-white/5 rounded-full"></div>
             <div class="absolute -right-20 -bottom-20 w-64 h-64 border-[15px] border-white/5 rounded-full"></div>
             
-            <p class="text-[10px] font-bold text-lime tracking-widest uppercase mb-2 relative z-10">BALANCE DEL MES</p>
+            <p class="text-[10px] font-bold text-[var(--nav-active)] tracking-widest uppercase mb-2 relative z-10">BALANCE DEL MES</p>
             <h3 class="font-serif text-3xl mb-4 relative z-10 w-3/4 leading-snug">Lo que queda después de vivir.</h3>
             <p class="text-3xl font-medium mb-1 relative z-10">$0,00</p>
-            <p class="text-xs text-gray-400 relative z-10">0 movimientos registrados · ritmo positivo</p>
+            <p class="text-xs text-white/50 relative z-10">0 movimientos registrados · ritmo positivo</p>
           </div>
 
-          <!-- Tarjetas Blancas (Ingresos, Gastos, Patrimonio) -->
-          <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-start">
+          <div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder flex justify-between items-start transition-colors duration-300">
             <div>
-              <p class="text-xs text-gray-500 mb-2">Ingresos</p>
-              <p class="text-2xl font-semibold text-forest mb-1">$0,00</p>
-              <p class="text-xs text-gray-400">este mes</p>
+              <p class="text-xs text-vmuted mb-2">Ingresos</p>
+              <p class="text-2xl font-semibold text-vup mb-1">$0,00</p>
+              <p class="text-xs text-vmuted/70">este mes</p>
             </div>
-            <i class="fa-solid fa-arrow-down-left text-forest text-sm bg-green-50 p-1.5 rounded-md"></i>
+            <i class="fa-solid fa-arrow-down-left text-vup text-sm bg-vup/10 p-1.5 rounded-md"></i>
           </div>
 
-          <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-start">
+          <div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder flex justify-between items-start transition-colors duration-300">
             <div>
-              <p class="text-xs text-gray-500 mb-2">Gastos</p>
-              <p class="text-2xl font-semibold text-danger mb-1">$0,00</p>
-              <p class="text-xs text-gray-400">este mes</p>
+              <p class="text-xs text-vmuted mb-2">Gastos</p>
+              <p class="text-2xl font-semibold text-vdown mb-1">$0,00</p>
+              <p class="text-xs text-vmuted/70">este mes</p>
             </div>
-            <i class="fa-solid fa-arrow-up-right text-danger text-sm bg-red-50 p-1.5 rounded-md"></i>
+            <i class="fa-solid fa-arrow-up-right text-vdown text-sm bg-vdown/10 p-1.5 rounded-md"></i>
           </div>
         </div>
       `,
@@ -157,22 +255,21 @@
       'caja': `
         <div class="animate-[fadeIn_0.3s_ease-out] space-y-6">
           <div>
-            <p class="text-[10px] font-bold text-forest tracking-widest uppercase mb-2">CAJA DIARIA</p>
-            <h2 class="font-serif text-4xl leading-[1.1] text-navy mb-3 tracking-tight">Que el dinero tenga contexto.</h2>
-            <p class="text-sm text-gray-600 leading-relaxed">Anota ingresos y gastos sin convertir tu vida en una planilla. Cada movimiento cuenta una parte de la historia.</p>
+            <p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">CAJA DIARIA</p>
+            <h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Que el dinero tenga contexto.</h2>
+            <p class="text-sm text-vmuted leading-relaxed">Anota ingresos y gastos sin convertir tu vida en una planilla. Cada movimiento cuenta una parte de la historia.</p>
           </div>
           
-          <button class="bg-forest text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 hover:bg-forestLight transition shadow-sm">
+          <button class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity">
             <i class="fa-solid fa-plus"></i> Nuevo movimiento
           </button>
 
-          <!-- Estado Vacío -->
           <div class="mt-12 flex flex-col items-center justify-center text-center">
-            <div class="w-16 h-16 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-forest text-2xl mb-4">
+            <div class="w-16 h-16 bg-vcard rounded-2xl shadow-sm border border-vborder flex items-center justify-center text-vaccent text-2xl mb-4 transition-colors">
               <i class="fa-solid fa-wallet"></i>
             </div>
-            <h4 class="font-bold text-navy mb-2">Todavía no hay movimientos</h4>
-            <p class="text-sm text-gray-500 max-w-xs">Registra tu primer ingreso o gasto para empezar a ver el pulso de tu caja.</p>
+            <h4 class="font-bold text-vmain mb-2">Todavía no hay movimientos</h4>
+            <p class="text-sm text-vmuted max-w-xs">Registra tu primer ingreso o gasto para empezar a ver el pulso de tu caja.</p>
           </div>
         </div>
       `,
@@ -180,20 +277,20 @@
       'operaciones': `
         <div class="animate-[fadeIn_0.3s_ease-out] space-y-6">
           <div>
-            <p class="text-[10px] font-bold text-forest tracking-widest uppercase mb-2">OPERACIONES</p>
-            <h2 class="font-serif text-4xl leading-[1.1] text-navy mb-3 tracking-tight">Cada decisión deja una huella.</h2>
-            <p class="text-sm text-gray-600 leading-relaxed">Un historial limpio para entender cuánto capital pusiste, cuánto fluyó y qué intereses volvió a traer.</p>
+            <p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">OPERACIONES</p>
+            <h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Cada decisión deja una huella.</h2>
+            <p class="text-sm text-vmuted leading-relaxed">Un historial limpio para entender cuánto capital pusiste, cuánto fluyó y qué intereses volvió a traer.</p>
           </div>
           
-          <button class="bg-forest text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 hover:bg-forestLight transition shadow-sm">
+          <button class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity">
             <i class="fa-solid fa-plus"></i> Nueva operación
           </button>
 
           <div class="grid grid-cols-1 gap-3">
-             <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
-              <p class="text-xs text-gray-500 mb-2">Capital comprado</p>
-              <p class="text-2xl font-semibold text-navy mb-1">$0,00</p>
-              <p class="text-xs text-gray-400">operaciones de compra</p>
+             <div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder transition-colors">
+              <p class="text-xs text-vmuted mb-2">Capital comprado</p>
+              <p class="text-2xl font-semibold text-vmain mb-1">$0,00</p>
+              <p class="text-xs text-vmuted/70">operaciones de compra</p>
             </div>
           </div>
         </div>
@@ -202,20 +299,20 @@
       'cartera': `
         <div class="animate-[fadeIn_0.3s_ease-out] space-y-6">
           <div>
-            <p class="text-[10px] font-bold text-forest tracking-widest uppercase mb-2">CARTERA</p>
-            <h2 class="font-serif text-4xl leading-[1.1] text-navy mb-3 tracking-tight">Lo que estás construyendo.</h2>
-            <p class="text-sm text-gray-600 leading-relaxed">Posiciones consolidadas desde tus operaciones, con precio medio y una lectura honesta de lo que hoy valen.</p>
+            <p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">CARTERA</p>
+            <h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Lo que estás construyendo.</h2>
+            <p class="text-sm text-vmuted leading-relaxed">Posiciones consolidadas desde tus operaciones, con precio medio y una lectura honesta de lo que hoy valen.</p>
           </div>
           
-          <button class="bg-forest text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 hover:bg-forestLight transition shadow-sm">
+          <button class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity">
             <i class="fa-solid fa-plus"></i> Registrar operación
           </button>
 
           <div class="grid grid-cols-1 gap-3">
-             <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
-              <p class="text-xs text-gray-500 mb-2">Capital invertido</p>
-              <p class="text-2xl font-semibold text-navy mb-1">$0,00</p>
-              <p class="text-xs text-gray-400">0 posiciones</p>
+             <div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder transition-colors">
+              <p class="text-xs text-vmuted mb-2">Capital invertido</p>
+              <p class="text-2xl font-semibold text-vmain mb-1">$0,00</p>
+              <p class="text-xs text-vmuted/70">0 posiciones</p>
             </div>
           </div>
         </div>
@@ -224,21 +321,21 @@
       'metricas': `
         <div class="animate-[fadeIn_0.3s_ease-out] space-y-6">
           <div>
-            <p class="text-[10px] font-bold text-forest tracking-widest uppercase mb-2">MÉTRICAS / HISTÓRICO</p>
-            <h2 class="font-serif text-4xl leading-[1.1] text-navy mb-3 tracking-tight">El tiempo también compone.</h2>
-            <p class="text-sm text-gray-600 leading-relaxed">Mira el ritmo de tus ingresos, gastos, aportaciones e intereses sin perder de vista el conjunto.</p>
+            <p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">MÉTRICAS / HISTÓRICO</p>
+            <h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">El tiempo también compone.</h2>
+            <p class="text-sm text-vmuted leading-relaxed">Mira el ritmo de tus ingresos, gastos, aportaciones e intereses sin perder de vista el conjunto.</p>
           </div>
 
-          <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 h-64 flex flex-col justify-between">
+          <div class="bg-vcard p-6 rounded-3xl shadow-sm border border-vborder h-64 flex flex-col justify-between transition-colors">
             <div>
-               <h3 class="font-bold text-navy">Ingresos vs gastos</h3>
+               <h3 class="font-bold text-vmain">Ingresos vs gastos</h3>
                <div class="flex gap-4 mt-2">
-                 <span class="text-xs text-gray-500"><span class="inline-block w-2 h-2 rounded-full bg-forest mr-1"></span>Ingresos</span>
-                 <span class="text-xs text-gray-500"><span class="inline-block w-2 h-2 rounded-full bg-orange-400 mr-1"></span>Gastos</span>
+                 <span class="text-xs text-vmuted"><span class="inline-block w-2 h-2 rounded-full bg-vaccent mr-1"></span>Ingresos</span>
+                 <span class="text-xs text-vmuted"><span class="inline-block w-2 h-2 rounded-full bg-vdown mr-1"></span>Gastos</span>
                </div>
             </div>
-            <div class="flex-1 flex items-center justify-center mt-4 border-b-2 border-gray-100">
-               <p class="text-xs text-gray-300">Aquí irá el gráfico</p>
+            <div class="flex-1 flex items-center justify-center mt-4 border-b-2 border-vborder">
+               <p class="text-xs text-vmuted/50">Aquí irá el gráfico</p>
             </div>
           </div>
         </div>
@@ -254,24 +351,15 @@
     };
 
     function changeTab(tabName, element) {
-      // 1. Quitar color activo a todos los botones de navegación
       document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('text-lime');
-        item.classList.add('text-gray-400', 'hover:text-gray-200');
+        item.classList.remove('active');
       });
       
-      // 2. Aplicar color activo (verde lima claro) al seleccionado
-      element.classList.remove('text-gray-400', 'hover:text-gray-200');
-      element.classList.add('text-lime');
-
-      // 3. Cambiar el título de la cabecera arriba a la izquierda
+      element.classList.add('active');
       document.getElementById('header-title').innerText = headerTitles[tabName];
-
-      // 4. Inyectar el HTML de la vista correspondiente
       document.getElementById('main-content').innerHTML = views[tabName];
     }
 
-    // Inicializar la app mostrando el Resumen
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('main-content').innerHTML = views['resumen'];
     });
