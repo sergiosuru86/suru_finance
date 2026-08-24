@@ -1,12 +1,12 @@
-const CACHE_NAME = 'capital-flow-v2';
+const CACHE_NAME = 'capital-flow-v3';
 const urlsToCache = [
   './',
   './index.html',
   './manifest.json',
-  './icon-192.png'
+  './icon-512.png'
 ];
 
-// Instalación del Service Worker (Guarda la app)
+// Instalación del Service Worker
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -17,12 +17,11 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
-// Interceptar las peticiones de red (Sirve la app sin internet)
+// Interceptar las peticiones de red
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        // Si el archivo está en la memoria, lo muestra. Si no, va a internet.
         return response || fetch(event.request);
       })
   );
