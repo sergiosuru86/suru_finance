@@ -28,6 +28,7 @@
 </head>
 <body class="min-h-screen flex flex-col font-sans transition-colors duration-300">
   
+  <!-- PANTALLA DE LOGIN -->
   <div id="auth-screen" class="fixed inset-0 bg-vbody z-[200] flex flex-col justify-center items-center px-6 transition-colors duration-300">
     <div class="w-full max-w-sm">
       <div class="text-center mb-10"><div class="w-16 h-16 bg-vaccent text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg"><i class="fa-solid fa-layer-group"></i></div><h1 class="font-serif text-4xl font-bold text-vmain tracking-tight">Capital Flow</h1><p class="text-vmuted text-sm mt-2 font-medium">Tu espacio personal, protegido.</p></div>
@@ -39,11 +40,21 @@
     </div>
   </div>
 
+  <!-- APLICACIÓN PRINCIPAL -->
   <div id="app-container" class="hidden flex-col min-h-screen w-full pb-24">
     <header class="p-5 flex justify-between items-center bg-vbody sticky top-0 z-10 transition-colors">
       <div><p class="text-[10px] text-vmuted font-medium uppercase mb-1">Finanzas / <span id="display-username">Personal</span></p><h1 id="header-title" class="text-2xl font-serif font-semibold text-vmain">Buenos días</h1></div>
-      <div class="flex items-center gap-3"><button onclick="toggleTheme()" class="w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted bg-vcard shadow-sm"><i class="fa-solid fa-palette"></i></button><label for="csv-upload" class="cursor-pointer w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted bg-vcard shadow-sm"><i class="fa-solid fa-sliders"></i><input type="file" id="csv-upload" class="hidden" accept=".csv" onchange="importarCSV(event)" /></label>
-        <div class="relative"><button onclick="document.getElementById('user-menu').classList.toggle('hidden')" class="w-10 h-10 rounded-full bg-vaccent flex items-center justify-center text-white font-bold text-sm shadow-sm border-2 border-transparent focus:border-vmain transition-all" id="user-avatar">CF</button><div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-vcard border border-vborder rounded-2xl shadow-xl overflow-hidden z-50"><div class="p-4 border-b border-vborder"><p class="text-xs text-vmuted font-semibold uppercase">Sesión iniciada</p><p id="menu-username" class="font-bold text-vmain truncate">Usuario</p></div><button onclick="logout()" class="w-full text-left px-4 py-3 text-sm font-bold text-vdown hover:bg-vdown/10 transition-colors"><i class="fa-solid fa-right-from-bracket mr-2"></i> Cerrar sesión</button></div></div>
+      <div class="flex items-center gap-3">
+        <button onclick="toggleTheme()" class="w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted bg-vcard shadow-sm"><i class="fa-solid fa-palette"></i></button>
+        <label for="csv-upload" class="cursor-pointer w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted bg-vcard shadow-sm"><i class="fa-solid fa-sliders"></i><input type="file" id="csv-upload" class="hidden" accept=".csv" onchange="importarCSV(event)" /></label>
+        <div class="relative">
+          <button onclick="document.getElementById('user-menu').classList.toggle('hidden')" class="w-10 h-10 rounded-full bg-vaccent flex items-center justify-center text-white font-bold text-sm shadow-sm border-2 border-transparent focus:border-vmain transition-all" id="user-avatar">CF</button>
+          <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-vcard border border-vborder rounded-2xl shadow-xl overflow-hidden z-50">
+            <div class="p-4 border-b border-vborder"><p class="text-xs text-vmuted font-semibold uppercase">Sesión iniciada</p><p id="menu-username" class="font-bold text-vmain truncate">Usuario</p></div>
+            <button onclick="exportarMisDatos()" class="w-full text-left px-4 py-3 text-sm font-bold text-vmain hover:bg-vbody transition-colors"><i class="fa-solid fa-file-export mr-2"></i> Exportar datos</button>
+            <button onclick="logout()" class="w-full text-left px-4 py-3 text-sm font-bold text-vdown hover:bg-vdown/10 border-t border-vborder transition-colors"><i class="fa-solid fa-right-from-bracket mr-2"></i> Cerrar sesión</button>
+          </div>
+        </div>
       </div>
     </header>
     <main class="flex-1 px-5" id="main-content"></main>
@@ -56,10 +67,10 @@
     </nav>
   </div>
 
-  <!-- MODALES DE CARGA -->
+  <!-- MODALES DE CARGA Y EDICIÓN -->
   <div id="modal-caja" class="fixed inset-0 bg-black/60 z-[100] hidden flex-col justify-end sm:justify-center items-center transition-opacity">
     <div class="bg-vcard w-full sm:w-96 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-[slideUp_0.3s_ease-out]">
-      <div class="flex justify-between items-center mb-6"><h3 class="font-serif text-2xl font-semibold text-vmain">Nuevo Movimiento</h3><button onclick="closeModal('modal-caja')" class="text-vmuted hover:text-vdown text-xl"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="flex justify-between items-center mb-6"><h3 class="font-serif text-2xl font-semibold text-vmain" id="titulo-modal-caja">Nuevo Movimiento</h3><button onclick="closeModal('modal-caja')" class="text-vmuted hover:text-vdown text-xl"><i class="fa-solid fa-xmark"></i></button></div>
       <form onsubmit="guardarMovimiento(event)" class="space-y-4">
         <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Tipo</label><div class="grid grid-cols-2 gap-2"><label class="cursor-pointer"><input type="radio" name="tipo-mov" value="Ingreso" class="peer hidden" checked><div class="text-center p-3 rounded-xl border border-vborder text-vmuted peer-checked:bg-vup/10 peer-checked:text-vup peer-checked:border-vup transition-all font-medium">Ingreso</div></label><label class="cursor-pointer"><input type="radio" name="tipo-mov" value="Gasto" class="peer hidden"><div class="text-center p-3 rounded-xl border border-vborder text-vmuted peer-checked:bg-vdown/10 peer-checked:text-vdown peer-checked:border-vdown transition-all font-medium">Gasto</div></label></div></div>
         <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Fecha</label><input type="date" id="caja-fecha" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none focus:border-vaccent" /></div>
@@ -72,7 +83,7 @@
 
   <div id="modal-operacion" class="fixed inset-0 bg-black/60 z-[100] hidden flex-col justify-end sm:justify-center items-center transition-opacity max-h-screen overflow-y-auto pt-20">
     <div class="bg-vcard w-full sm:w-[400px] rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-[slideUp_0.3s_ease-out] mb-10">
-      <div class="flex justify-between items-center mb-6"><h3 class="font-serif text-2xl font-semibold text-vmain">Registrar Operación</h3><button onclick="closeModal('modal-operacion')" class="text-vmuted hover:text-vdown text-xl"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="flex justify-between items-center mb-6"><h3 class="font-serif text-2xl font-semibold text-vmain" id="titulo-modal-op">Registrar Operación</h3><button onclick="closeModal('modal-operacion')" class="text-vmuted hover:text-vdown text-xl"><i class="fa-solid fa-xmark"></i></button></div>
       <form onsubmit="guardarOperacion(event)" class="space-y-4">
         <div class="grid grid-cols-2 gap-3"><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Fecha</label><input type="date" id="op-fecha" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Activo (Ticker)</label><input type="text" id="op-activo" required placeholder="Ej: AAPL" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent uppercase" /></div></div>
         <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Tipo</label><div class="grid grid-cols-2 gap-2"><label class="cursor-pointer"><input type="radio" name="op-tipo" value="Compra" class="peer hidden" checked><div class="text-center p-2.5 rounded-xl border border-vborder text-vmuted peer-checked:bg-vhero peer-checked:text-white peer-checked:border-vhero transition-all font-medium">Compra</div></label><label class="cursor-pointer"><input type="radio" name="op-tipo" value="Venta" class="peer hidden"><div class="text-center p-2.5 rounded-xl border border-vborder text-vmuted peer-checked:bg-vnav peer-checked:text-white peer-checked:border-vnav transition-all font-medium">Venta</div></label></div></div>
@@ -83,54 +94,60 @@
   </div>
 
   <script>
-    let db, currentUser = null, chartCajaInst = null, chartPieInst = null, chartLineInst = null;
+    let db, currentUser = null, chartCajaInst = null, chartPieInst = null, chartLineInst = null, chartSimInst = null;
+    let editCajaId = null; let editOpId = null;
+
     const req = indexedDB.open("CapitalFlowDB", 3);
     req.onupgradeneeded = (e) => { db = e.target.result; if(!db.objectStoreNames.contains("usuarios")) db.createObjectStore("usuarios", {keyPath:"username"}); if(!db.objectStoreNames.contains("caja")) db.createObjectStore("caja", {keyPath:"id", autoIncrement:true}); if(!db.objectStoreNames.contains("operaciones")) db.createObjectStore("operaciones", {keyPath:"id", autoIncrement:true}); if(!db.objectStoreNames.contains("precios")) db.createObjectStore("precios", {keyPath:"ticker"}); };
     req.onsuccess = (e) => { db = e.target.result; const sUser = localStorage.getItem('cf_user'); if(sUser) startSession(sUser); };
 
-    function getStore(s) { return db.transaction(s, "readwrite").objectStore(s); }
-    function getUserRecords(s) { return new Promise(r => { getStore(s).getAll().onsuccess = (e) => r(e.target.result.filter(o => o.userId === currentUser)); }); }
-    function addRecord(s, d) { d.userId = currentUser; getStore(s).add(d); }
-    function putRecord(s, d) { d.userId = currentUser; getStore(s).put(d); }
-    function deleteRecord(s, id) { getStore(s).delete(id); }
+    // --- BASE DE DATOS Y AUTENTICACIÓN ---
+    function getUserRecords(s) { return new Promise(r => { const tx = db.transaction(s, "readonly"); tx.objectStore(s).getAll().onsuccess = (e) => r(e.target.result.filter(o => o.userId === currentUser)); }); }
+    function getRecordById(s, id) { return new Promise(r => { const tx = db.transaction(s, "readonly"); tx.objectStore(s).get(id).onsuccess = (e) => r(e.target.result); }); }
+    function addRecord(s, d) { return new Promise(r => { d.userId = currentUser; const tx = db.transaction(s, "readwrite"); tx.objectStore(s).add(d); tx.oncomplete = r; }); }
+    function putRecord(s, d) { return new Promise(r => { d.userId = currentUser; const tx = db.transaction(s, "readwrite"); tx.objectStore(s).put(d); tx.oncomplete = r; }); }
+    function deleteRecord(s, id) { return new Promise(r => { const tx = db.transaction(s, "readwrite"); tx.objectStore(s).delete(id); tx.oncomplete = r; }); }
     
-    async function vaciarMisOperaciones() {
-      if(confirm('¿Seguro? Esto borrará tus operaciones, pero no las de otros usuarios.')) {
-        const allOps = await getUserRecords("operaciones");
-        const tx = db.transaction("operaciones", "readwrite");
-        const store = tx.objectStore("operaciones");
-        allOps.forEach(op => store.delete(op.id));
-        tx.oncomplete = () => updateOperaciones();
-      }
+    // --- LÓGICA DE LIQUIDEZ Y DINERO DISPONIBLE (EL "POZO") ---
+    async function getLiquidez() {
+      const caja = await getUserRecords("caja");
+      const ops = await getUserRecords("operaciones");
+      let liquidez = 0;
+      caja.forEach(c => { if(c.tipo === 'Ingreso') liquidez += c.monto; else liquidez -= c.monto; });
+      ops.forEach(op => {
+        const montoTotal = op.cantidad * op.precio;
+        if(op.tipo === 'Compra') liquidez -= (montoTotal + op.comision);
+        else liquidez += (montoTotal - op.comision); // Venta
+        liquidez += op.interes;
+      });
+      return liquidez;
     }
 
-    const themes = ['', 'theme-pro', 'theme-premium', 'theme-adaptive'];
-    let currentThemeIndex = 0;
-    
-    function toggleTheme() { 
-      document.body.classList.remove('theme-pro', 'theme-premium', 'theme-adaptive'); 
-      currentThemeIndex = (currentThemeIndex + 1) % themes.length; 
-      if(themes[currentThemeIndex]) {
-        document.body.classList.add(themes[currentThemeIndex]); 
-      }
-      if(document.getElementById('header-title').innerText.includes('Métrica')) {
-        updateMetricas(); 
-      }
+    // EXPORTACIÓN Y VACIADO
+    async function exportarMisDatos() {
+        const caja = await getUserRecords("caja"); const ops = await getUserRecords("operaciones");
+        let csv = "Seccion,Fecha,Tipo,Descripcion_Activo,Monto,Cantidad,Precio_Unitario,Comision,Intereses\n";
+        caja.forEach(c => { csv += `Caja Diaria,${c.fecha},${c.tipo},"${c.desc}",${c.monto},0,0,0,0\n`; });
+        ops.forEach(o => { csv += `Operaciones,${o.fecha},${o.tipo},"${o.activo}",0,${o.cantidad},${o.precio},${o.comision},${o.interes}\n`; });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.hidden = true; a.href = url; a.download = `CapitalFlow_Export_${new Date().toISOString().slice(0,10)}.csv`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a); document.getElementById('user-menu').classList.add('hidden');
     }
+    async function vaciarMisOperaciones() { if(confirm('¿Seguro? Esto borrará tus operaciones de forma definitiva.')) { const allOps = await getUserRecords("operaciones"); const tx = db.transaction("operaciones", "readwrite"); const store = tx.objectStore("operaciones"); allOps.forEach(op => store.delete(op.id)); tx.oncomplete = () => updateOperaciones(); } }
 
+    function prepararNuevaCaja() { editCajaId = null; document.getElementById('titulo-modal-caja').innerText = "Nuevo Movimiento"; document.getElementById('caja-fecha').valueAsDate = new Date(); document.getElementById('caja-desc').value = ''; document.getElementById('caja-monto').value = ''; openModal('modal-caja'); }
+    function prepararNuevaOp() { editOpId = null; document.getElementById('titulo-modal-op').innerText = "Registrar Operación"; document.getElementById('op-fecha').valueAsDate = new Date(); document.getElementById('op-activo').value = ''; document.getElementById('op-cantidad').value = ''; document.getElementById('op-precio').value = ''; document.getElementById('op-comision').value = '0'; document.getElementById('op-interes').value = '0'; openModal('modal-operacion'); }
+    async function abrirEditCaja(id) { const item = await getRecordById("caja", id); if(item && item.userId === currentUser) { editCajaId = id; document.getElementById('titulo-modal-caja').innerText = "Editar Movimiento"; document.querySelector(`input[name="tipo-mov"][value="${item.tipo}"]`).checked = true; document.getElementById('caja-fecha').value = item.fecha; document.getElementById('caja-desc').value = item.desc; document.getElementById('caja-monto').value = item.monto; openModal('modal-caja'); } }
+    async function abrirEditOp(id) { const op = await getRecordById("operaciones", id); if(op && op.userId === currentUser) { editOpId = id; document.getElementById('titulo-modal-op').innerText = "Editar Operación"; document.querySelector(`input[name="op-tipo"][value="${op.tipo}"]`).checked = true; document.getElementById('op-fecha').value = op.fecha; document.getElementById('op-activo').value = op.activo; document.getElementById('op-cantidad').value = op.cantidad; document.getElementById('op-precio').value = op.precio; document.getElementById('op-comision').value = op.comision; document.getElementById('op-interes').value = op.interes; openModal('modal-operacion'); } }
+    async function eliminarCaja(id) { if(confirm('¿Seguro que deseas eliminar este movimiento?')) { await deleteRecord("caja", id); if(document.getElementById('header-title').innerText.includes('Buenos')) updateResumen(); if(document.getElementById('header-title').innerText.includes('Caja')) updateCaja(); } }
+    async function eliminarOp(id) { if(confirm('¿Seguro que deseas eliminar esta operación?')) { await deleteRecord("operaciones", id); updateOperaciones(); } }
+
+    const themes = ['', 'theme-pro', 'theme-premium', 'theme-adaptive']; let currentThemeIndex = 0;
+    function toggleTheme() { document.body.classList.remove('theme-pro', 'theme-premium', 'theme-adaptive'); currentThemeIndex = (currentThemeIndex + 1) % themes.length; if(themes[currentThemeIndex]) { document.body.classList.add(themes[currentThemeIndex]); } if(document.getElementById('header-title').innerText.includes('Métrica')) { updateMetricas(); } }
     function switchAuthTab(t) { document.getElementById('tab-login').className = t==='login' ? 'flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent' : 'flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted'; document.getElementById('tab-register').className = t==='register' ? 'flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent' : 'flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted'; document.getElementById('form-login').classList.toggle('hidden', t!=='login'); document.getElementById('form-register').classList.toggle('hidden', t!=='register'); }
     
-    async function handleRegister(e) {
-      e.preventDefault(); const user = document.getElementById('reg-user').value.trim(); const pass = document.getElementById('reg-pass').value; const errorMsg = document.getElementById('reg-error');
-      const tx = db.transaction("usuarios", "readwrite"); const req = tx.objectStore("usuarios").get(user);
-      req.onsuccess = () => { if(req.result) { errorMsg.classList.remove('hidden'); } else { tx.objectStore("usuarios").add({ username: user, password: pass }); errorMsg.classList.add('hidden'); startSession(user); } };
-    }
-    async function handleLogin(e) {
-      e.preventDefault(); const user = document.getElementById('login-user').value.trim(); const pass = document.getElementById('login-pass').value; const errorMsg = document.getElementById('login-error');
-      const req = db.transaction("usuarios", "readonly").objectStore("usuarios").get(user);
-      req.onsuccess = () => { if(req.result && req.result.password === pass) { errorMsg.classList.add('hidden'); startSession(user); } else { errorMsg.classList.remove('hidden'); } };
-    }
-    
+    async function handleRegister(e) { e.preventDefault(); const user = document.getElementById('reg-user').value.trim(); const pass = document.getElementById('reg-pass').value; const errorMsg = document.getElementById('reg-error'); const tx = db.transaction("usuarios", "readwrite"); const req = tx.objectStore("usuarios").get(user); req.onsuccess = () => { if(req.result) { errorMsg.classList.remove('hidden'); } else { tx.objectStore("usuarios").add({ username: user, password: pass }); errorMsg.classList.add('hidden'); startSession(user); } }; }
+    async function handleLogin(e) { e.preventDefault(); const user = document.getElementById('login-user').value.trim(); const pass = document.getElementById('login-pass').value; const errorMsg = document.getElementById('login-error'); const req = db.transaction("usuarios", "readonly").objectStore("usuarios").get(user); req.onsuccess = () => { if(req.result && req.result.password === pass) { errorMsg.classList.add('hidden'); startSession(user); } else { errorMsg.classList.remove('hidden'); } }; }
     function startSession(u) { currentUser = u; localStorage.setItem('cf_user', u); document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('app-container').classList.remove('hidden'); document.getElementById('app-container').classList.add('flex'); document.getElementById('display-username').innerText = u; document.getElementById('menu-username').innerText = u; document.getElementById('user-avatar').innerText = u.substring(0,2).toUpperCase(); document.getElementById('caja-fecha').valueAsDate = new Date(); document.getElementById('op-fecha').valueAsDate = new Date(); changeTab('resumen', document.querySelector('.nav-item')); }
     function logout() { currentUser = null; localStorage.removeItem('cf_user'); document.getElementById('user-menu').classList.add('hidden'); document.getElementById('app-container').classList.add('hidden'); document.getElementById('app-container').classList.remove('flex'); document.getElementById('auth-screen').classList.remove('hidden'); document.getElementById('login-user').value = ''; document.getElementById('login-pass').value = ''; }
 
@@ -140,120 +157,88 @@
     function formatCrypto(num) { return parseFloat(num.toFixed(4)).toString(); }
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); document.getElementById(id).classList.add('flex'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
-
-    function toggleMonth(mes) {
-      const el = document.getElementById('ops-' + mes);
-      const icon = document.getElementById('icon-' + mes);
-      if (el.classList.contains('hidden')) { el.classList.remove('hidden'); icon.classList.add('rotate-180'); } 
-      else { el.classList.add('hidden'); icon.classList.remove('rotate-180'); }
-    }
+    function toggleMonth(mes) { const el = document.getElementById('ops-' + mes); const icon = document.getElementById('icon-' + mes); if (el.classList.contains('hidden')) { el.classList.remove('hidden'); icon.classList.add('rotate-180'); } else { el.classList.add('hidden'); icon.classList.remove('rotate-180'); } }
 
     const views = {
-      'resumen': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">${mesActualText}</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Tu dinero, en perspectiva.</h2><p class="text-sm text-vmuted leading-relaxed">Una lectura breve de lo que entró, lo que salió y lo que estás construyendo.</p></div><button onclick="openModal('modal-caja')" class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity"><i class="fa-solid fa-plus"></i> Añadir movimiento</button><div class="bg-vhero text-white p-6 rounded-[2rem] shadow-md relative overflow-hidden transition-colors duration-300"><div class="absolute -right-10 -bottom-10 w-48 h-48 border-[15px] border-white/5 rounded-full"></div><p class="text-[10px] font-bold text-[var(--nav-active)] tracking-widest uppercase mb-2 relative z-10">BALANCE DEL MES</p><h3 class="font-serif text-3xl mb-4 relative z-10 w-3/4 leading-snug">Saldo</h3><p id="res-balance" class="text-3xl font-medium mb-1 relative z-10">$0.00</p><p id="res-count" class="text-xs text-white/50 relative z-10">0 movimientos</p></div><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder flex justify-between items-start transition-colors duration-300"><div><p class="text-xs text-vmuted mb-2">Ingresos</p><p id="res-ingresos" class="text-2xl font-semibold text-vup mb-1">$0.00</p></div><i class="fa-solid fa-arrow-down-left text-vup text-sm bg-vup/10 p-1.5 rounded-md"></i></div><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder flex justify-between items-start transition-colors duration-300"><div><p class="text-xs text-vmuted mb-2">Gastos</p><p id="res-gastos" class="text-2xl font-semibold text-vdown mb-1">$0.00</p></div><i class="fa-solid fa-arrow-up-right text-vdown text-sm bg-vdown/10 p-1.5 rounded-md"></i></div></div>`,
-      'caja': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">CAJA DIARIA</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Que el dinero tenga contexto.</h2></div><button onclick="openModal('modal-caja')" class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm"><i class="fa-solid fa-plus"></i> Nuevo movimiento</button><div id="caja-lista" class="mt-6 pb-8 space-y-4"></div></div>`,
-      'operaciones': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">OPERACIONES</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Cada decisión deja una huella.</h2></div><button onclick="openModal('modal-operacion')" class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm"><i class="fa-solid fa-plus"></i> Nueva operación</button><div class="grid grid-cols-1 gap-3"><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><p class="text-xs text-vmuted mb-2">Capital comprado</p><p id="op-capital" class="text-2xl font-semibold text-vmain mb-1">$0.00</p></div><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><p class="text-xs text-vmuted mb-2">Flujo neto</p><p id="op-flujo" class="text-2xl font-semibold text-vmain mb-1">$0.00</p></div><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><p class="text-xs text-vmuted mb-2">Intereses / Div.</p><p id="op-interes" class="text-2xl font-semibold text-vup mb-1">$0.00</p></div></div><div class="flex justify-between items-center mt-6 mb-2"><h3 class="font-bold text-vmain">Historial</h3><button onclick="vaciarMisOperaciones()" class="text-vdown text-sm hover:opacity-70"><i class="fa-solid fa-trash-can"></i></button></div><div id="op-lista" class="space-y-3 pb-8"></div></div>`,
-      'cartera': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">CARTERA</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Lo que estás construyendo.</h2></div><button onclick="document.querySelector('.nav-item:nth-child(3)').click(); setTimeout(()=>openModal('modal-operacion'), 300);" class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm"><i class="fa-solid fa-plus"></i> Registrar operación</button><div class="grid grid-cols-1 gap-3"><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><p class="text-xs text-vmuted mb-2">Capital invertido</p><p id="cart-capital" class="text-2xl font-semibold text-vmain mb-1">$0.00</p><p id="cart-pos" class="text-xs text-vmuted/70">0 posiciones</p></div><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><p class="text-xs text-vmuted mb-2">Valor mercado</p><p id="cart-valor" class="text-2xl font-semibold text-vmain mb-1">$0.00</p></div><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><p class="text-xs text-vmuted mb-2">Intereses Totales</p><p id="cart-pl" class="text-2xl font-semibold text-vmain mb-1">$0.00</p><p class="text-xs text-vmuted/70">histórico y actual</p></div></div><div class="flex justify-between items-center mt-6 mb-2"><h3 class="font-bold text-vmain">Posiciones</h3></div><div id="cart-lista" class="space-y-4 pb-8"></div></div>`,
-      'metricas': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-8 pb-10"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">MÉTRICAS</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">El tiempo compone.</h2></div><div class="grid grid-cols-2 gap-3"><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] text-vmuted uppercase mb-1">Cap. Histórico</p><p id="met-cap" class="text-lg font-bold text-vmain">$0.00</p></div><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] text-vmuted uppercase mb-1">Int. Totales</p><p id="met-int" class="text-lg font-bold text-vup">$0.00</p></div><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder col-span-2 text-center"><p class="text-[10px] text-vmuted uppercase mb-1">P/L Total (Latente + Interés)</p><p id="met-pl" class="text-2xl font-bold text-vmain">$0.00</p></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder"><h3 class="text-sm font-bold text-vmain mb-4">Ingresos vs Gastos</h3><div class="relative h-48 w-full"><canvas id="chart-caja"></canvas></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder"><h3 class="text-sm font-bold text-vmain mb-4">Distribución Cartera</h3><div class="relative h-48 w-full"><canvas id="chart-pie"></canvas></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder"><h3 class="text-sm font-bold text-vmain mb-1">Ritmo Aportes vs P/L</h3><div class="relative h-48 w-full"><canvas id="chart-line"></canvas></div></div></div>`
+      'resumen': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">${mesActualText}</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Tu dinero, en perspectiva.</h2><p class="text-sm text-vmuted leading-relaxed">Una lectura breve de lo que entró, lo que salió y lo que estás construyendo.</p></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder flex justify-between items-center transition-colors duration-300"><div><p class="text-xs text-vmuted font-bold uppercase tracking-wider mb-1">Dinero Disponible</p><h3 id="res-liquidez" class="text-3xl font-serif font-bold text-vmain">$0.00</h3></div><div class="w-12 h-12 rounded-full bg-vaccent/10 text-vaccent flex items-center justify-center text-xl"><i class="fa-solid fa-wallet"></i></div></div><button onclick="prepararNuevaCaja()" class="w-full bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center justify-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity"><i class="fa-solid fa-plus"></i> Añadir movimiento</button><div class="bg-vhero text-white p-6 rounded-[2rem] shadow-md relative overflow-hidden transition-colors duration-300"><div class="absolute -right-10 -bottom-10 w-48 h-48 border-[15px] border-white/5 rounded-full"></div><p class="text-[10px] font-bold text-[var(--nav-active)] tracking-widest uppercase mb-2 relative z-10">BALANCE DEL MES</p><h3 class="font-serif text-3xl mb-4 relative z-10 w-3/4 leading-snug">Saldo</h3><p id="res-balance" class="text-3xl font-medium mb-1 relative z-10">$0.00</p><p id="res-count" class="text-xs text-white/50 relative z-10">0 movimientos</p></div><div class="grid grid-cols-2 gap-3"><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder flex flex-col transition-colors duration-300"><p class="text-xs text-vmuted mb-2">Ingresos</p><p id="res-ingresos" class="text-xl font-semibold text-vup mb-1">$0.00</p></div><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder flex flex-col transition-colors duration-300"><p class="text-xs text-vmuted mb-2">Gastos</p><p id="res-gastos" class="text-xl font-semibold text-vdown mb-1">$0.00</p></div></div></div>`,
+      'caja': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">CAJA DIARIA</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Que el dinero tenga contexto.</h2></div><button onclick="prepararNuevaCaja()" class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm"><i class="fa-solid fa-plus"></i> Nuevo movimiento</button><div id="caja-lista" class="mt-6 pb-8 space-y-4"></div></div>`,
+      'operaciones': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">OPERACIONES</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Cada decisión deja una huella.</h2></div><button onclick="prepararNuevaOp()" class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm"><i class="fa-solid fa-plus"></i> Nueva operación</button><div class="grid grid-cols-1 gap-3"><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><p class="text-xs text-vmuted mb-2">Capital comprado</p><p id="op-capital" class="text-2xl font-semibold text-vmain mb-1">$0.00</p></div><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><p class="text-xs text-vmuted mb-2">Flujo neto</p><p id="op-flujo" class="text-2xl font-semibold text-vmain mb-1">$0.00</p></div><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><p class="text-xs text-vmuted mb-2">Intereses / Div.</p><p id="op-interes" class="text-2xl font-semibold text-vup mb-1">$0.00</p></div></div><div class="flex justify-between items-center mt-6 mb-2"><h3 class="font-bold text-vmain">Historial</h3><button onclick="vaciarMisOperaciones()" class="text-vdown text-sm hover:opacity-70"><i class="fa-solid fa-trash-can"></i></button></div><div id="op-lista" class="space-y-3 pb-8"></div></div>`,
+      'cartera': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">CARTERA</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Lo que estás construyendo.</h2></div><div class="bg-vnav text-white p-6 rounded-[2rem] shadow-md relative overflow-hidden transition-colors"><div class="absolute -right-10 -bottom-10 w-48 h-48 border-[15px] border-white/5 rounded-full"></div><p class="text-[10px] font-bold text-vmuted tracking-widest uppercase mb-2 relative z-10">PATRIMONIO TOTAL</p><h3 id="cart-patrimonio" class="font-serif text-4xl font-medium mb-1 relative z-10">$0.00</h3><p class="text-xs text-white/70 relative z-10">Efectivo + Inversiones</p></div><div class="grid grid-cols-2 gap-3"><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] uppercase text-vmuted font-bold mb-1">Dinero Disponible</p><p id="cart-liquidez" class="text-lg font-semibold text-vmain">$0.00</p></div><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] uppercase text-vmuted font-bold mb-1">Valor Inversiones</p><p id="cart-valor" class="text-lg font-semibold text-vmain">$0.00</p></div></div><div class="grid grid-cols-2 gap-3"><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] uppercase text-vmuted font-bold mb-1">Cap. Invertido</p><p id="cart-capital" class="text-lg font-semibold text-vmain">$0.00</p></div><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] uppercase text-vmuted font-bold mb-1">Intereses Totales</p><p id="cart-pl" class="text-lg font-semibold text-vmain">$0.00</p></div></div><button onclick="document.querySelector('.nav-item:nth-child(3)').click(); setTimeout(()=>prepararNuevaOp(), 300);" class="w-full bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center justify-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity"><i class="fa-solid fa-plus"></i> Registrar operación</button><div class="flex justify-between items-center mt-6 mb-2"><h3 class="font-bold text-vmain">Posiciones</h3><span class="text-xs text-vmuted">Toca el precio para editar</span></div><div id="cart-lista" class="space-y-4 pb-8"></div></div>`,
+      'metricas': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-8 pb-10"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">MÉTRICAS</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">El tiempo compone.</h2></div><div class="grid grid-cols-2 gap-3"><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] text-vmuted uppercase mb-1">Cap. Histórico</p><p id="met-cap" class="text-lg font-bold text-vmain">$0.00</p></div><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] text-vmuted uppercase mb-1">Int. Totales</p><p id="met-int" class="text-lg font-bold text-vup">$0.00</p></div><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder col-span-2 text-center"><p class="text-[10px] text-vmuted uppercase mb-1">P/L Total (Latente + Interés)</p><p id="met-pl" class="text-2xl font-bold text-vmain">$0.00</p></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder"><h3 class="text-sm font-bold text-vmain mb-4">Ingresos vs Gastos</h3><div class="relative h-48 w-full"><canvas id="chart-caja"></canvas></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder"><h3 class="text-sm font-bold text-vmain mb-4">Distribución Cartera</h3><div class="relative h-48 w-full"><canvas id="chart-pie"></canvas></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder"><h3 class="text-sm font-bold text-vmain mb-1">Ritmo Aportes vs P/L</h3><div class="relative h-48 w-full"><canvas id="chart-line"></canvas></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder"><h3 class="text-sm font-bold text-vmain mb-1">Simulador de Interés Compuesto</h3><p class="text-xs text-vmuted mb-4">Proyectá tu patrimonio a futuro.</p><div class="grid grid-cols-2 gap-3 mb-4"><div><label class="block text-[10px] font-semibold text-vmuted uppercase mb-1">Capital Inicial ($)</label><input type="number" id="sim-cap" value="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2 outline-none text-sm" /></div><div><label class="block text-[10px] font-semibold text-vmuted uppercase mb-1">Aporte Mensual ($)</label><input type="number" id="sim-mes" value="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2 outline-none text-sm" /></div><div><label class="block text-[10px] font-semibold text-vmuted uppercase mb-1">Tasa Anual (%)</label><input type="number" id="sim-tasa" value="25" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2 outline-none text-sm" /></div><div><label class="block text-[10px] font-semibold text-vmuted uppercase mb-1">Años</label><input type="number" id="sim-anos" value="15" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2 outline-none text-sm" /></div></div><button onclick="calcularSimulador()" class="w-full bg-vaccent text-white font-bold py-3 rounded-xl shadow-sm mb-4">Calcular Proyección</button><div class="relative h-48 w-full"><canvas id="chart-simulador"></canvas></div></div></div>`
     };
     
     const headerTitles = { 'resumen': 'Buenos días', 'caja': 'Caja diaria', 'operaciones': 'Operaciones', 'cartera': 'Cartera', 'metricas': 'Métricas' };
     function changeTab(t, e) { document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active')); if(e) e.classList.add('active'); document.getElementById('header-title').innerText = headerTitles[t]; document.getElementById('main-content').innerHTML = views[t]; document.getElementById('user-menu').classList.add('hidden'); if(t === 'resumen') updateResumen(); if(t === 'caja') updateCaja(); if(t === 'operaciones') updateOperaciones(); if(t === 'cartera') updateCartera(); if(t === 'metricas') updateMetricas(); }
 
-    async function guardarMovimiento(e) { e.preventDefault(); await addRecord("caja", { fecha: document.getElementById('caja-fecha').value, tipo: document.querySelector('input[name="tipo-mov"]:checked').value, desc: document.getElementById('caja-desc').value, monto: parseFloat(document.getElementById('caja-monto').value) }); document.getElementById('caja-desc').value = ''; document.getElementById('caja-monto').value = ''; closeModal('modal-caja'); if(document.getElementById('header-title').innerText.includes('Buenos')) updateResumen(); if(document.getElementById('header-title').innerText.includes('Caja')) updateCaja(); }
-    async function guardarOperacion(e) { e.preventDefault(); await addRecord("operaciones", { fecha: document.getElementById('op-fecha').value, activo: document.getElementById('op-activo').value.toUpperCase().trim(), tipo: document.querySelector('input[name="op-tipo"]:checked').value, cantidad: parseFloat(document.getElementById('op-cantidad').value), precio: parseFloat(document.getElementById('op-precio').value), comision: parseFloat(document.getElementById('op-comision').value) || 0, interes: parseFloat(document.getElementById('op-interes').value) || 0 }); document.getElementById('op-activo').value = ''; document.getElementById('op-cantidad').value = ''; document.getElementById('op-precio').value = ''; closeModal('modal-operacion'); if(document.getElementById('header-title').innerText.includes('Operacion')) updateOperaciones(); }
-    async function eliminarOp(id) { await deleteRecord("operaciones", id); updateOperaciones(); }
+    async function guardarMovimiento(e) { 
+      e.preventDefault(); const data = { fecha: document.getElementById('caja-fecha').value, tipo: document.querySelector('input[name="tipo-mov"]:checked').value, desc: document.getElementById('caja-desc').value, monto: parseFloat(document.getElementById('caja-monto').value) };
+      if (editCajaId) { data.id = editCajaId; await putRecord("caja", data); } else { await addRecord("caja", data); }
+      closeModal('modal-caja'); if(document.getElementById('header-title').innerText.includes('Buenos')) updateResumen(); if(document.getElementById('header-title').innerText.includes('Caja')) updateCaja(); 
+    }
+    
+    async function guardarOperacion(e) { 
+      e.preventDefault(); const data = { fecha: document.getElementById('op-fecha').value, activo: document.getElementById('op-activo').value.toUpperCase().trim(), tipo: document.querySelector('input[name="op-tipo"]:checked').value, cantidad: parseFloat(document.getElementById('op-cantidad').value), precio: parseFloat(document.getElementById('op-precio').value), comision: parseFloat(document.getElementById('op-comision').value) || 0, interes: parseFloat(document.getElementById('op-interes').value) || 0 };
+      if(editOpId) { data.id = editOpId; await putRecord("operaciones", data); } else { await addRecord("operaciones", data); }
+      closeModal('modal-operacion'); if(document.getElementById('header-title').innerText.includes('Operacion')) updateOperaciones(); 
+    }
 
     async function updateResumen() {
       const items = await getUserRecords("caja"); let ing = 0, gas = 0, count = 0;
       items.forEach(item => { if (item.fecha.startsWith(mesActualFiltro)) { if (item.tipo === 'Ingreso') ing += item.monto; else gas += item.monto; count++; } });
+      const liquidez = await getLiquidez();
+      if(document.getElementById('res-liquidez')) document.getElementById('res-liquidez').innerText = formatMoney(liquidez);
       if(document.getElementById('res-balance')) { document.getElementById('res-balance').innerText = formatMoney(ing - gas); document.getElementById('res-ingresos').innerText = formatMoney(ing); document.getElementById('res-gastos').innerText = formatMoney(gas); document.getElementById('res-count').innerText = `${count} movimientos`; }
     }
 
     async function updateCaja() {
-      const items = await getUserRecords("caja"); const lista = document.getElementById('caja-lista'); if(!lista) return;
-      lista.innerHTML = '';
+      const items = await getUserRecords("caja"); const lista = document.getElementById('caja-lista'); if(!lista) return; lista.innerHTML = '';
       if(items.length === 0) { lista.innerHTML = `<div class="mt-8 flex flex-col items-center justify-center text-center"><div class="w-16 h-16 bg-vcard rounded-2xl shadow-sm border border-vborder flex items-center justify-center text-vaccent text-2xl mb-4"><i class="fa-solid fa-wallet"></i></div><h4 class="font-bold text-vmain mb-1">Todavía no hay movimientos</h4></div>`; return; }
-      
-      items.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
-      const mesesAgrupados = {};
-      items.forEach(item => {
-        const mes = item.fecha.slice(0,7);
-        if (!mesesAgrupados[mes]) mesesAgrupados[mes] = { ing: 0, gas: 0, ops: [] };
-        if (item.tipo === 'Ingreso') mesesAgrupados[mes].ing += item.monto; else mesesAgrupados[mes].gas += item.monto;
-        mesesAgrupados[mes].ops.push(item);
-      });
-      
+      items.sort((a,b) => new Date(b.fecha) - new Date(a.fecha)); const mesesAgrupados = {};
+      items.forEach(item => { const mes = item.fecha.slice(0,7); if (!mesesAgrupados[mes]) mesesAgrupados[mes] = { ing: 0, gas: 0, ops: [] }; if (item.tipo === 'Ingreso') mesesAgrupados[mes].ing += item.monto; else mesesAgrupados[mes].gas += item.monto; mesesAgrupados[mes].ops.push(item); });
       for (const mes in mesesAgrupados) {
-        const grupo = mesesAgrupados[mes];
-        const saldo = grupo.ing - grupo.gas;
-        const isPos = saldo >= 0;
-        const [year, monthStr] = mes.split('-');
-        const monthName = meses[parseInt(monthStr)-1];
-        const mesLabel = `${monthName} ${year}`;
-        const isOpen = mes === mesActualFiltro;
-
-        let opsHtml = '';
-        grupo.ops.forEach(item => {
-          const isIng = item.tipo === 'Ingreso';
-          opsHtml += `<div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder flex justify-between items-center mb-2"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full ${isIng?'bg-vup/10 text-vup':'bg-vdown/10 text-vdown'} flex items-center justify-center"><i class="fa-solid ${isIng?'fa-arrow-down-left':'fa-arrow-up-right'}"></i></div><div><p class="font-bold text-vmain text-sm">${item.desc}</p><p class="text-xs text-vmuted">${item.fecha}</p></div></div><p class="font-semibold ${isIng?'text-vup':'text-vdown'}">${isIng?'+':'-'}${formatMoney(item.monto)}</p></div>`;
-        });
-        
-        lista.innerHTML += `
-          <div class="mb-4">
-            <button onclick="toggleMonth('${mes}')" class="w-full bg-vcard border border-vborder rounded-2xl p-4 flex flex-col shadow-sm focus:outline-none transition-colors active:scale-[0.99]">
-              <div class="flex justify-between items-center w-full mb-2"><h3 class="font-bold text-vmain uppercase tracking-wide text-xs">${mesLabel}</h3><i id="icon-${mes}" class="fa-solid fa-chevron-down text-vmuted transition-transform ${isOpen?'rotate-180':''}"></i></div>
-              <div class="flex justify-between w-full text-[10px] sm:text-xs"><span class="text-vmuted">Ingresos: <span class="text-vup font-semibold">${formatMoney(grupo.ing)}</span></span><span class="text-vmuted">Gastos: <span class="text-vdown font-semibold">${formatMoney(grupo.gas)}</span></span><span class="font-bold ${isPos?'text-vup':'text-vdown'}">Saldo: ${formatMoney(saldo)}</span></div>
-            </button>
-            <div id="ops-${mes}" class="${isOpen?'':'hidden'} mt-3 px-1 space-y-2">${opsHtml}</div>
-          </div>`;
+        const grupo = mesesAgrupados[mes]; const saldo = grupo.ing - grupo.gas; const isPos = saldo >= 0; const [year, monthStr] = mes.split('-'); const monthName = meses[parseInt(monthStr)-1]; const mesLabel = `${monthName} ${year}`; const isOpen = mes === mesActualFiltro; let opsHtml = '';
+        grupo.ops.forEach(item => { const isIng = item.tipo === 'Ingreso'; opsHtml += `<div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder flex justify-between items-center mb-2"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full ${isIng?'bg-vup/10 text-vup':'bg-vdown/10 text-vdown'} flex items-center justify-center"><i class="fa-solid ${isIng?'fa-arrow-down-left':'fa-arrow-up-right'}"></i></div><div><p class="font-bold text-vmain text-sm">${item.desc}</p><p class="text-xs text-vmuted">${item.fecha}</p></div></div><div class="flex items-center gap-4"><p class="font-semibold ${isIng?'text-vup':'text-vdown'}">${isIng?'+':'-'}${formatMoney(item.monto)}</p><div class="flex gap-2"><button onclick="abrirEditCaja(${item.id})" class="text-vmuted hover:text-vmain"><i class="fa-solid fa-pen"></i></button><button onclick="eliminarCaja(${item.id})" class="text-vdown hover:opacity-70"><i class="fa-solid fa-trash-can"></i></button></div></div></div>`; });
+        lista.innerHTML += `<div class="mb-4"><button onclick="toggleMonth('${mes}')" class="w-full bg-vcard border border-vborder rounded-2xl p-4 flex flex-col shadow-sm focus:outline-none transition-colors active:scale-[0.99]"><div class="flex justify-between items-center w-full mb-2"><h3 class="font-bold text-vmain uppercase tracking-wide text-xs">${mesLabel}</h3><i id="icon-${mes}" class="fa-solid fa-chevron-down text-vmuted transition-transform ${isOpen?'rotate-180':''}"></i></div><div class="flex justify-between w-full text-[10px] sm:text-xs"><span class="text-vmuted">Ingresos: <span class="text-vup font-semibold">${formatMoney(grupo.ing)}</span></span><span class="text-vmuted">Gastos: <span class="text-vdown font-semibold">${formatMoney(grupo.gas)}</span></span><span class="font-bold ${isPos?'text-vup':'text-vdown'}">Saldo: ${formatMoney(saldo)}</span></div></button><div id="ops-${mes}" class="${isOpen?'':'hidden'} mt-3 px-1 space-y-2">${opsHtml}</div></div>`;
       }
     }
 
     async function updateOperaciones() {
       const items = await getUserRecords("operaciones"); const lista = document.getElementById('op-lista'); if(!lista) return;
       let cap = 0, flu = 0, int = 0; lista.innerHTML = ''; items.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
-      items.forEach(op => { const t = (op.cantidad * op.precio); if (op.tipo === 'Compra') { cap += t + op.comision; flu -= (t + op.comision); } else { cap -= t; flu += (t - op.comision); } int += op.interes; const isC = op.tipo === 'Compra'; lista.innerHTML += `<div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder mb-3"><div class="flex justify-between items-start mb-2"><div><span class="text-[10px] font-bold ${isC?'text-vhero bg-vhero/10':'text-vnav bg-vnav/10'} px-2 py-0.5 rounded-sm uppercase tracking-wider">${op.tipo}</span><h4 class="font-serif font-bold text-lg text-vmain mt-1">${op.activo}</h4></div><div class="text-right"><p class="font-bold text-vmain text-sm">${formatMoney(t)}</p><p class="text-[10px] text-vmuted">${formatCrypto(op.cantidad)} x ${formatMoney(op.precio)}</p></div></div><div class="flex justify-between items-end mt-3 border-t border-vborder pt-2"><p class="text-[10px] text-vmuted">${op.fecha}</p><button onclick="eliminarOp(${op.id})" class="text-vdown text-sm hover:opacity-70"><i class="fa-solid fa-trash-can"></i></button></div></div>`; });
+      items.forEach(op => { const t = (op.cantidad * op.precio); if (op.tipo === 'Compra') { cap += t + op.comision; flu -= (t + op.comision); } else { cap -= t; flu += (t - op.comision); } int += op.interes; const isC = op.tipo === 'Compra'; lista.innerHTML += `<div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder mb-3"><div class="flex justify-between items-start mb-2"><div><span class="text-[10px] font-bold ${isC?'text-vhero bg-vhero/10':'text-vnav bg-vnav/10'} px-2 py-0.5 rounded-sm uppercase tracking-wider">${op.tipo}</span><h4 class="font-serif font-bold text-lg text-vmain mt-1">${op.activo}</h4></div><div class="text-right"><p class="font-bold text-vmain text-sm">${formatMoney(t)}</p><p class="text-[10px] text-vmuted">${formatCrypto(op.cantidad)} x ${formatMoney(op.precio)}</p></div></div><div class="flex justify-between items-end mt-3 border-t border-vborder pt-2"><p class="text-[10px] text-vmuted">${op.fecha}</p><div class="flex gap-4"><button onclick="abrirEditOp(${op.id})" class="text-vmuted hover:text-vmain"><i class="fa-solid fa-pen"></i></button><button onclick="eliminarOp(${op.id})" class="text-vdown hover:opacity-70"><i class="fa-solid fa-trash-can"></i></button></div></div></div>`; });
       document.getElementById('op-capital').innerText = formatMoney(cap); document.getElementById('op-flujo').innerText = formatMoney(flu); document.getElementById('op-interes').innerText = formatMoney(int);
     }
 
     async function updateCartera() {
       const ops = await getUserRecords("operaciones"); const preciosArr = await getUserRecords("precios"); const pMap = {}; preciosArr.forEach(p => pMap[p.ticker] = p.precio);
-      const portafolio = {}; ops.sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
-      
-      let capAportadoNeto = 0;
-      
-      ops.forEach(op => { 
-        if (!portafolio[op.activo]) portafolio[op.activo] = { cant: 0, costo: 0 }; 
-        const p = portafolio[op.activo]; 
-        const monto = op.cantidad * op.precio;
-        
-        if (op.tipo === 'Compra') { 
-          p.cant += op.cantidad; p.costo += monto + op.comision; 
-          capAportadoNeto += monto + op.comision;
-        } else if (op.tipo === 'Venta') { 
-          if (p.cant > 0) { const ppp = p.costo / p.cant; p.cant -= op.cantidad; p.costo -= (op.cantidad * ppp); } 
-          capAportadoNeto -= (monto - op.comision);
-        } 
-      });
-      
-      const lista = document.getElementById('cart-lista'); if(!lista) return; lista.innerHTML = ''; let vMerc = 0, pos = 0;
+      const portafolio = {}; ops.sort((a,b) => new Date(a.fecha) - new Date(b.fecha)); let capAportadoNeto = 0;
+      ops.forEach(op => { if (!portafolio[op.activo]) portafolio[op.activo] = { cant: 0, costo: 0 }; const p = portafolio[op.activo]; const monto = op.cantidad * op.precio; if (op.tipo === 'Compra') { p.cant += op.cantidad; p.costo += monto + op.comision; capAportadoNeto += monto + op.comision; } else if (op.tipo === 'Venta') { if (p.cant > 0) { const ppp = p.costo / p.cant; p.cant -= op.cantidad; p.costo -= (op.cantidad * ppp); } capAportadoNeto -= (monto - op.comision); } });
+      const lista = document.getElementById('cart-lista'); if(!lista) return; lista.innerHTML = ''; let vMerc = 0;
       for (const t in portafolio) {
-        const item = portafolio[t]; if (item.cant <= 0.00001) continue; pos++;
+        const item = portafolio[t]; if (item.cant <= 0.00001) continue; 
         const ppp = item.costo / item.cant; const pAct = pMap[t] || ppp; const vAct = item.cant * pAct; const gan = vAct - item.costo; const isUp = gan >= 0; vMerc += vAct;
         lista.innerHTML += `<div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><div class="flex justify-between items-center mb-4"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-vbody border border-vborder flex items-center justify-center font-bold text-vmain text-sm shadow-sm">${t.slice(0,3)}</div><div><h4 class="font-serif font-bold text-lg text-vmain">${t}</h4></div></div><div class="text-right"><p class="font-bold text-vmain text-sm">${formatMoney(vAct)}</p><span class="text-[10px] font-bold ${isUp?'text-vup bg-vup/10':'text-vdown bg-vdown/10'} px-1.5 py-0.5 rounded-sm">${isUp?'+':''}${formatMoney(gan)}</span></div></div><div class="flex justify-between bg-vbody rounded-xl p-3 border border-vborder text-xs"><div><p class="text-vmuted mb-1">Precio Compra</p><p class="font-semibold text-vmain">${formatMoney(ppp)}</p></div><div class="text-right"><p class="text-vmuted mb-1">Actual <i class="fa-solid fa-pen text-[9px]"></i></p><input type="number" step="any" value="${pAct}" onchange="actualizarPrecio('${t}', this.value)" class="w-20 text-right bg-transparent border-b border-vmuted font-semibold text-vmain outline-none focus:border-vaccent" /></div></div></div>`;
       }
+      const liquidez = await getLiquidez();
+      const patrimonioTotal = vMerc + liquidez;
       
-      document.getElementById('cart-capital').innerText = formatMoney(capAportadoNeto); 
-      document.getElementById('cart-pos').innerText = `${pos} posiciones`; 
-      document.getElementById('cart-valor').innerText = formatMoney(vMerc);
+      if(document.getElementById('cart-patrimonio')) document.getElementById('cart-patrimonio').innerText = formatMoney(patrimonioTotal);
+      if(document.getElementById('cart-liquidez')) document.getElementById('cart-liquidez').innerText = formatMoney(liquidez);
+      if(document.getElementById('cart-valor')) document.getElementById('cart-valor').innerText = formatMoney(vMerc);
+      if(document.getElementById('cart-capital')) document.getElementById('cart-capital').innerText = formatMoney(capAportadoNeto);
       
-      const plTotal = vMerc - capAportadoNeto; 
-      const elPl = document.getElementById('cart-pl'); 
-      elPl.innerText = formatMoney(plTotal); 
-      elPl.className = `text-2xl font-semibold mb-1 ${plTotal>=0 ? 'text-vup' : 'text-vdown'}`;
+      const plTotal = vMerc - capAportadoNeto; const elPl = document.getElementById('cart-pl'); if(elPl){ elPl.innerText = formatMoney(plTotal); elPl.className = `text-lg font-semibold mb-1 ${plTotal>=0 ? 'text-vup' : 'text-vdown'}`; }
     }
 
     async function actualizarPrecio(t, p) { await putRecord("precios", { ticker: t, precio: parseFloat(p) || 0 }); updateCartera(); }
+
+    async function calcularSimulador() {
+      const capInicial = parseFloat(document.getElementById('sim-cap').value) || 0; const aporteMes = parseFloat(document.getElementById('sim-mes').value) || 0; const tasaAnual = parseFloat(document.getElementById('sim-tasa').value) || 0; const anos = parseInt(document.getElementById('sim-anos').value) || 0;
+      const labels = []; const dataAportes = []; const dataInteres = []; let capAportado = capInicial; let saldoTotal = capInicial; const tasaMensual = tasaAnual / 100 / 12;
+      for(let i=0; i<=anos; i++) { labels.push('Año ' + i); if(i===0) { dataAportes.push(capAportado); dataInteres.push(0); continue; } for(let m=1; m<=12; m++) { saldoTotal = saldoTotal * (1 + tasaMensual) + aporteMes; capAportado += aporteMes; } dataAportes.push(capAportado); dataInteres.push(saldoTotal - capAportado); }
+      const style = getComputedStyle(document.body); const cUp = style.getPropertyValue('--up-color').trim(), cText = style.getPropertyValue('--text-main').trim(), cMuted = style.getPropertyValue('--text-muted').trim();
+      if(chartSimInst) chartSimInst.destroy(); chartSimInst = new Chart(document.getElementById('chart-simulador'), { type: 'bar', data: { labels: labels, datasets: [ {label: 'Aportes Totales', data: dataAportes, backgroundColor: cText}, {label: 'Interés Compuesto', data: dataInteres, backgroundColor: cUp} ] }, options: { maintainAspectRatio: false, plugins: { legend: { labels: { color: cText } } }, scales: { x: { stacked: true, ticks: {color: cMuted} }, y: { stacked: true, ticks: {color: cMuted} } } } });
+    }
 
     async function updateMetricas() {
       const caja = await getUserRecords("caja"); const ops = await getUserRecords("operaciones"); const pArr = await getUserRecords("precios"); const pMap = {}; pArr.forEach(p => pMap[p.ticker] = p.precio);
@@ -264,68 +249,25 @@
       if(chartCajaInst) chartCajaInst.destroy(); chartCajaInst = new Chart(document.getElementById('chart-caja'), { type: 'bar', data: { labels: lCaja, datasets: [{label:'Ingresos', data: lCaja.map(m=>mesesCaja[m].ing), backgroundColor: cUp}, {label:'Gastos', data: lCaja.map(m=>mesesCaja[m].gas), backgroundColor: cDown}] }, options:{maintainAspectRatio:false, plugins:{legend:{labels:{color:cText}}}, scales:{x:{ticks:{color:cMuted}},y:{ticks:{color:cMuted}}}} });
 
       const pf = {}; let cIn = 0, iTot = 0, capAc = 0, intAc = 0; const mOps = {}; ops.sort((a,b)=>new Date(a.fecha)-new Date(b.fecha));
-      
       ops.forEach(op => {
-        if (!pf[op.activo]) pf[op.activo] = {c:0, ct:0}; 
-        const p = pf[op.activo]; 
-        const mo = op.cantidad * op.precio;
-        
-        if(op.tipo === 'Compra') { 
-          p.c += op.cantidad; 
-          p.ct += mo + op.comision; 
-          cIn += mo + op.comision; 
-          capAc += mo + op.comision; 
-        } else { 
-          if (p.c > 0) { 
-            const ppp = p.ct / p.c; 
-            p.c -= op.cantidad; 
-            p.ct -= (op.cantidad * ppp); 
-          } 
-          cIn -= (mo - op.comision); 
-          capAc -= (mo - op.comision); 
-        }
-        
-        iTot += op.interes; 
-        intAc += op.interes; 
-        
-        let vMerAc = 0;
-        for(const t in pf){ 
-          const px = pf[t]; 
-          if(px.c > 0.00001) { 
-            vMerAc += px.c * (pMap[t] || (px.ct / px.c)); 
-          } 
-        }
-        
-        const plTotalAc = (vMerAc - capAc) + intAc;
-        
-        const m = op.fecha.slice(0,7); 
-        mOps[m] = { cap: capAc, pl: plTotalAc };
+        if (!pf[op.activo]) pf[op.activo] = {c:0, ct:0}; const p = pf[op.activo]; const mo = op.cantidad * op.precio;
+        if(op.tipo === 'Compra') { p.c += op.cantidad; p.ct += mo + op.comision; cIn += mo + op.comision; capAc += mo + op.comision; } 
+        else { if (p.c > 0) { const ppp = p.ct / p.c; p.c -= op.cantidad; p.ct -= (op.cantidad * ppp); } cIn -= (mo - op.comision); capAc -= (mo - op.comision); }
+        iTot += op.interes; intAc += op.interes; 
+        let vMerAc = 0; for(const t in pf){ const px = pf[t]; if(px.c > 0.00001) { vMerAc += px.c * (pMap[t] || (px.ct / px.c)); } }
+        const plTotalAc = (vMerAc - capAc) + intAc; const m = op.fecha.slice(0,7); mOps[m] = { cap: capAc, pl: plTotalAc };
       });
       
       let vMer = 0; const lPie = [], dPie = [];
       for(const t in pf){ const p=pf[t]; if(p.c>0.00001) { lPie.push(t); const va=p.c*(pMap[t]||(p.ct/p.c)); dPie.push(va); vMer+=va; } }
       if(chartPieInst) chartPieInst.destroy(); chartPieInst = new Chart(document.getElementById('chart-pie'), { type: 'doughnut', data:{labels:lPie, datasets:[{data:dPie, backgroundColor:[cAcc, cUp, cDown, '#8b5cf6', '#0ea5e9']}]}, options:{maintainAspectRatio:false, plugins:{legend:{position:'right',labels:{color:cText}}}} });
 
-      // Gráfico modificado para mostrar Aportes vs P/L Total
       const lLine = Object.keys(mOps).sort();
-      if(chartLineInst) chartLineInst.destroy(); chartLineInst = new Chart(document.getElementById('chart-line'), { 
-        type: 'line', 
-        data: {
-          labels: lLine, 
-          datasets:[
-            {label:'Aportes', data:lLine.map(m=>mOps[m].cap), borderColor:cText, tension:0.3}, 
-            {label:'P/L Total', data:lLine.map(m=>mOps[m].pl), borderColor:cAcc, tension:0.3}
-          ]
-        }, 
-        options: {
-          maintainAspectRatio:false, 
-          plugins:{legend:{labels:{color:cText}}}, 
-          scales:{x:{ticks:{color:cMuted}},y:{ticks:{color:cMuted}}}
-        } 
-      });
+      if(chartLineInst) chartLineInst.destroy(); chartLineInst = new Chart(document.getElementById('chart-line'), { type: 'line', data: { labels: lLine, datasets:[ {label:'Aportes', data:lLine.map(m=>mOps[m].cap), borderColor:cText, tension:0.3}, {label:'P/L Total', data:lLine.map(m=>mOps[m].pl), borderColor:cAcc, tension:0.3} ] }, options: { maintainAspectRatio:false, plugins:{legend:{labels:{color:cText}}}, scales:{x:{ticks:{color:cMuted}},y:{ticks:{color:cMuted}}} } });
 
       document.getElementById('met-cap').innerText = formatMoney(cIn); document.getElementById('met-int').innerText = formatMoney(iTot); const plt = (vMer-cIn)+iTot;
       const ep = document.getElementById('met-pl'); ep.innerText = formatMoney(plt); ep.className = `text-2xl font-bold ${plt>=0?'text-vup':'text-vdown'}`;
+      const simCap = document.getElementById('sim-cap'); if (simCap) { if (simCap.value === "0" && vMer > 0) { simCap.value = Math.floor(vMer); } setTimeout(calcularSimulador, 100); }
     }
 
     function parseNumberArg(val) { if (!val) return 0; let s = String(val).trim().replace(/[$ \t]/g, ''); if (!s) return 0; if (s.includes('.') && s.includes(',')) { if (s.indexOf('.') < s.indexOf(',')) s = s.replace(/\./g, '').replace(',', '.'); else s = s.replace(/,/g, ''); } else if (s.includes(',')) s = s.replace(',', '.'); return parseFloat(s) || 0; }
@@ -335,16 +277,11 @@
       reader.onload = async function(e) {
         const text = e.target.result; const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
         if(lines.length<2) return alert('Archivo vacío'); let sep = ','; if(lines[0].includes(';')) sep = ';'; const head = parseCSVLine(lines[0].toLowerCase(), sep);
-        const iF=head.findIndex(h=>h.includes('fecha')), iA=head.findIndex(h=>h.includes('activo')), iT=head.findIndex(h=>h.includes('tipo')), iC=head.findIndex(h=>h.includes('cantidad')), iP=head.findIndex(h=>h.includes('precio')), iCom=head.findIndex(h=>h.includes('comision')), iInt=head.findIndex(h=>h.includes('interes'));
-        let cargados = 0;
-        for (let i=1; i<lines.length; i++) {
-          const cols=parseCSVLine(lines[i], sep); const f=iF!==-1?cols[iF]:cols[0], a=iA!==-1?cols[iA]:cols[1], c=parseNumberArg(iC!==-1?cols[iC]:cols[3]), p=parseNumberArg(iP!==-1?cols[iP]:cols[4]);
-          if(f&&a&&c>0) { await addRecord("operaciones", { fecha: f.trim(), activo: a.toUpperCase().trim(), tipo: (iT!==-1?cols[iT]:cols[2]).toLowerCase().includes('vent')?'Venta':'Compra', cantidad: c, precio: p, comision: iCom!==-1?parseNumberArg(cols[iCom]):0, interes: iInt!==-1?parseNumberArg(cols[iInt]):0 }); cargados++; }
-        }
+        const iF=head.findIndex(h=>h.includes('fecha')), iA=head.findIndex(h=>h.includes('activo')), iT=head.findIndex(h=>h.includes('tipo')), iC=head.findIndex(h=>h.includes('cantidad')), iP=head.findIndex(h=>h.includes('precio')), iCom=head.findIndex(h=>h.includes('comision')), iInt=head.findIndex(h=>h.includes('interes')); let cargados = 0;
+        for (let i=1; i<lines.length; i++) { const cols=parseCSVLine(lines[i], sep); const f=iF!==-1?cols[iF]:cols[0], a=iA!==-1?cols[iA]:cols[1], c=parseNumberArg(iC!==-1?cols[iC]:cols[3]), p=parseNumberArg(iP!==-1?cols[iP]:cols[4]); if(f&&a&&c>0) { await addRecord("operaciones", { fecha: f.trim(), activo: a.toUpperCase().trim(), tipo: (iT!==-1?cols[iT]:cols[2]).toLowerCase().includes('vent')?'Venta':'Compra', cantidad: c, precio: p, comision: iCom!==-1?parseNumberArg(cols[iCom]):0, interes: iInt!==-1?parseNumberArg(cols[iInt]):0 }); cargados++; } }
         event.target.value = ''; updateOperaciones(); alert(`Se cargaron ${cargados} operaciones a tu perfil.`);
       }; reader.readAsText(file);
     }
-
     if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
   </script>
 </body>
