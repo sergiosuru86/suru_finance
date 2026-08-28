@@ -1,4 +1,4 @@
-const CACHE_NAME = 'capital-flow-v5';
+const CACHE_NAME = 'capital-flow-v6';
 const urlsToCache = [
   './',
   './index.html',
