@@ -5,11 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Capital Flow</title>
   <link rel="manifest" href="./manifest.json" />
-  
-  <!-- SDK de Firebase (Base de Datos en la Nube) -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,9 +28,10 @@
 </head>
 <body class="min-h-screen flex flex-col font-sans transition-colors duration-300">
   
+  <!-- PANTALLA DE LOGIN -->
   <div id="auth-screen" class="fixed inset-0 bg-vbody z-[200] flex flex-col justify-center items-center px-6 transition-colors duration-300">
     <div class="w-full max-w-sm">
-      <div class="text-center mb-10"><div class="w-16 h-16 bg-vaccent text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg"><i class="fa-solid fa-layer-group"></i></div><h1 class="font-serif text-4xl font-bold text-vmain tracking-tight">Capital Flow</h1><p class="text-vmuted text-sm mt-2 font-medium">Tu espacio personal en la nube.</p></div>
+      <div class="text-center mb-10"><div class="w-16 h-16 bg-vaccent text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg"><i class="fa-solid fa-layer-group"></i></div><h1 class="font-serif text-4xl font-bold text-vmain tracking-tight">Capital Flow</h1><p class="text-vmuted text-sm mt-2 font-medium">Tu espacio personal, protegido.</p></div>
       <div class="bg-vcard p-6 rounded-3xl shadow-xl border border-vborder">
         <div class="flex border-b border-vborder mb-6"><button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent">Iniciar Sesión</button><button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted">Crear Cuenta</button></div>
         <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4"><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Usuario</label><input type="text" id="login-user" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Contraseña</label><input type="password" id="login-pass" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none" /></div><p id="login-error" class="text-vdown text-xs hidden">Usuario o contraseña incorrectos.</p><button type="submit" class="w-full bg-vaccent text-white font-bold py-3.5 rounded-xl mt-2">Entrar</button></form>
@@ -44,12 +40,13 @@
     </div>
   </div>
 
+  <!-- APLICACIÓN PRINCIPAL -->
   <div id="app-container" class="hidden flex-col min-h-screen w-full pb-24">
     <header class="p-5 flex justify-between items-center bg-vbody sticky top-0 z-10 transition-colors">
       <div><p class="text-[10px] text-vmuted font-medium uppercase mb-1">Finanzas / <span id="display-username">Personal</span></p><h1 id="header-title" class="text-2xl font-serif font-semibold text-vmain">Buenos días</h1></div>
       <div class="flex items-center gap-3">
         <button onclick="toggleTheme()" class="w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted bg-vcard shadow-sm"><i class="fa-solid fa-palette"></i></button>
-        <label for="csv-upload" class="cursor-pointer w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted bg-vcard shadow-sm"><i class="fa-solid fa-sliders"></i><input type="file" id="csv-upload" class="hidden" accept=".csv" onchange="importarCSV(event)" /></label>
+        <label for="csv-upload" class="cursor-pointer w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted bg-vcard shadow-sm"><i class="fa-solid fa-sliders"></i><input type="file" id="csv-upload" class="hidden" accept="*/*" onchange="importarCSV(event)" /></label>
         <div class="relative">
           <button onclick="document.getElementById('user-menu').classList.toggle('hidden')" class="w-10 h-10 rounded-full bg-vaccent flex items-center justify-center text-white font-bold text-sm shadow-sm border-2 border-transparent focus:border-vmain transition-all" id="user-avatar">CF</button>
           <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-vcard border border-vborder rounded-2xl shadow-xl overflow-hidden z-50">
@@ -70,6 +67,7 @@
     </nav>
   </div>
 
+  <!-- MODALES DE CARGA Y EDICIÓN -->
   <div id="modal-caja" class="fixed inset-0 bg-black/60 z-[100] hidden flex-col justify-end sm:justify-center items-center transition-opacity">
     <div class="bg-vcard w-full sm:w-96 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-[slideUp_0.3s_ease-out]">
       <div class="flex justify-between items-center mb-6"><h3 class="font-serif text-2xl font-semibold text-vmain" id="titulo-modal-caja">Nuevo Movimiento</h3><button onclick="closeModal('modal-caja')" class="text-vmuted hover:text-vdown text-xl"><i class="fa-solid fa-xmark"></i></button></div>
@@ -96,52 +94,21 @@
   </div>
 
   <script>
-    // --- FIREBASE INICIALIZACIÓN ---
-    const firebaseConfig = {
-      apiKey: "AIzaSyB6c7W6XVzY9ZZYjvZhRhQ-B1nEc8gggAg",
-      authDomain: "capitalflow-ee816.firebaseapp.com",
-      projectId: "capitalflow-ee816",
-      storageBucket: "capitalflow-ee816.firebasestorage.app",
-      messagingSenderId: "885075056845",
-      appId: "1:885075056845:web:8ec683d41f328da8443184"
-    };
-    
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    
-    // Activar modo offline
-    db.enablePersistence({synchronizeTabs:true}).catch(err => console.log("Modo offline:", err));
-
-    let currentUser = null, chartCajaInst = null, chartPieInst = null, chartLineInst = null, chartSimInst = null;
+    let db, currentUser = null, chartCajaInst = null, chartPieInst = null, chartLineInst = null, chartSimInst = null;
     let editCajaId = null; let editOpId = null;
 
-    // --- NUEVAS FUNCIONES DE BASE DE DATOS EN LA NUBE ---
-    function getUserRecords(s) { 
-      return db.collection(s).where("userId", "==", currentUser).get()
-        .then(snap => snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))); 
-    }
+    const req = indexedDB.open("CapitalFlowDB", 3);
+    req.onupgradeneeded = (e) => { db = e.target.result; if(!db.objectStoreNames.contains("usuarios")) db.createObjectStore("usuarios", {keyPath:"username"}); if(!db.objectStoreNames.contains("caja")) db.createObjectStore("caja", {keyPath:"id", autoIncrement:true}); if(!db.objectStoreNames.contains("operaciones")) db.createObjectStore("operaciones", {keyPath:"id", autoIncrement:true}); if(!db.objectStoreNames.contains("precios")) db.createObjectStore("precios", {keyPath:"ticker"}); };
+    req.onsuccess = (e) => { db = e.target.result; const sUser = localStorage.getItem('cf_user'); if(sUser) startSession(sUser); };
+
+    // --- BASE DE DATOS Y AUTENTICACIÓN ---
+    function getUserRecords(s) { return new Promise(r => { const tx = db.transaction(s, "readonly"); tx.objectStore(s).getAll().onsuccess = (e) => r(e.target.result.filter(o => o.userId === currentUser)); }); }
+    function getRecordById(s, id) { return new Promise(r => { const tx = db.transaction(s, "readonly"); tx.objectStore(s).get(id).onsuccess = (e) => r(e.target.result); }); }
+    function addRecord(s, d) { return new Promise(r => { d.userId = currentUser; const tx = db.transaction(s, "readwrite"); tx.objectStore(s).add(d); tx.oncomplete = r; }); }
+    function putRecord(s, d) { return new Promise(r => { d.userId = currentUser; const tx = db.transaction(s, "readwrite"); tx.objectStore(s).put(d); tx.oncomplete = r; }); }
+    function deleteRecord(s, id) { return new Promise(r => { const tx = db.transaction(s, "readwrite"); tx.objectStore(s).delete(id); tx.oncomplete = r; }); }
     
-    function getRecordById(s, id) { 
-      return db.collection(s).doc(id).get().then(doc => doc.exists ? { id: doc.id, ...doc.data() } : null); 
-    }
-    
-    function addRecord(s, d) { 
-      d.userId = currentUser; 
-      return db.collection(s).add(d); 
-    }
-    
-    function putRecord(s, d) { 
-      d.userId = currentUser; 
-      const id = d.id; 
-      const dataToSave = { ...d }; 
-      delete dataToSave.id; 
-      return db.collection(s).doc(id).update(dataToSave); 
-    }
-    
-    function deleteRecord(s, id) { 
-      return db.collection(s).doc(id).delete(); 
-    }
-    
+    // --- LÓGICA DE LIQUIDEZ Y DINERO DISPONIBLE (EL "POZO") ---
     async function getLiquidez() {
       const caja = await getUserRecords("caja");
       const ops = await getUserRecords("operaciones");
@@ -150,12 +117,13 @@
       ops.forEach(op => {
         const montoTotal = op.cantidad * op.precio;
         if(op.tipo === 'Compra') liquidez -= (montoTotal + op.comision);
-        else liquidez += (montoTotal - op.comision); 
+        else liquidez += (montoTotal - op.comision); // Venta
         liquidez += op.interes;
       });
       return liquidez;
     }
 
+    // EXPORTACIÓN Y VACIADO
     async function exportarMisDatos() {
         const caja = await getUserRecords("caja"); const ops = await getUserRecords("operaciones");
         let csv = "Seccion,Fecha,Tipo,Descripcion_Activo,Monto,Cantidad,Precio_Unitario,Comision,Intereses\n";
@@ -165,7 +133,7 @@
         const a = document.createElement('a'); a.hidden = true; a.href = url; a.download = `CapitalFlow_Export_${new Date().toISOString().slice(0,10)}.csv`;
         document.body.appendChild(a); a.click(); document.body.removeChild(a); document.getElementById('user-menu').classList.add('hidden');
     }
-    async function vaciarMisOperaciones() { if(confirm('¿Seguro? Esto borrará tus operaciones de forma definitiva en la nube.')) { const allOps = await getUserRecords("operaciones"); await Promise.all(allOps.map(op => db.collection("operaciones").doc(op.id).delete())); updateOperaciones(); } }
+    async function vaciarMisOperaciones() { if(confirm('¿Seguro? Esto borrará tus operaciones de forma definitiva.')) { const allOps = await getUserRecords("operaciones"); const tx = db.transaction("operaciones", "readwrite"); const store = tx.objectStore("operaciones"); allOps.forEach(op => store.delete(op.id)); tx.oncomplete = () => updateOperaciones(); } }
 
     function prepararNuevaCaja() { editCajaId = null; document.getElementById('titulo-modal-caja').innerText = "Nuevo Movimiento"; document.getElementById('caja-fecha').valueAsDate = new Date(); document.getElementById('caja-desc').value = ''; document.getElementById('caja-monto').value = ''; openModal('modal-caja'); }
     function prepararNuevaOp() { editOpId = null; document.getElementById('titulo-modal-op').innerText = "Registrar Operación"; document.getElementById('op-fecha').valueAsDate = new Date(); document.getElementById('op-activo').value = ''; document.getElementById('op-cantidad').value = ''; document.getElementById('op-precio').value = ''; document.getElementById('op-comision').value = '0'; document.getElementById('op-interes').value = '0'; openModal('modal-operacion'); }
@@ -178,19 +146,8 @@
     function toggleTheme() { document.body.classList.remove('theme-pro', 'theme-premium', 'theme-adaptive'); currentThemeIndex = (currentThemeIndex + 1) % themes.length; if(themes[currentThemeIndex]) { document.body.classList.add(themes[currentThemeIndex]); } if(document.getElementById('header-title').innerText.includes('Métrica')) { updateMetricas(); } }
     function switchAuthTab(t) { document.getElementById('tab-login').className = t==='login' ? 'flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent' : 'flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted'; document.getElementById('tab-register').className = t==='register' ? 'flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent' : 'flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted'; document.getElementById('form-login').classList.toggle('hidden', t!=='login'); document.getElementById('form-register').classList.toggle('hidden', t!=='register'); }
     
-    async function handleRegister(e) { 
-      e.preventDefault(); const user = document.getElementById('reg-user').value.trim(); const pass = document.getElementById('reg-pass').value; const errorMsg = document.getElementById('reg-error'); 
-      const doc = await db.collection("usuarios").doc(user).get();
-      if(doc.exists) { errorMsg.classList.remove('hidden'); } 
-      else { await db.collection("usuarios").doc(user).set({ username: user, password: pass }); errorMsg.classList.add('hidden'); startSession(user); } 
-    }
-    async function handleLogin(e) { 
-      e.preventDefault(); const user = document.getElementById('login-user').value.trim(); const pass = document.getElementById('login-pass').value; const errorMsg = document.getElementById('login-error'); 
-      const doc = await db.collection("usuarios").doc(user).get();
-      if(doc.exists && doc.data().password === pass) { errorMsg.classList.add('hidden'); startSession(user); } 
-      else { errorMsg.classList.remove('hidden'); } 
-    }
-    
+    async function handleRegister(e) { e.preventDefault(); const user = document.getElementById('reg-user').value.trim(); const pass = document.getElementById('reg-pass').value; const errorMsg = document.getElementById('reg-error'); const tx = db.transaction("usuarios", "readwrite"); const req = tx.objectStore("usuarios").get(user); req.onsuccess = () => { if(req.result) { errorMsg.classList.remove('hidden'); } else { tx.objectStore("usuarios").add({ username: user, password: pass }); errorMsg.classList.add('hidden'); startSession(user); } }; }
+    async function handleLogin(e) { e.preventDefault(); const user = document.getElementById('login-user').value.trim(); const pass = document.getElementById('login-pass').value; const errorMsg = document.getElementById('login-error'); const req = db.transaction("usuarios", "readonly").objectStore("usuarios").get(user); req.onsuccess = () => { if(req.result && req.result.password === pass) { errorMsg.classList.add('hidden'); startSession(user); } else { errorMsg.classList.remove('hidden'); } }; }
     function startSession(u) { currentUser = u; localStorage.setItem('cf_user', u); document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('app-container').classList.remove('hidden'); document.getElementById('app-container').classList.add('flex'); document.getElementById('display-username').innerText = u; document.getElementById('menu-username').innerText = u; document.getElementById('user-avatar').innerText = u.substring(0,2).toUpperCase(); document.getElementById('caja-fecha').valueAsDate = new Date(); document.getElementById('op-fecha').valueAsDate = new Date(); changeTab('resumen', document.querySelector('.nav-item')); }
     function logout() { currentUser = null; localStorage.removeItem('cf_user'); document.getElementById('user-menu').classList.add('hidden'); document.getElementById('app-container').classList.add('hidden'); document.getElementById('app-container').classList.remove('flex'); document.getElementById('auth-screen').classList.remove('hidden'); document.getElementById('login-user').value = ''; document.getElementById('login-pass').value = ''; }
 
@@ -240,7 +197,7 @@
       items.forEach(item => { const mes = item.fecha.slice(0,7); if (!mesesAgrupados[mes]) mesesAgrupados[mes] = { ing: 0, gas: 0, ops: [] }; if (item.tipo === 'Ingreso') mesesAgrupados[mes].ing += item.monto; else mesesAgrupados[mes].gas += item.monto; mesesAgrupados[mes].ops.push(item); });
       for (const mes in mesesAgrupados) {
         const grupo = mesesAgrupados[mes]; const saldo = grupo.ing - grupo.gas; const isPos = saldo >= 0; const [year, monthStr] = mes.split('-'); const monthName = meses[parseInt(monthStr)-1]; const mesLabel = `${monthName} ${year}`; const isOpen = mes === mesActualFiltro; let opsHtml = '';
-        grupo.ops.forEach(item => { const isIng = item.tipo === 'Ingreso'; opsHtml += `<div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder flex justify-between items-center mb-2"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full ${isIng?'bg-vup/10 text-vup':'bg-vdown/10 text-vdown'} flex items-center justify-center"><i class="fa-solid ${isIng?'fa-arrow-down-left':'fa-arrow-up-right'}"></i></div><div><p class="font-bold text-vmain text-sm">${item.desc}</p><p class="text-xs text-vmuted">${item.fecha}</p></div></div><div class="flex items-center gap-4"><p class="font-semibold ${isIng?'text-vup':'text-vdown'}">${isIng?'+':'-'}${formatMoney(item.monto)}</p><div class="flex gap-2"><button onclick="abrirEditCaja('${item.id}')" class="text-vmuted hover:text-vmain"><i class="fa-solid fa-pen"></i></button><button onclick="eliminarCaja('${item.id}')" class="text-vdown hover:opacity-70"><i class="fa-solid fa-trash-can"></i></button></div></div></div>`; });
+        grupo.ops.forEach(item => { const isIng = item.tipo === 'Ingreso'; opsHtml += `<div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder flex justify-between items-center mb-2"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full ${isIng?'bg-vup/10 text-vup':'bg-vdown/10 text-vdown'} flex items-center justify-center"><i class="fa-solid ${isIng?'fa-arrow-down-left':'fa-arrow-up-right'}"></i></div><div><p class="font-bold text-vmain text-sm">${item.desc}</p><p class="text-xs text-vmuted">${item.fecha}</p></div></div><div class="flex items-center gap-4"><p class="font-semibold ${isIng?'text-vup':'text-vdown'}">${isIng?'+':'-'}${formatMoney(item.monto)}</p><div class="flex gap-2"><button onclick="abrirEditCaja(${item.id})" class="text-vmuted hover:text-vmain"><i class="fa-solid fa-pen"></i></button><button onclick="eliminarCaja(${item.id})" class="text-vdown hover:opacity-70"><i class="fa-solid fa-trash-can"></i></button></div></div></div>`; });
         lista.innerHTML += `<div class="mb-4"><button onclick="toggleMonth('${mes}')" class="w-full bg-vcard border border-vborder rounded-2xl p-4 flex flex-col shadow-sm focus:outline-none transition-colors active:scale-[0.99]"><div class="flex justify-between items-center w-full mb-2"><h3 class="font-bold text-vmain uppercase tracking-wide text-xs">${mesLabel}</h3><i id="icon-${mes}" class="fa-solid fa-chevron-down text-vmuted transition-transform ${isOpen?'rotate-180':''}"></i></div><div class="flex justify-between w-full text-[10px] sm:text-xs"><span class="text-vmuted">Ingresos: <span class="text-vup font-semibold">${formatMoney(grupo.ing)}</span></span><span class="text-vmuted">Gastos: <span class="text-vdown font-semibold">${formatMoney(grupo.gas)}</span></span><span class="font-bold ${isPos?'text-vup':'text-vdown'}">Saldo: ${formatMoney(saldo)}</span></div></button><div id="ops-${mes}" class="${isOpen?'':'hidden'} mt-3 px-1 space-y-2">${opsHtml}</div></div>`;
       }
     }
@@ -248,7 +205,7 @@
     async function updateOperaciones() {
       const items = await getUserRecords("operaciones"); const lista = document.getElementById('op-lista'); if(!lista) return;
       let cap = 0, flu = 0, int = 0; lista.innerHTML = ''; items.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
-      items.forEach(op => { const t = (op.cantidad * op.precio); if (op.tipo === 'Compra') { cap += t + op.comision; flu -= (t + op.comision); } else { cap -= t; flu += (t - op.comision); } int += op.interes; const isC = op.tipo === 'Compra'; lista.innerHTML += `<div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder mb-3"><div class="flex justify-between items-start mb-2"><div><span class="text-[10px] font-bold ${isC?'text-vhero bg-vhero/10':'text-vnav bg-vnav/10'} px-2 py-0.5 rounded-sm uppercase tracking-wider">${op.tipo}</span><h4 class="font-serif font-bold text-lg text-vmain mt-1">${op.activo}</h4></div><div class="text-right"><p class="font-bold text-vmain text-sm">${formatMoney(t)}</p><p class="text-[10px] text-vmuted">${formatCrypto(op.cantidad)} x ${formatMoney(op.precio)}</p></div></div><div class="flex justify-between items-end mt-3 border-t border-vborder pt-2"><p class="text-[10px] text-vmuted">${op.fecha}</p><div class="flex gap-4"><button onclick="abrirEditOp('${op.id}')" class="text-vmuted hover:text-vmain"><i class="fa-solid fa-pen"></i></button><button onclick="eliminarOp('${op.id}')" class="text-vdown hover:opacity-70"><i class="fa-solid fa-trash-can"></i></button></div></div></div>`; });
+      items.forEach(op => { const t = (op.cantidad * op.precio); if (op.tipo === 'Compra') { cap += t + op.comision; flu -= (t + op.comision); } else { cap -= t; flu += (t - op.comision); } int += op.interes; const isC = op.tipo === 'Compra'; lista.innerHTML += `<div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder mb-3"><div class="flex justify-between items-start mb-2"><div><span class="text-[10px] font-bold ${isC?'text-vhero bg-vhero/10':'text-vnav bg-vnav/10'} px-2 py-0.5 rounded-sm uppercase tracking-wider">${op.tipo}</span><h4 class="font-serif font-bold text-lg text-vmain mt-1">${op.activo}</h4></div><div class="text-right"><p class="font-bold text-vmain text-sm">${formatMoney(t)}</p><p class="text-[10px] text-vmuted">${formatCrypto(op.cantidad)} x ${formatMoney(op.precio)}</p></div></div><div class="flex justify-between items-end mt-3 border-t border-vborder pt-2"><p class="text-[10px] text-vmuted">${op.fecha}</p><div class="flex gap-4"><button onclick="abrirEditOp(${op.id})" class="text-vmuted hover:text-vmain"><i class="fa-solid fa-pen"></i></button><button onclick="eliminarOp(${op.id})" class="text-vdown hover:opacity-70"><i class="fa-solid fa-trash-can"></i></button></div></div></div>`; });
       document.getElementById('op-capital').innerText = formatMoney(cap); document.getElementById('op-flujo').innerText = formatMoney(flu); document.getElementById('op-interes').innerText = formatMoney(int);
     }
 
@@ -273,11 +230,7 @@
       const plTotal = vMerc - capAportadoNeto; const elPl = document.getElementById('cart-pl'); if(elPl){ elPl.innerText = formatMoney(plTotal); elPl.className = `text-lg font-semibold mb-1 ${plTotal>=0 ? 'text-vup' : 'text-vdown'}`; }
     }
 
-    async function actualizarPrecio(t, p) { 
-      // Guarda y asocia el precio al usuario usando merge para no borrar datos accidentales en Firebase
-      await db.collection("precios").doc(currentUser + "_" + t).set({ userId: currentUser, ticker: t, precio: parseFloat(p) || 0 }, { merge: true }); 
-      updateCartera(); 
-    }
+    async function actualizarPrecio(t, p) { await putRecord("precios", { ticker: t, precio: parseFloat(p) || 0 }); updateCartera(); }
 
     async function calcularSimulador() {
       const capInicial = parseFloat(document.getElementById('sim-cap').value) || 0; const aporteMes = parseFloat(document.getElementById('sim-mes').value) || 0; const tasaAnual = parseFloat(document.getElementById('sim-tasa').value) || 0; const anos = parseInt(document.getElementById('sim-anos').value) || 0;
@@ -319,34 +272,16 @@
 
     function parseNumberArg(val) { if (!val) return 0; let s = String(val).trim().replace(/[$ \t]/g, ''); if (!s) return 0; if (s.includes('.') && s.includes(',')) { if (s.indexOf('.') < s.indexOf(',')) s = s.replace(/\./g, '').replace(',', '.'); else s = s.replace(/,/g, ''); } else if (s.includes(',')) s = s.replace(',', '.'); return parseFloat(s) || 0; }
     function parseCSVLine(line, sep) { const res = []; let st = 0, inQ = false; for (let i=0; i<line.length; i++) { if(line[i]==='"') inQ=!inQ; else if(line[i]===sep && !inQ) { let cell=line.substring(st, i).trim(); if(cell.startsWith('"')&&cell.endsWith('"')) cell=cell.slice(1,-1); res.push(cell); st=i+1; } } let last=line.substring(st).trim(); if(last.startsWith('"')&&last.endsWith('"')) last=last.slice(1,-1); res.push(last); return res; }
-    
-    // El CSV sube ahora los datos directo a la nube de Firebase
     function importarCSV(event) {
       const file = event.target.files[0]; if (!file) return; const reader = new FileReader();
       reader.onload = async function(e) {
         const text = e.target.result; const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
         if(lines.length<2) return alert('Archivo vacío'); let sep = ','; if(lines[0].includes(';')) sep = ';'; const head = parseCSVLine(lines[0].toLowerCase(), sep);
         const iF=head.findIndex(h=>h.includes('fecha')), iA=head.findIndex(h=>h.includes('activo')), iT=head.findIndex(h=>h.includes('tipo')), iC=head.findIndex(h=>h.includes('cantidad')), iP=head.findIndex(h=>h.includes('precio')), iCom=head.findIndex(h=>h.includes('comision')), iInt=head.findIndex(h=>h.includes('interes')); let cargados = 0;
-        
-        for (let i=1; i<lines.length; i++) { 
-            const cols=parseCSVLine(lines[i], sep); 
-            const f=iF!==-1?cols[iF]:cols[0], a=iA!==-1?cols[iA]:cols[1], c=parseNumberArg(iC!==-1?cols[iC]:cols[3]), p=parseNumberArg(iP!==-1?cols[iP]:cols[4]); 
-            if(f&&a&&c>0) { 
-                await addRecord("operaciones", { fecha: f.trim(), activo: a.toUpperCase().trim(), tipo: (iT!==-1?cols[iT]:cols[2]).toLowerCase().includes('vent')?'Venta':'Compra', cantidad: c, precio: p, comision: iCom!==-1?parseNumberArg(cols[iCom]):0, interes: iInt!==-1?parseNumberArg(cols[iInt]):0 }); 
-                cargados++; 
-            } 
-        }
-        event.target.value = ''; updateOperaciones(); alert(`Se cargaron ${cargados} operaciones a tu nube de Firebase.`);
+        for (let i=1; i<lines.length; i++) { const cols=parseCSVLine(lines[i], sep); const f=iF!==-1?cols[iF]:cols[0], a=iA!==-1?cols[iA]:cols[1], c=parseNumberArg(iC!==-1?cols[iC]:cols[3]), p=parseNumberArg(iP!==-1?cols[iP]:cols[4]); if(f&&a&&c>0) { await addRecord("operaciones", { fecha: f.trim(), activo: a.toUpperCase().trim(), tipo: (iT!==-1?cols[iT]:cols[2]).toLowerCase().includes('vent')?'Venta':'Compra', cantidad: c, precio: p, comision: iCom!==-1?parseNumberArg(cols[iCom]):0, interes: iInt!==-1?parseNumberArg(cols[iInt]):0 }); cargados++; } }
+        event.target.value = ''; updateOperaciones(); alert(`Se cargaron ${cargados} operaciones a tu perfil.`);
       }; reader.readAsText(file);
     }
-    
-    // Arranque de sesión automática
-    const sUser = localStorage.getItem('cf_user'); 
-    if(sUser) {
-      // Damos unos milisegundos para que Firebase cargue completamente
-      setTimeout(() => startSession(sUser), 200);
-    }
-    
     if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
   </script>
 </body>
