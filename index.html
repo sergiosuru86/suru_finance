@@ -37,28 +37,11 @@
   
   <div id="auth-screen" class="fixed inset-0 bg-vbody z-[200] flex flex-col justify-center items-center px-6 transition-colors duration-300">
     <div class="w-full max-w-sm">
-      <div class="text-center mb-10">
-        <div class="w-16 h-16 bg-vaccent text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg"><i class="fa-solid fa-layer-group"></i></div>
-        <h1 class="font-serif text-4xl font-bold text-vmain tracking-tight">Capital Flow</h1>
-        <p class="text-vmuted text-sm mt-2 font-medium">Tu espacio personal en la nube.</p>
-      </div>
+      <div class="text-center mb-10"><div class="w-16 h-16 bg-vaccent text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg"><i class="fa-solid fa-layer-group"></i></div><h1 class="font-serif text-4xl font-bold text-vmain tracking-tight">Capital Flow</h1><p class="text-vmuted text-sm mt-2 font-medium">Tu espacio personal en la nube.</p></div>
       <div class="bg-vcard p-6 rounded-3xl shadow-xl border border-vborder">
-        <div class="flex border-b border-vborder mb-6">
-            <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent">Iniciar Sesión</button>
-            <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted">Crear Cuenta</button>
-        </div>
-        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
-            <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Usuario</label><input type="text" id="login-user" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none" /></div>
-            <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Contraseña</label><input type="password" id="login-pass" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none" /></div>
-            <p id="login-error" class="text-vdown text-xs hidden">Usuario o contraseña incorrectos.</p>
-            <button type="submit" class="w-full bg-vaccent text-white font-bold py-3.5 rounded-xl mt-2">Entrar</button>
-        </form>
-        <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden">
-            <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Elige un Usuario</label><input type="text" id="reg-user" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none" /></div>
-            <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Crea una Contraseña</label><input type="password" id="reg-pass" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none" /></div>
-            <p id="reg-error" class="text-vdown text-xs hidden">El usuario ya existe.</p>
-            <button type="submit" class="w-full bg-vmain text-vbody font-bold py-3.5 rounded-xl mt-2">Registrarme</button>
-        </form>
+        <div class="flex border-b border-vborder mb-6"><button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent">Iniciar Sesión</button><button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted">Crear Cuenta</button></div>
+        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4"><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Usuario</label><input type="text" id="login-user" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Contraseña</label><input type="password" id="login-pass" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none" /></div><p id="login-error" class="text-vdown text-xs hidden">Usuario o contraseña incorrectos.</p><button type="submit" class="w-full bg-vaccent text-white font-bold py-3.5 rounded-xl mt-2">Entrar</button></form>
+        <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden"><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Elige un Usuario</label><input type="text" id="reg-user" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Crea una Contraseña</label><input type="password" id="reg-pass" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none" /></div><p id="reg-error" class="text-vdown text-xs hidden">El usuario ya existe.</p><button type="submit" class="w-full bg-vmain text-vbody font-bold py-3.5 rounded-xl mt-2">Registrarme</button></form>
       </div>
     </div>
   </div>
@@ -67,9 +50,7 @@
     <header class="p-5 flex justify-between items-center bg-vbody sticky top-0 z-10 transition-colors">
       <div><p class="text-[10px] text-vmuted font-medium uppercase mb-1">Finanzas / <span id="display-username">Personal</span></p><h1 id="header-title" class="text-2xl font-serif font-semibold text-vmain">Buenos días</h1></div>
       <div class="flex items-center gap-3">
-        <!-- BOTÓN DE DÓLAR MEP -->
         <button id="btn-currency" onclick="toggleCurrency()" class="w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted bg-vcard shadow-sm transition-colors" title="Ver en Dólar MEP"><i class="fa-solid fa-dollar-sign"></i></button>
-        
         <button onclick="toggleTheme()" class="w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted bg-vcard shadow-sm"><i class="fa-solid fa-palette"></i></button>
         <label for="csv-upload" class="cursor-pointer w-10 h-10 rounded-full border border-vborder flex items-center justify-center text-vmuted bg-vcard shadow-sm"><i class="fa-solid fa-sliders"></i><input type="file" id="csv-upload" class="hidden" accept="*/*" onchange="importarCSV(event)" /></label>
         <div class="relative">
@@ -104,7 +85,7 @@
             <input type="checkbox" id="caja-fijo" class="w-5 h-5 accent-vdown cursor-pointer" onclick="event.stopPropagation()">
         </div>
         <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Descripción</label><input type="text" id="caja-desc" required placeholder="Ej: Venta 3D o Supermercado" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none focus:border-vaccent" /></div>
-        <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Monto ($)</label><input type="number" step="any" id="caja-monto" required placeholder="0.00" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none focus:border-vaccent text-lg font-bold" /></div>
+        <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Monto (En Pesos ARS)</label><input type="number" step="any" id="caja-monto" required placeholder="0.00" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none focus:border-vaccent text-lg font-bold" /></div>
         <button type="submit" class="w-full bg-vaccent text-white font-semibold py-4 rounded-xl shadow-md active:scale-95 transition-transform mt-2">Guardar</button>
       </form>
     </div>
@@ -114,9 +95,10 @@
     <div class="bg-vcard w-full sm:w-[400px] rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-[slideUp_0.3s_ease-out] mb-10">
       <div class="flex justify-between items-center mb-6"><h3 class="font-serif text-2xl font-semibold text-vmain" id="titulo-modal-op">Registrar Operación</h3><button onclick="closeModal('modal-operacion')" class="text-vmuted hover:text-vdown text-xl"><i class="fa-solid fa-xmark"></i></button></div>
       <form onsubmit="guardarOperacion(event)" class="space-y-4">
+        <p class="text-[10px] text-vaccent bg-vaccent/10 p-2 rounded-lg font-semibold"><i class="fa-solid fa-circle-info mr-1"></i>Ingresá los precios exactamente como te los cobró el broker en la moneda nativa del activo (Pesos o USD).</p>
         <div class="grid grid-cols-2 gap-3"><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Fecha</label><input type="date" id="op-fecha" required class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Activo (Ticker)</label><input type="text" id="op-activo" required placeholder="Ej: AAPL.BA o BTCUSDT" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent uppercase" /></div></div>
         <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Tipo</label><div class="grid grid-cols-2 gap-2"><label class="cursor-pointer"><input type="radio" name="op-tipo" value="Compra" class="peer hidden" checked><div class="text-center p-2.5 rounded-xl border border-vborder text-vmuted peer-checked:bg-vhero peer-checked:text-white peer-checked:border-vhero transition-all font-medium">Compra</div></label><label class="cursor-pointer"><input type="radio" name="op-tipo" value="Venta" class="peer hidden"><div class="text-center p-2.5 rounded-xl border border-vborder text-vmuted peer-checked:bg-vnav peer-checked:text-white peer-checked:border-vnav transition-all font-medium">Venta</div></label></div></div>
-        <div class="grid grid-cols-2 gap-3"><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Cantidad</label><input type="number" step="any" id="op-cantidad" required placeholder="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Precio Unit.</label><input type="number" step="any" id="op-precio" required placeholder="0.00" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Comisión</label><input type="number" step="any" id="op-comision" value="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Intereses</label><input type="number" step="any" id="op-interes" value="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" /></div></div>
+        <div class="grid grid-cols-2 gap-3"><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Cantidad</label><input type="number" step="any" id="op-cantidad" required placeholder="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Precio Unitario</label><input type="number" step="any" id="op-precio" required placeholder="0.00" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Comisión</label><input type="number" step="any" id="op-comision" value="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Intereses</label><input type="number" step="any" id="op-interes" value="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2.5 outline-none focus:border-vaccent" /></div></div>
         <button type="submit" class="w-full bg-vaccent text-white font-semibold py-4 rounded-xl shadow-md active:scale-95 transition-transform mt-2">Guardar Operación</button>
       </form>
     </div>
@@ -124,33 +106,14 @@
 
   <div id="modal-renombrar" class="fixed inset-0 bg-black/60 z-[100] hidden flex-col justify-end sm:justify-center items-center transition-opacity max-h-screen overflow-y-auto pt-20">
     <div class="bg-vcard w-full sm:w-[400px] rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-[slideUp_0.3s_ease-out] mb-10">
-      <div class="flex justify-between items-center mb-6">
-        <h3 class="font-serif text-2xl font-semibold text-vmain">Corregir Ticker</h3>
-        <button onclick="closeModal('modal-renombrar')" class="text-vmuted hover:text-vdown text-xl"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <form onsubmit="ejecutarRenombrar(event)" class="space-y-4">
-        <input type="hidden" id="renombrar-old" />
-        <div>
-            <p class="text-xs text-vmuted mb-4 border-l-2 border-vaccent pl-3">Al guardar, se actualizarán todas tus compras y ventas históricas que coincidan con este nombre.</p>
-            <label class="block text-xs font-semibold text-vmuted uppercase mb-1">Nombre actual</label>
-            <div class="w-full bg-vbody text-vmuted border border-vborder rounded-xl p-3 mb-4 font-mono font-semibold" id="renombrar-old-text"></div>
-            <label class="block text-xs font-semibold text-vmuted uppercase mb-1">Nuevo Ticker (Ej: AAPL.BA)</label>
-            <input type="text" id="renombrar-new" required placeholder="Escribí el ticker correcto" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none focus:border-vaccent uppercase font-bold tracking-wide" />
-        </div>
-        <button type="submit" class="w-full bg-vaccent text-white font-semibold py-4 rounded-xl shadow-md active:scale-95 transition-transform mt-2">Actualizar Historial</button>
-      </form>
+      <div class="flex justify-between items-center mb-6"><h3 class="font-serif text-2xl font-semibold text-vmain">Corregir Ticker</h3><button onclick="closeModal('modal-renombrar')" class="text-vmuted hover:text-vdown text-xl"><i class="fa-solid fa-xmark"></i></button></div>
+      <form onsubmit="ejecutarRenombrar(event)" class="space-y-4"><input type="hidden" id="renombrar-old" /><div><p class="text-xs text-vmuted mb-4 border-l-2 border-vaccent pl-3">Al guardar, se actualizarán todas tus compras y ventas históricas que coincidan.</p><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Nombre actual</label><div class="w-full bg-vbody text-vmuted border border-vborder rounded-xl p-3 mb-4 font-mono font-semibold" id="renombrar-old-text"></div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Nuevo Ticker (Ej: AAPL.BA)</label><input type="text" id="renombrar-new" required placeholder="Escribí el ticker correcto" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-3 outline-none focus:border-vaccent uppercase font-bold tracking-wide" /></div><button type="submit" class="w-full bg-vaccent text-white font-semibold py-4 rounded-xl shadow-md active:scale-95 transition-transform mt-2">Actualizar Historial</button></form>
     </div>
   </div>
 
   <div id="modal-distribucion" class="fixed inset-0 bg-black/60 z-[100] hidden flex-col justify-end sm:justify-center items-center transition-opacity max-h-screen overflow-y-auto pt-20">
     <div class="bg-vcard w-full sm:w-[400px] rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-[slideUp_0.3s_ease-out] mb-10 flex flex-col max-h-[85vh]">
-      <div class="flex justify-between items-center mb-6">
-        <div>
-          <h3 class="font-serif text-2xl font-semibold text-vmain">Distribución</h3>
-          <p class="text-xs text-vmuted">Detalle exacto de tu cartera</p>
-        </div>
-        <button onclick="closeModal('modal-distribucion')" class="text-vmuted hover:text-vdown text-xl"><i class="fa-solid fa-xmark"></i></button>
-      </div>
+      <div class="flex justify-between items-center mb-6"><div><h3 class="font-serif text-2xl font-semibold text-vmain">Distribución</h3><p class="text-xs text-vmuted">Detalle exacto de tu cartera</p></div><button onclick="closeModal('modal-distribucion')" class="text-vmuted hover:text-vdown text-xl"><i class="fa-solid fa-xmark"></i></button></div>
       <div id="distribucion-lista" class="overflow-y-auto space-y-3 pr-2 custom-scrollbar pb-4"></div>
     </div>
   </div>
@@ -171,9 +134,7 @@
     let currentUser = null, chartCajaInst = null, chartPieInst = null, chartLineInst = null, chartSimInst = null, chartPieGastosInst = null;
     let editCajaId = null, editOpId = null;
 
-    // --- VARIABLES GLOBALES DE MONEDA ---
-    let isUsd = false;
-    let dolarMep = null;
+    let isUsd = false; let dolarMep = null;
 
     const catIngresos = ['Sueldo', 'Impresión 3D', 'Inversiones', 'Ventas', 'Otros'];
     const catGastos = ['Supermercado', 'Servicios', 'Suscripciones', 'Transporte', 'Ocio', 'Salud', 'Hogar', 'Otros'];
@@ -183,21 +144,20 @@
     const fechaActual = new Date(); const mesActualText = `${meses[fechaActual.getMonth()]} DE ${fechaActual.getFullYear()}`; const mesActualFiltro = fechaActual.toISOString().slice(0, 7);
     const headerTitles = { 'resumen': 'Buenos días', 'caja': 'Caja diaria', 'operaciones': 'Operaciones', 'cartera': 'Cartera', 'metricas': 'Métricas' };
 
-    let currentThemeIndex = 0;
-    const themes = ['', 'theme-pro', 'theme-premium', 'theme-adaptive']; 
+    let currentThemeIndex = 0; const themes = ['', 'theme-pro', 'theme-premium', 'theme-adaptive']; 
     function toggleTheme() { document.body.classList.remove('theme-pro', 'theme-premium', 'theme-adaptive'); currentThemeIndex = (currentThemeIndex + 1) % themes.length; if(themes[currentThemeIndex]) { document.body.classList.add(themes[currentThemeIndex]); } if(document.getElementById('header-title').innerText.includes('Métrica')) { updateMetricas(); } }
 
     function switchAuthTab(t) { document.getElementById('tab-login').className = t==='login' ? 'flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent' : 'flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted'; document.getElementById('tab-register').className = t==='register' ? 'flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent' : 'flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted'; document.getElementById('form-login').classList.toggle('hidden', t!=='login'); document.getElementById('form-register').classList.toggle('hidden', t!=='register'); }
     
     async function handleRegister(e) { e.preventDefault(); const user = document.getElementById('reg-user').value.trim(); const pass = document.getElementById('reg-pass').value; const errorMsg = document.getElementById('reg-error'); const doc = await db.collection("usuarios").doc(user).get(); if(doc.exists) { errorMsg.classList.remove('hidden'); } else { await db.collection("usuarios").doc(user).set({ username: user, password: pass }); errorMsg.classList.add('hidden'); startSession(user); } }
     async function handleLogin(e) { e.preventDefault(); const user = document.getElementById('login-user').value.trim(); const pass = document.getElementById('login-pass').value; const errorMsg = document.getElementById('login-error'); const doc = await db.collection("usuarios").doc(user).get(); if(doc.exists && doc.data().password === pass) { errorMsg.classList.add('hidden'); startSession(user); } else { errorMsg.classList.remove('hidden'); } }
-    
     function startSession(u) { currentUser = u; localStorage.setItem('cf_user', u); document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('app-container').classList.remove('hidden'); document.getElementById('app-container').classList.add('flex'); document.getElementById('display-username').innerText = u; document.getElementById('menu-username').innerText = u; document.getElementById('user-avatar').innerText = u.substring(0,2).toUpperCase(); changeTab('resumen', document.querySelector('.nav-item')); }
     function logout() { currentUser = null; localStorage.removeItem('cf_user'); document.getElementById('user-menu').classList.add('hidden'); document.getElementById('app-container').classList.add('hidden'); document.getElementById('app-container').classList.remove('flex'); document.getElementById('auth-screen').classList.remove('hidden'); }
 
-    function formatMoney(num) { 
+    function formatMoney(num, bypassConversion = false) { 
         if (isUsd && dolarMep > 0) {
-            return "u$s " + (num / dolarMep).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const val = bypassConversion ? num : (num / dolarMep);
+            return "u$s " + val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
         return "$" + (num || 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); 
     }
@@ -207,9 +167,8 @@
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
     function toggleMonth(mes) { const el = document.getElementById('ops-' + mes); const icon = document.getElementById('icon-' + mes); if (el.classList.contains('hidden')) { el.classList.remove('hidden'); icon.classList.add('rotate-180'); } else { el.classList.add('hidden'); icon.classList.remove('rotate-180'); } }
 
-    function parseNumberArg(val) { if (!val) return 0; let s = String(val).trim().replace(/[$ \t]/g, ''); if (!s) return 0; if (s.includes('.') && s.includes(',')) { if (s.indexOf('.') < s.indexOf(',')) s = s.replace(/\./g, '').replace(',', '.'); else s = s.replace(/,/g, ''); } else if (s.includes(',')) s = s.replace(',', '.'); return parseFloat(s) || 0; }
-    function parseCSVLine(line, sep) { const res = []; let st = 0, inQ = false; for (let i=0; i<line.length; i++) { if(line[i]==='"') inQ=!inQ; else if(line[i]===sep && !inQ) { let cell=line.substring(st, i).trim(); if(cell.startsWith('"')&&cell.endsWith('"')) cell=cell.slice(1,-1); res.push(cell); st=i+1; } } let last=line.substring(st).trim(); if(last.startsWith('"')&&last.endsWith('"')) last=last.slice(1,-1); res.push(last); return res; }
-
+    function isActivoEnUsd(ticker) { return ticker.includes('USDT') || ticker.includes('BTC') || ticker.includes('ETH'); }
+    
     function getUserRecords(s) { return db.collection(s).where("userId", "==", currentUser).get().then(snap => snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))); }
     function getRecordById(s, id) { return db.collection(s).doc(id).get().then(doc => doc.exists ? { id: doc.id, ...doc.data() } : null); }
     function addRecord(s, d) { d.userId = currentUser; return db.collection(s).add(d); }
@@ -218,54 +177,25 @@
 
     function actualizarSelectCategorias(valorPredefinido = '') {
         try {
-            const tipo = document.querySelector('input[name="tipo-mov"]:checked').value;
-            const select = document.getElementById('caja-cat');
-            const contFijo = document.getElementById('caja-fijo-container');
-            if(!select || !contFijo) return;
-            select.innerHTML = '';
-            const opciones = tipo === 'Ingreso' ? catIngresos : catGastos;
-            opciones.forEach(cat => {
-                const opt = document.createElement('option');
-                opt.value = cat; opt.innerText = cat;
-                if(cat === valorPredefinido) opt.selected = true;
-                select.appendChild(opt);
-            });
+            const tipo = document.querySelector('input[name="tipo-mov"]:checked').value; const select = document.getElementById('caja-cat'); const contFijo = document.getElementById('caja-fijo-container');
+            if(!select || !contFijo) return; select.innerHTML = ''; const opciones = tipo === 'Ingreso' ? catIngresos : catGastos;
+            opciones.forEach(cat => { const opt = document.createElement('option'); opt.value = cat; opt.innerText = cat; if(cat === valorPredefinido) opt.selected = true; select.appendChild(opt); });
             if(tipo === 'Gasto') { contFijo.classList.remove('hidden'); if(!valorPredefinido) checkCategoriaFija(); } else { contFijo.classList.add('hidden'); document.getElementById('caja-fijo').checked = false; }
         } catch(e) { console.error("Error categorias:", e); }
     }
-
-    function checkCategoriaFija() {
-        const cat = document.getElementById('caja-cat').value;
-        const cb = document.getElementById('caja-fijo');
-        if(cb) cb.checked = (cat === 'Suscripciones' || cat === 'Servicios');
-    }
+    function checkCategoriaFija() { const cat = document.getElementById('caja-cat').value; const cb = document.getElementById('caja-fijo'); if(cb) cb.checked = (cat === 'Suscripciones' || cat === 'Servicios'); }
 
     async function toggleCurrency() {
-        const btn = document.getElementById('btn-currency');
-        const icon = btn.querySelector('i');
-        
+        const btn = document.getElementById('btn-currency'); const icon = btn.querySelector('i');
         if (!isUsd) {
             icon.classList.remove('fa-dollar-sign'); icon.classList.add('fa-spinner', 'fa-spin');
             try {
-                const res = await fetch('https://dolarapi.com/v1/dolares/bolsa');
-                const data = await res.json();
-                if(data.venta) {
-                    dolarMep = data.venta;
-                    isUsd = true;
-                    btn.classList.add('text-vup', 'border-vup', 'bg-vup/10');
-                    btn.classList.remove('text-vmuted', 'border-vborder', 'bg-vcard');
-                }
-            } catch(e) {
-                alert("No se pudo conectar con DolarAPI para obtener el Dólar MEP.");
-            }
+                const res = await fetch('https://dolarapi.com/v1/dolares/bolsa'); const data = await res.json();
+                if(data.venta) { dolarMep = data.venta; isUsd = true; btn.classList.add('text-vup', 'border-vup', 'bg-vup/10'); btn.classList.remove('text-vmuted', 'border-vborder', 'bg-vcard'); }
+            } catch(e) { alert("No se pudo conectar con DolarAPI."); }
             icon.classList.remove('fa-spinner', 'fa-spin'); icon.classList.add('fa-dollar-sign');
-        } else {
-            isUsd = false;
-            btn.classList.remove('text-vup', 'border-vup', 'bg-vup/10');
-            btn.classList.add('text-vmuted', 'border-vborder', 'bg-vcard');
-        }
-        const act = document.querySelector('.nav-item.active');
-        if(act) act.click();
+        } else { isUsd = false; btn.classList.remove('text-vup', 'border-vup', 'bg-vup/10'); btn.classList.add('text-vmuted', 'border-vborder', 'bg-vcard'); }
+        const act = document.querySelector('.nav-item.active'); if(act) act.click();
     }
 
     async function getLiquidez() {
@@ -278,265 +208,169 @@
     function prepararNuevaCaja() { editCajaId = null; document.getElementById('titulo-modal-caja').innerText = "Nuevo Movimiento"; document.getElementById('caja-fecha').valueAsDate = new Date(); document.getElementById('caja-desc').value = ''; document.getElementById('caja-monto').value = ''; document.querySelector('input[name="tipo-mov"][value="Ingreso"]').checked = true; actualizarSelectCategorias(); openModal('modal-caja'); }
     function prepararNuevaOp() { editOpId = null; document.getElementById('titulo-modal-op').innerText = "Registrar Operación"; document.getElementById('op-fecha').valueAsDate = new Date(); document.getElementById('op-activo').value = ''; document.getElementById('op-cantidad').value = ''; document.getElementById('op-precio').value = ''; document.getElementById('op-comision').value = '0'; document.getElementById('op-interes').value = '0'; openModal('modal-operacion'); }
 
+    // Corrección crítica: Se guardan y editan valores tal cual los escribe el usuario.
     async function guardarMovimiento(e) { 
       e.preventDefault(); 
       try {
-          let monto = parseFloat(document.getElementById('caja-monto').value);
-          // Si está en dólares al momento de guardar, convertimos a pesos para la BD
-          if (isUsd && dolarMep > 0) monto = monto * dolarMep;
-          
-          const data = { fecha: document.getElementById('caja-fecha').value, tipo: document.querySelector('input[name="tipo-mov"]:checked').value, categoria: document.getElementById('caja-cat').value, esFijo: document.getElementById('caja-fijo').checked, desc: document.getElementById('caja-desc').value, monto: monto };
+          const data = { fecha: document.getElementById('caja-fecha').value, tipo: document.querySelector('input[name="tipo-mov"]:checked').value, categoria: document.getElementById('caja-cat').value, esFijo: document.getElementById('caja-fijo').checked, desc: document.getElementById('caja-desc').value, monto: parseFloat(document.getElementById('caja-monto').value) };
           if (editCajaId) { data.id = editCajaId; await putRecord("caja", data); } else { await addRecord("caja", data); }
-          closeModal('modal-caja'); 
-          if(document.getElementById('header-title').innerText.includes('Buenos')) updateResumen(); 
-          if(document.getElementById('header-title').innerText.includes('Caja')) updateCaja(); 
+          closeModal('modal-caja'); if(document.getElementById('header-title').innerText.includes('Buenos')) updateResumen(); if(document.getElementById('header-title').innerText.includes('Caja')) updateCaja(); 
       } catch(err) { console.error(err); }
     }
     
     async function guardarOperacion(e) { 
       e.preventDefault(); 
       try {
+          const dateStr = document.getElementById('op-fecha').value;
           let precio = parseFloat(document.getElementById('op-precio').value);
           let comision = parseFloat(document.getElementById('op-comision').value) || 0;
           let interes = parseFloat(document.getElementById('op-interes').value) || 0;
           
-          // Si está en dólares al guardar, lo pesificamos para no romper el histórico
-          if (isUsd && dolarMep > 0) {
-              precio = precio * dolarMep;
-              comision = comision * dolarMep;
-              interes = interes * dolarMep;
-          }
-          
+          let dh = dolarMep || 1000; 
+          try {
+              const resApi = await fetch('https://api.argentinadatos.com/v1/cotizaciones/dolares');
+              if (resApi.ok) {
+                  const historico = await resApi.json();
+                  const filterMep = historico.filter(d => d.casa === 'bolsa' && d.fecha <= dateStr);
+                  if (filterMep.length > 0) {
+                      filterMep.sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
+                      dh = filterMep[filterMep.length - 1].venta;
+                  }
+              }
+          } catch(e) { console.error("No se pudo obtener dolar historico, usando actual"); }
+
           const data = { 
-              fecha: document.getElementById('op-fecha').value, 
-              activo: document.getElementById('op-activo').value.toUpperCase().trim(), 
-              tipo: document.querySelector('input[name="op-tipo"]:checked').value, 
-              cantidad: parseFloat(document.getElementById('op-cantidad').value), 
-              precio: precio, 
-              comision: comision, 
-              interes: interes 
+              fecha: dateStr, activo: document.getElementById('op-activo').value.toUpperCase().trim(), tipo: document.querySelector('input[name="op-tipo"]:checked').value, 
+              cantidad: parseFloat(document.getElementById('op-cantidad').value), precio: precio, comision: comision, interes: interes, dolarHistorico: dh
           };
           if(editOpId) { data.id = editOpId; await putRecord("operaciones", data); } else { await addRecord("operaciones", data); }
           closeModal('modal-operacion'); 
-          
           if(document.getElementById('header-title').innerText.includes('Operacion')) updateOperaciones(); 
           if(document.getElementById('header-title').innerText.includes('Cartera')) updateCartera(); 
       } catch(err) { console.error(err); }
     }
 
-    async function abrirEditCaja(id) { const item = await getRecordById("caja", id); if(item && item.userId === currentUser) { editCajaId = id; document.getElementById('titulo-modal-caja').innerText = "Editar Movimiento"; document.querySelector(`input[name="tipo-mov"][value="${item.tipo}"]`).checked = true; actualizarSelectCategorias(item.categoria || 'Otros'); document.getElementById('caja-fijo').checked = item.esFijo || false; document.getElementById('caja-fecha').value = item.fecha; document.getElementById('caja-desc').value = item.desc; document.getElementById('caja-monto').value = isUsd && dolarMep > 0 ? (item.monto / dolarMep).toFixed(2) : item.monto; openModal('modal-caja'); } }
-    async function abrirEditOp(id) { const op = await getRecordById("operaciones", id); if(op && op.userId === currentUser) { editOpId = id; document.getElementById('titulo-modal-op').innerText = "Editar Operación"; document.querySelector(`input[name="op-tipo"][value="${op.tipo}"]`).checked = true; document.getElementById('op-fecha').value = op.fecha; document.getElementById('op-activo').value = op.activo; document.getElementById('op-cantidad').value = op.cantidad; document.getElementById('op-precio').value = isUsd && dolarMep > 0 ? (op.precio / dolarMep).toFixed(2) : op.precio; document.getElementById('op-comision').value = isUsd && dolarMep > 0 ? (op.comision / dolarMep).toFixed(2) : op.comision; document.getElementById('op-interes').value = isUsd && dolarMep > 0 ? (op.interes / dolarMep).toFixed(2) : op.interes; openModal('modal-operacion'); } }
+    async function abrirEditCaja(id) { const item = await getRecordById("caja", id); if(item && item.userId === currentUser) { editCajaId = id; document.getElementById('titulo-modal-caja').innerText = "Editar Movimiento"; document.querySelector(`input[name="tipo-mov"][value="${item.tipo}"]`).checked = true; actualizarSelectCategorias(item.categoria || 'Otros'); document.getElementById('caja-fijo').checked = item.esFijo || false; document.getElementById('caja-fecha').value = item.fecha; document.getElementById('caja-desc').value = item.desc; document.getElementById('caja-monto').value = item.monto; openModal('modal-caja'); } }
+    async function abrirEditOp(id) { const op = await getRecordById("operaciones", id); if(op && op.userId === currentUser) { editOpId = id; document.getElementById('titulo-modal-op').innerText = "Editar Operación"; document.querySelector(`input[name="op-tipo"][value="${op.tipo}"]`).checked = true; document.getElementById('op-fecha').value = op.fecha; document.getElementById('op-activo').value = op.activo; document.getElementById('op-cantidad').value = op.cantidad; document.getElementById('op-precio').value = op.precio; document.getElementById('op-comision').value = op.comision; document.getElementById('op-interes').value = op.interes; openModal('modal-operacion'); } }
     
     async function eliminarCaja(id) { if(confirm('¿Seguro que deseas eliminar este movimiento?')) { await deleteRecord("caja", id); if(document.getElementById('header-title').innerText.includes('Buenos')) updateResumen(); if(document.getElementById('header-title').innerText.includes('Caja')) updateCaja(); } }
     async function eliminarOp(id) { if(confirm('¿Seguro que deseas eliminar esta operación?')) { await deleteRecord("operaciones", id); updateOperaciones(); } }
     async function vaciarMisOperaciones() { if(confirm('¿Seguro? Esto borrará tus operaciones de forma definitiva en la nube.')) { const allOps = await getUserRecords("operaciones"); await Promise.all(allOps.map(op => db.collection("operaciones").doc(op.id).delete())); updateOperaciones(); } }
-
-    function renombrarActivo(oldName) {
-        document.getElementById('renombrar-old').value = oldName;
-        document.getElementById('renombrar-old-text').innerText = oldName;
-        document.getElementById('renombrar-new').value = oldName;
-        openModal('modal-renombrar');
-    }
+    function renombrarActivo(oldName) { document.getElementById('renombrar-old').value = oldName; document.getElementById('renombrar-old-text').innerText = oldName; document.getElementById('renombrar-new').value = oldName; openModal('modal-renombrar'); }
 
     async function ejecutarRenombrar(e) {
-        e.preventDefault();
-        const oldName = document.getElementById('renombrar-old').value;
-        const newName = document.getElementById('renombrar-new').value.trim().toUpperCase();
-        
+        e.preventDefault(); const oldName = document.getElementById('renombrar-old').value; const newName = document.getElementById('renombrar-new').value.trim().toUpperCase();
         if(!newName || newName === oldName) { closeModal('modal-renombrar'); return; }
-        
         try {
             const opsQuery = await db.collection("operaciones").where("userId", "==", currentUser).where("activo", "==", oldName).get();
-            const promesasOps = opsQuery.docs.map(doc => db.collection("operaciones").doc(doc.id).update({ activo: newName }));
-            await Promise.all(promesasOps);
-            
-            const oldPrecioRef = db.collection("precios").doc(`${currentUser}_${oldName}`);
-            const oldPrecioDoc = await oldPrecioRef.get();
-            if(oldPrecioDoc.exists) {
-                const newPrecioRef = db.collection("precios").doc(`${currentUser}_${newName}`);
-                await newPrecioRef.set({ userId: currentUser, ticker: newName, precio: oldPrecioDoc.data().precio, auto: oldPrecioDoc.data().auto }, { merge: true });
-                await oldPrecioRef.delete();
-            }
-            
-            closeModal('modal-renombrar');
-            updateCartera(); 
-            updateOperaciones();
+            const promesasOps = opsQuery.docs.map(doc => db.collection("operaciones").doc(doc.id).update({ activo: newName })); await Promise.all(promesasOps);
+            const oldPrecioRef = db.collection("precios").doc(`${currentUser}_${oldName}`); const oldPrecioDoc = await oldPrecioRef.get();
+            if(oldPrecioDoc.exists) { await db.collection("precios").doc(`${currentUser}_${newName}`).set({ userId: currentUser, ticker: newName, precio: oldPrecioDoc.data().precio, auto: oldPrecioDoc.data().auto }, { merge: true }); await oldPrecioRef.delete(); }
+            closeModal('modal-renombrar'); updateCartera(); updateOperaciones();
         } catch(err) { console.error('Error al actualizar:', err); }
     }
 
-    async function actualizarPrecio(t, p) { 
-        let nuevoPrecio = parseFloat(p) || 0;
-        // Si la UI está en USD, asumimos que el usuario escribió el precio en USD, lo pesificamos para guardar
-        if (isUsd && dolarMep > 0) {
-            nuevoPrecio = nuevoPrecio * dolarMep;
-        }
-        await db.collection("precios").doc(currentUser + "_" + t).set({ userId: currentUser, ticker: t, precio: nuevoPrecio, auto: false }, { merge: true }); 
-        updateCartera(); 
-    }
+    async function actualizarPrecio(t, p) { let nuevoPrecio = parseFloat(p) || 0; if (isUsd && dolarMep > 0) { nuevoPrecio = nuevoPrecio * dolarMep; } await db.collection("precios").doc(currentUser + "_" + t).set({ userId: currentUser, ticker: t, precio: nuevoPrecio, auto: false }, { merge: true }); updateCartera(); }
 
-    // El motor de sincronización sigue guardando en Pesos por defecto
     async function sincronizarMercado() {
         const btn = document.getElementById('btn-sync'); if(!btn) return;
-        const originalText = btn.innerHTML; 
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Sincronizando...'; 
-        btn.disabled = true;
-        
+        const originalText = btn.innerHTML; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Sincronizando...'; btn.disabled = true;
         try {
             const ops = await getUserRecords("operaciones"); 
             const tickers = [...new Set(ops.map(o => o.activo.trim().toUpperCase()))].filter(t => !t.includes(' ')); 
-            
-            if(tickers.length === 0) {
-                btn.innerHTML = `<i class="fa-solid fa-xmark mr-1"></i> Sin datos`;
-                setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 3000);
-                return;
-            }
-
+            if(tickers.length === 0) { btn.innerHTML = `<i class="fa-solid fa-xmark mr-1"></i> Sin datos`; setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 3000); return; }
             let actualizados = 0;
-            
-            // Si vamos a sincronizar, necesitamos saber el valor del dólar para traer la data de Binance/Wall Street y pesificarla
             let dolarDeCierre = dolarMep;
             if (!dolarDeCierre) {
                 const resDol = await fetch('https://dolarapi.com/v1/dolares/bolsa').catch(()=>null);
-                if (resDol && resDol.ok) {
-                    const dataDol = await resDol.json();
-                    dolarDeCierre = dataDol.venta;
-                } else {
-                    dolarDeCierre = 1000; // valor fallback de seguridad
-                }
+                if (resDol && resDol.ok) { const dataDol = await resDol.json(); dolarDeCierre = dataDol.venta; } else { dolarDeCierre = 1000; }
             }
-            
             for(let t of tickers) {
                 try {
                     let precioPesos = null;
-                    if(t.includes('USDT') || t.includes('BTC') || t.includes('ETH')) {
-                        let symbol = t; 
-                        if(t === 'BTC') symbol = 'BTCUSDT'; 
-                        if(t === 'ETH') symbol = 'ETHUSDT';
+                    if(isActivoEnUsd(t)) {
+                        let symbol = t; if(t === 'BTC') symbol = 'BTCUSDT'; if(t === 'ETH') symbol = 'ETHUSDT';
                         const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`).catch(()=>null);
-                        if(res && res.ok) { 
-                            const data = await res.json(); 
-                            if(data.price) precioPesos = parseFloat(data.price) * dolarDeCierre; 
-                        }
+                        if(res && res.ok) { const data = await res.json(); if(data.price) precioPesos = parseFloat(data.price) * dolarDeCierre; }
                     } else {
                         const url = `https://query1.finance.yahoo.com/v8/finance/chart/${t}`;
                         let res = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`).catch(()=>null);
-                        if(!res || !res.ok) {
-                            res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`).catch(()=>null);
-                        }
-
-                        if(res && res.ok) {
-                            const yData = await res.json();
-                            if(yData.chart && yData.chart.result && yData.chart.result.length > 0) { 
-                                const pRef = yData.chart.result[0].meta.regularMarketPrice; 
-                                // Si es .BA es en pesos, si no tiene .BA es de afuera y viene en USD, lo pesificamos
-                                precioPesos = t.includes('.BA') ? pRef : (pRef * dolarDeCierre);
-                            }
-                        }
+                        if(!res || !res.ok) { res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`).catch(()=>null); }
+                        if(res && res.ok) { const yData = await res.json(); if(yData.chart && yData.chart.result && yData.chart.result.length > 0) { const pRef = yData.chart.result[0].meta.regularMarketPrice; precioPesos = t.includes('.BA') ? pRef : (pRef * dolarDeCierre); } }
                     }
-                    
-                    if(precioPesos && precioPesos > 0) { 
-                        await db.collection("precios").doc(currentUser + "_" + t).set({ userId: currentUser, ticker: t, precio: precioPesos, auto: true }, { merge: true }); 
-                        actualizados++; 
-                    }
+                    if(precioPesos && precioPesos > 0) { await db.collection("precios").doc(currentUser + "_" + t).set({ userId: currentUser, ticker: t, precio: precioPesos, auto: true }, { merge: true }); actualizados++; }
                 } catch(e) { console.error(`Error procesando ${t}`); }
             }
-            
             await updateCartera(); 
+            if(actualizados > 0) { btn.innerHTML = `<i class="fa-solid fa-check mr-1"></i> ${actualizados} listos`; btn.classList.replace('text-vaccent', 'text-vup'); } 
+            else { btn.innerHTML = `<i class="fa-solid fa-xmark mr-1"></i> Sin datos`; }
+        } catch(e) { btn.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> Error'; }
+        setTimeout(() => { if(document.getElementById('btn-sync')) { document.getElementById('btn-sync').innerHTML = originalText; document.getElementById('btn-sync').disabled = false; document.getElementById('btn-sync').classList.replace('text-vup', 'text-vaccent'); } }, 4000);
+    }
+
+    async function migrarHistorialUSD() {
+        const btn = document.getElementById('btn-migrar-usd'); if(!btn) return;
+        const originalText = btn.innerHTML; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Migrando...'; btn.disabled = true;
+        try {
+            const res = await fetch('https://api.argentinadatos.com/v1/cotizaciones/dolares');
+            if(!res.ok) throw new Error("API de historial caída");
+            const data = await res.json();
+            // Corrección: La API responde con casa "bolsa"
+            const dataMep = data.filter(d => d.casa === 'bolsa').sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
             
-            if(actualizados > 0) {
-                btn.innerHTML = `<i class="fa-solid fa-check mr-1"></i> ${actualizados} listos`; 
-                btn.classList.replace('text-vaccent', 'text-vup');
-            } else {
-                btn.innerHTML = `<i class="fa-solid fa-xmark mr-1"></i> Sin datos`;
-            }
+            const opsQuery = await db.collection("operaciones").where("userId", "==", currentUser).get();
+            let actualizados = 0;
             
-        } catch(e) { 
-            btn.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> Error'; 
+            const promesas = opsQuery.docs.map(async (docSnap) => {
+                const op = docSnap.data();
+                const f = op.fecha;
+                const matches = dataMep.filter(d => d.fecha <= f);
+                let dh = dolarMep || 1000;
+                if (matches.length > 0) dh = matches[matches.length - 1].venta;
+                else if (dataMep.length > 0) dh = dataMep[0].venta;
+                
+                await db.collection("operaciones").doc(docSnap.id).update({ dolarHistorico: dh });
+                actualizados++;
+            });
+            await Promise.all(promesas);
+            alert(`¡Éxito! Se corrigió el Dólar Histórico en ${actualizados} operaciones.`);
+            updateCartera(); updateMetricas(); updateOperaciones();
+            btn.style.display = 'none';
+        } catch(e) {
+            console.error(e); alert("Error en migración: " + e.message);
+            btn.innerHTML = originalText; btn.disabled = false;
         }
-        
-        setTimeout(() => { 
-            if(document.getElementById('btn-sync')) { 
-                document.getElementById('btn-sync').innerHTML = originalText; 
-                document.getElementById('btn-sync').disabled = false; 
-                document.getElementById('btn-sync').classList.replace('text-vup', 'text-vaccent'); 
-            } 
-        }, 4000);
     }
 
     async function abrirModalDistribucion() {
         try {
-            const ops = await getUserRecords("operaciones"); 
-            const pArr = await getUserRecords("precios"); 
-            const pMap = {}; pArr.forEach(p => pMap[p.ticker] = p.precio);
-            
+            const ops = await getUserRecords("operaciones"); const pArr = await getUserRecords("precios"); const pMap = {}; pArr.forEach(p => pMap[p.ticker] = p.precio);
             const pf = {}; 
             ops.forEach(op => {
-                if (!pf[op.activo]) pf[op.activo] = {c:0, ct:0}; 
-                const p = pf[op.activo]; const mo = op.cantidad * op.precio;
-                if(op.tipo === 'Compra') { p.c += op.cantidad; p.ct += mo + op.comision; } 
-                else { if (p.c > 0) { const ppp = p.ct / p.c; p.c -= op.cantidad; p.ct -= (op.cantidad * ppp); } }
+                if (!pf[op.activo]) pf[op.activo] = {c:0, ct:0}; const p = pf[op.activo]; const mo = op.cantidad * op.precio;
+                if(op.tipo === 'Compra') { p.c += op.cantidad; p.ct += mo + op.comision; } else { if (p.c > 0) { const ppp = p.ct / p.c; p.c -= op.cantidad; p.ct -= (op.cantidad * ppp); } }
             });
-            
-            let vMer = 0;
-            const activos = [];
-            for(const t in pf){ 
-                const p = pf[t]; 
-                if(p.c > 0.00001) { 
-                    const va = p.c * (pMap[t] || (p.ct / p.c)); 
-                    vMer += va;
-                    activos.push({ ticker: t, valor: va });
-                } 
-            }
-            
+            let vMer = 0; const activos = [];
+            for(const t in pf){ if(pf[t].c > 0.00001) { const va = pf[t].c * (pMap[t] || (pf[t].ct / pf[t].c)); vMer += va; activos.push({ ticker: t, valor: va }); } }
             activos.sort((a,b) => b.valor - a.valor);
-            
-            const lista = document.getElementById('distribucion-lista');
-            lista.innerHTML = '';
-            
-            if (activos.length === 0) {
-                lista.innerHTML = '<p class="text-center text-vmuted text-sm py-4">No hay activos en cartera.</p>';
-            } else {
+            const lista = document.getElementById('distribucion-lista'); lista.innerHTML = '';
+            if (activos.length === 0) { lista.innerHTML = '<p class="text-center text-vmuted text-sm py-4">No hay activos en cartera.</p>'; } 
+            else {
                 activos.forEach(item => {
                     const porcentaje = vMer > 0 ? ((item.valor / vMer) * 100).toFixed(1) : 0;
-                    lista.innerHTML += `
-                        <div class="flex justify-between items-center bg-vbody p-3.5 rounded-xl border border-vborder">
-                            <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-full bg-vcard border border-vborder flex items-center justify-center font-bold text-vmain text-[10px] shadow-sm">${item.ticker.slice(0,3)}</div>
-                                <div>
-                                    <h4 class="font-bold text-vmain text-sm">${item.ticker}</h4>
-                                    <p class="text-[10px] text-vmuted font-semibold mt-0.5">${porcentaje}% de la cartera</p>
-                                </div>
-                            </div>
-                            <div class="text-right font-bold text-vmain text-sm">
-                                ${formatMoney(item.valor)}
-                            </div>
-                        </div>
-                    `;
+                    lista.innerHTML += `<div class="flex justify-between items-center bg-vbody p-3.5 rounded-xl border border-vborder"><div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-vcard border border-vborder flex items-center justify-center font-bold text-vmain text-[10px] shadow-sm">${item.ticker.slice(0,3)}</div><div><h4 class="font-bold text-vmain text-sm">${item.ticker}</h4><p class="text-[10px] text-vmuted font-semibold mt-0.5">${porcentaje}% de la cartera</p></div></div><div class="text-right font-bold text-vmain text-sm">${formatMoney(item.valor)}</div></div>`;
                 });
             }
             openModal('modal-distribucion');
         } catch(e) { console.error("Error al abrir distribución:", e); }
     }
 
-    function exportarMisDatos() {
-        getUserRecords("caja").then(caja => {
-            getUserRecords("operaciones").then(ops => {
-                let csv = "Seccion,Fecha,Tipo,Categoria,Descripcion_Activo,Monto,Cantidad,Precio_Unitario,Comision,Intereses\n";
-                caja.forEach(c => { csv += `Caja Diaria,${c.fecha},${c.tipo},${c.categoria || 'Otros'},"${c.desc}",${c.monto},0,0,0,0\n`; });
-                ops.forEach(o => { csv += `Operaciones,${o.fecha},${o.tipo},Finanzas,"${o.activo}",0,${o.cantidad},${o.precio},${o.comision},${o.interes}\n`; });
-                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a'); a.hidden = true; a.href = url; a.download = `CapitalFlow_Export_${new Date().toISOString().slice(0,10)}.csv`;
-                document.body.appendChild(a); a.click(); document.body.removeChild(a); document.getElementById('user-menu').classList.add('hidden');
-            });
-        });
-    }
-
     const views = {
       'resumen': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">${mesActualText}</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Tu dinero, en perspectiva.</h2><p class="text-sm text-vmuted leading-relaxed">Una lectura breve de lo que entró, lo que salió y lo que estás construyendo.</p></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder flex justify-between items-center transition-colors duration-300"><div><p class="text-xs text-vmuted font-bold uppercase tracking-wider mb-1">Dinero Disponible</p><h3 id="res-liquidez" class="text-3xl font-serif font-bold text-vmain">$0.00</h3></div><div class="w-12 h-12 rounded-full bg-vaccent/10 text-vaccent flex items-center justify-center text-xl"><i class="fa-solid fa-wallet"></i></div></div><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder flex justify-between items-center border-l-4 border-l-vdown transition-colors duration-300"><div><p class="text-[10px] text-vmuted font-bold uppercase tracking-wider mb-1"><i class="fa-solid fa-satellite-dish mr-1"></i> Radar Gastos Fijos</p><h3 id="res-fijos" class="text-xl font-bold text-vmain">$0.00 <span class="text-xs text-vmuted font-normal">este mes</span></h3></div></div><button onclick="prepararNuevaCaja()" class="w-full bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center justify-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity"><i class="fa-solid fa-plus"></i> Añadir movimiento</button><div class="bg-vhero text-white p-6 rounded-[2rem] shadow-md relative overflow-hidden transition-colors duration-300"><div class="absolute -right-10 -bottom-10 w-48 h-48 border-[15px] border-white/5 rounded-full"></div><p class="text-[10px] font-bold text-[var(--nav-active)] tracking-widest uppercase mb-2 relative z-10">BALANCE DEL MES</p><h3 class="font-serif text-3xl mb-4 relative z-10 w-3/4 leading-snug">Saldo</h3><p id="res-balance" class="text-3xl font-medium mb-1 relative z-10">$0.00</p><p id="res-count" class="text-xs text-white/50 relative z-10">0 movimientos</p></div><div class="grid grid-cols-2 gap-3"><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder flex flex-col transition-colors duration-300"><p class="text-xs text-vmuted mb-2">Ingresos</p><p id="res-ingresos" class="text-xl font-semibold text-vup mb-1">$0.00</p></div><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder flex flex-col transition-colors duration-300"><p class="text-xs text-vmuted mb-2">Gastos</p><p id="res-gastos" class="text-xl font-semibold text-vdown mb-1">$0.00</p></div></div></div>`,
       'caja': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">CAJA DIARIA</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Que el dinero tenga contexto.</h2></div><button onclick="prepararNuevaCaja()" class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm"><i class="fa-solid fa-plus"></i> Nuevo movimiento</button><div id="caja-lista" class="mt-6 pb-8 space-y-4"></div></div>`,
       'operaciones': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">OPERACIONES</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Cada decisión deja una huella.</h2></div><button onclick="prepararNuevaOp()" class="bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 shadow-sm"><i class="fa-solid fa-plus"></i> Nueva operación</button><div class="grid grid-cols-1 gap-3"><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><p class="text-xs text-vmuted mb-2">Capital comprado</p><p id="op-capital" class="text-2xl font-semibold text-vmain mb-1">$0.00</p></div><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><p class="text-xs text-vmuted mb-2">Flujo neto</p><p id="op-flujo" class="text-2xl font-semibold text-vmain mb-1">$0.00</p></div><div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><p class="text-xs text-vmuted mb-2">Intereses / Div.</p><p id="op-interes" class="text-2xl font-semibold text-vup mb-1">$0.00</p></div></div><div class="flex justify-between items-center mt-6 mb-2"><h3 class="font-bold text-vmain">Historial</h3><button onclick="vaciarMisOperaciones()" class="text-vdown text-sm hover:opacity-70"><i class="fa-solid fa-trash-can"></i></button></div><div id="op-lista" class="space-y-3 pb-8"></div></div>`,
-      'cartera': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">CARTERA</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Lo que estás construyendo.</h2></div><div class="bg-vnav text-white p-6 rounded-[2rem] shadow-md relative overflow-hidden transition-colors"><div class="absolute -right-10 -bottom-10 w-48 h-48 border-[15px] border-white/5 rounded-full"></div><p class="text-[10px] font-bold text-vmuted tracking-widest uppercase mb-2 relative z-10">PATRIMONIO TOTAL</p><h3 id="cart-patrimonio" class="font-serif text-4xl font-medium mb-1 relative z-10">$0.00</h3><p class="text-xs text-white/70 relative z-10">Efectivo + Inversiones</p></div><div class="grid grid-cols-2 gap-3"><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] uppercase text-vmuted font-bold mb-1">Dinero Disponible</p><p id="cart-liquidez" class="text-lg font-semibold text-vmain">$0.00</p></div><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] uppercase text-vmuted font-bold mb-1">Valor Inversiones</p><p id="cart-valor" class="text-lg font-semibold text-vmain">$0.00</p></div></div><div class="grid grid-cols-2 gap-3"><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] uppercase text-vmuted font-bold mb-1">Cap. Invertido</p><p id="cart-capital" class="text-lg font-semibold text-vmain">$0.00</p></div><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] uppercase text-vmuted font-bold mb-1">Intereses Totales</p><p id="cart-pl" class="text-lg font-semibold text-vmain">$0.00</p></div></div><button onclick="document.querySelector('.nav-item:nth-child(3)').click(); setTimeout(()=>prepararNuevaOp(), 300);" class="w-full bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center justify-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity"><i class="fa-solid fa-plus"></i> Registrar operación</button><div class="flex justify-between items-center mt-6 mb-2"><div><h3 class="font-bold text-vmain">Posiciones</h3><span class="text-xs text-vmuted">Toca el lápiz para editar ticker</span></div><button id="btn-sync" onclick="sincronizarMercado()" class="text-xs bg-vcard border border-vborder px-3 py-1.5 rounded-xl shadow-sm font-semibold text-vaccent hover:bg-vbody transition-colors active:scale-95"><i class="fa-solid fa-rotate mr-1"></i> Sincronizar</button></div><div id="cart-lista" class="space-y-4 pb-8"></div></div>`,
-      'metricas': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-8 pb-10"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">MÉTRICAS</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">El tiempo compone.</h2></div><div class="grid grid-cols-2 gap-3"><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] text-vmuted uppercase mb-1">Cap. Histórico</p><p id="met-cap" class="text-lg font-bold text-vmain">$0.00</p></div><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] text-vmuted uppercase mb-1">Int. Totales</p><p id="met-int" class="text-lg font-bold text-vup">$0.00</p></div><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder col-span-2 text-center"><p class="text-[10px] text-vmuted uppercase mb-1">P/L Total (Latente + Interés)</p><p id="met-pl" class="text-2xl font-bold text-vmain">$0.00</p></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder"><h3 class="text-sm font-bold text-vmain mb-4">Gastos por Categoría</h3><div class="relative h-48 w-full"><canvas id="chart-pie-gastos"></canvas></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder"><h3 class="text-sm font-bold text-vmain mb-4">Ingresos vs Gastos</h3><div class="relative h-48 w-full"><canvas id="chart-caja"></canvas></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder cursor-pointer active:scale-[0.98] transition-transform hover:border-vaccent" onclick="abrirModalDistribucion()"><div class="flex justify-between items-center mb-4"><h3 class="text-sm font-bold text-vmain">Distribución Cartera</h3><span class="text-[10px] bg-vbody px-2 py-1 rounded-md text-vmuted font-semibold border border-vborder shadow-sm"><i class="fa-solid fa-list-ul mr-1"></i>Detalle</span></div><div class="relative h-48 w-full"><canvas id="chart-pie"></canvas></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder"><h3 class="text-sm font-bold text-vmain mb-1">Ritmo Aportes vs P/L</h3><div class="relative h-48 w-full"><canvas id="chart-line"></canvas></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder"><h3 class="text-sm font-bold text-vmain mb-1">Simulador de Interés Compuesto</h3><p class="text-xs text-vmuted mb-4">Proyectá tu patrimonio a futuro.</p><div class="grid grid-cols-2 gap-3 mb-4"><div><label class="block text-[10px] font-semibold text-vmuted uppercase mb-1">Capital Inicial ($)</label><input type="number" id="sim-cap" value="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2 outline-none text-sm" /></div><div><label class="block text-[10px] font-semibold text-vmuted uppercase mb-1">Aporte Mensual ($)</label><input type="number" id="sim-mes" value="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2 outline-none text-sm" /></div><div><label class="block text-[10px] font-semibold text-vmuted uppercase mb-1">Tasa Anual (%)</label><input type="number" id="sim-tasa" value="25" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2 outline-none text-sm" /></div><div><label class="block text-[10px] font-semibold text-vmuted uppercase mb-1">Años</label><input type="number" id="sim-anos" value="15" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2 outline-none text-sm" /></div></div><button onclick="calcularSimulador()" class="w-full bg-vaccent text-white font-bold py-3 rounded-xl shadow-sm mb-4">Calcular Proyección</button><div class="relative h-48 w-full"><canvas id="chart-simulador"></canvas></div></div></div>`
+      'cartera': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-6"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">CARTERA</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">Lo que estás construyendo.</h2></div><div class="bg-vnav text-white p-6 rounded-[2rem] shadow-md relative overflow-hidden transition-colors"><div class="absolute -right-10 -bottom-10 w-48 h-48 border-[15px] border-white/5 rounded-full"></div><p class="text-[10px] font-bold text-vmuted tracking-widest uppercase mb-2 relative z-10">PATRIMONIO TOTAL</p><h3 id="cart-patrimonio" class="font-serif text-4xl font-medium mb-1 relative z-10">$0.00</h3><p class="text-xs text-white/70 relative z-10">Efectivo + Inversiones</p></div><div class="grid grid-cols-2 gap-3"><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] uppercase text-vmuted font-bold mb-1">Dinero Disponible</p><p id="cart-liquidez" class="text-lg font-semibold text-vmain">$0.00</p></div><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] uppercase text-vmuted font-bold mb-1">Valor Inversiones</p><p id="cart-valor" class="text-lg font-semibold text-vmain">$0.00</p></div></div><div class="grid grid-cols-2 gap-3"><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] uppercase text-vmuted font-bold mb-1">Cap. Invertido</p><p id="cart-capital" class="text-lg font-semibold text-vmain">$0.00</p></div><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] uppercase text-vmuted font-bold mb-1">Intereses Totales</p><p id="cart-pl" class="text-lg font-semibold text-vmain">$0.00</p></div></div><button onclick="document.querySelector('.nav-item:nth-child(3)').click(); setTimeout(()=>prepararNuevaOp(), 300);" class="w-full bg-vaccent text-white px-5 py-3 rounded-xl font-medium flex items-center justify-center gap-2 shadow-sm opacity-90 hover:opacity-100 transition-opacity"><i class="fa-solid fa-plus"></i> Registrar operación</button><div class="flex justify-between items-center mt-6 mb-2"><div><h3 class="font-bold text-vmain">Posiciones</h3><span class="text-xs text-vmuted">Toca el lápiz para editar ticker</span></div><div class="flex gap-2"><button id="btn-migrar-usd" onclick="migrarHistorialUSD()" class="text-xs bg-vhero border border-vhero/50 px-3 py-1.5 rounded-xl shadow-sm font-semibold text-white hover:opacity-90 transition-colors active:scale-95"><i class="fa-solid fa-clock-rotate-left mr-1"></i> Migrar Dólar</button><button id="btn-sync" onclick="sincronizarMercado()" class="text-xs bg-vcard border border-vborder px-3 py-1.5 rounded-xl shadow-sm font-semibold text-vaccent hover:bg-vbody transition-colors active:scale-95"><i class="fa-solid fa-rotate mr-1"></i> Sincronizar</button></div></div><div id="cart-lista" class="space-y-4 pb-8"></div></div>`,
+      'metricas': `<div class="animate-[fadeIn_0.3s_ease-out] space-y-8 pb-10"><div><p class="text-[10px] font-bold text-vaccent tracking-widest uppercase mb-2">MÉTRICAS</p><h2 class="font-serif text-4xl leading-[1.1] text-vmain mb-3 tracking-tight">El tiempo compone.</h2></div><div class="grid grid-cols-2 gap-3"><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder"><p class="text-[10px] text-vmuted uppercase mb-1">Cap. Histórico</p><p id="met-cap" class="text-lg font-bold text-vmain">$0.00</p></div><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder bg-vnav"><p class="text-[10px] text-white/70 uppercase mb-1">Rendimiento (ROI)</p><p id="met-roi" class="text-xl font-bold text-white">0.00%</p></div><div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder col-span-2 flex justify-between items-center"><div><p class="text-[10px] text-vmuted uppercase mb-1">P/L Total (Latente + Int.)</p><p id="met-pl" class="text-2xl font-bold text-vmain">$0.00</p></div><div class="text-right"><p class="text-[10px] text-vmuted uppercase mb-1">Intereses</p><p id="met-int" class="text-lg font-bold text-vup">$0.00</p></div></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder"><h3 class="text-sm font-bold text-vmain mb-4">Gastos por Categoría</h3><div class="relative h-48 w-full"><canvas id="chart-pie-gastos"></canvas></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder"><h3 class="text-sm font-bold text-vmain mb-4">Ingresos vs Gastos</h3><div class="relative h-48 w-full"><canvas id="chart-caja"></canvas></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder cursor-pointer active:scale-[0.98] transition-transform hover:border-vaccent" onclick="abrirModalDistribucion()"><div class="flex justify-between items-center mb-4"><h3 class="text-sm font-bold text-vmain">Distribución Cartera</h3><span class="text-[10px] bg-vbody px-2 py-1 rounded-md text-vmuted font-semibold border border-vborder shadow-sm"><i class="fa-solid fa-list-ul mr-1"></i>Detalle</span></div><div class="relative h-48 w-full"><canvas id="chart-pie"></canvas></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder"><h3 class="text-sm font-bold text-vmain mb-1">Ritmo Aportes vs P/L</h3><div class="relative h-48 w-full"><canvas id="chart-line"></canvas></div></div><div class="bg-vcard p-5 rounded-3xl shadow-sm border border-vborder"><h3 class="text-sm font-bold text-vmain mb-1">Simulador de Interés Compuesto</h3><p class="text-xs text-vmuted mb-4">Proyectá tu patrimonio a futuro.</p><div class="grid grid-cols-2 gap-3 mb-4"><div><label class="block text-[10px] font-semibold text-vmuted uppercase mb-1">Capital Inicial ($)</label><input type="number" id="sim-cap" value="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2 outline-none text-sm" /></div><div><label class="block text-[10px] font-semibold text-vmuted uppercase mb-1">Aporte Mensual ($)</label><input type="number" id="sim-mes" value="0" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2 outline-none text-sm" /></div><div><label class="block text-[10px] font-semibold text-vmuted uppercase mb-1">Tasa Anual (%)</label><input type="number" id="sim-tasa" value="25" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2 outline-none text-sm" /></div><div><label class="block text-[10px] font-semibold text-vmuted uppercase mb-1">Años</label><input type="number" id="sim-anos" value="15" class="w-full bg-vbody text-vmain border border-vborder rounded-xl p-2 outline-none text-sm" /></div></div><button onclick="calcularSimulador()" class="w-full bg-vaccent text-white font-bold py-3 rounded-xl shadow-sm mb-4">Calcular Proyección</button><div class="relative h-48 w-full"><canvas id="chart-simulador"></canvas></div><div id="sim-resultados" class="hidden animate-[fadeIn_0.3s_ease-out]"></div></div></div>`
     };
 
     function changeTab(t, e) { 
@@ -584,8 +418,31 @@
       try {
           const items = await getUserRecords("operaciones"); const lista = document.getElementById('op-lista'); if(!lista) return;
           let cap = 0, flu = 0, int = 0; lista.innerHTML = ''; items.sort((a,b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
-          items.forEach(op => { const t = (op.cantidad * op.precio); if (op.tipo === 'Compra') { cap += t + op.comision; flu -= (t + op.comision); } else { cap -= t; flu += (t - op.comision); } int += op.interes; const isC = op.tipo === 'Compra'; lista.innerHTML += `<div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder mb-3"><div class="flex justify-between items-start mb-2"><div><span class="text-[10px] font-bold ${isC?'text-vhero bg-vhero/10':'text-vnav bg-vnav/10'} px-2 py-0.5 rounded-sm uppercase tracking-wider">${op.tipo}</span><h4 class="font-serif font-bold text-lg text-vmain mt-1">${op.activo}</h4></div><div class="text-right"><p class="font-bold text-vmain text-sm">${formatMoney(t)}</p><p class="text-[10px] text-vmuted">${formatCrypto(op.cantidad)} x ${formatMoney(op.precio)}</p></div></div><div class="flex justify-between items-end mt-3 border-t border-vborder pt-2"><p class="text-[10px] text-vmuted">${op.fecha}</p><div class="flex gap-4"><button onclick="abrirEditOp('${op.id}')" class="text-vmuted hover:text-vmain"><i class="fa-solid fa-pen"></i></button><button onclick="eliminarOp('${op.id}')" class="text-vdown hover:opacity-70"><i class="fa-solid fa-trash-can"></i></button></div></div></div>`; });
-          document.getElementById('op-capital').innerText = formatMoney(cap); document.getElementById('op-flujo').innerText = formatMoney(flu); document.getElementById('op-interes').innerText = formatMoney(int);
+          
+          items.forEach(op => { 
+              const dh = op.dolarHistorico || dolarMep || 1000;
+              const nativoUsd = isActivoEnUsd(op.activo);
+              const montoOriginal = op.cantidad * op.precio;
+              const comisionOriginal = op.comision || 0;
+              const interesOriginal = op.interes || 0;
+
+              const moArs = nativoUsd ? (montoOriginal * dh) : montoOriginal;
+              const comArs = nativoUsd ? (comisionOriginal * dh) : comisionOriginal;
+              const intArsOp = nativoUsd ? (interesOriginal * dh) : interesOriginal;
+
+              const isC = op.tipo === 'Compra'; 
+              
+              if (isC) { cap += moArs + comArs; flu -= (moArs + comArs); } else { cap -= moArs; flu += (moArs - comArs); } 
+              int += intArsOp; 
+              
+              const dispMo = isUsd ? (moArs / dh) : moArs;
+              const pDisp = isUsd ? (op.precio / dh) : op.precio;
+              const precioDisplay = isUsd ? (nativoUsd ? op.precio : (op.precio / dh)) : (nativoUsd ? (op.precio * dh) : op.precio);
+              const montoDisplay = isUsd ? (nativoUsd ? montoOriginal : (montoOriginal / dh)) : (nativoUsd ? (montoOriginal * dh) : montoOriginal);
+
+              lista.innerHTML += `<div class="bg-vcard p-4 rounded-2xl shadow-sm border border-vborder mb-3"><div class="flex justify-between items-start mb-2"><div><span class="text-[10px] font-bold ${isC?'text-vhero bg-vhero/10':'text-vnav bg-vnav/10'} px-2 py-0.5 rounded-sm uppercase tracking-wider">${op.tipo}</span><h4 class="font-serif font-bold text-lg text-vmain mt-1">${op.activo}</h4></div><div class="text-right"><p class="font-bold text-vmain text-sm">${formatMoney(montoDisplay, true)}</p><p class="text-[10px] text-vmuted">${formatCrypto(op.cantidad)} x ${formatMoney(precioDisplay, true)}</p></div></div><div class="flex justify-between items-end mt-3 border-t border-vborder pt-2"><p class="text-[10px] text-vmuted">${op.fecha} <span class="ml-1 opacity-60 font-mono">| TC: $${dh}</span></p><div class="flex gap-4"><button onclick="abrirEditOp('${op.id}')" class="text-vmuted hover:text-vmain"><i class="fa-solid fa-pen"></i></button><button onclick="eliminarOp('${op.id}')" class="text-vdown hover:opacity-70"><i class="fa-solid fa-trash-can"></i></button></div></div></div>`; 
+          });
+          document.getElementById('op-capital').innerText = formatMoney(cap, isUsd); document.getElementById('op-flujo').innerText = formatMoney(flu, isUsd); document.getElementById('op-interes').innerText = formatMoney(int, isUsd);
       } catch(e) { console.error(e); }
     }
 
@@ -593,20 +450,69 @@
       try {
           const ops = await getUserRecords("operaciones"); const preciosArr = await getUserRecords("precios"); 
           const pMap = {}; preciosArr.forEach(p => pMap[p.ticker] = { precio: p.precio, auto: p.auto });
-          const portafolio = {}; ops.sort((a,b) => new Date(a.fecha || 0) - new Date(b.fecha || 0)); let capAportadoNeto = 0;
-          ops.forEach(op => { if (!portafolio[op.activo]) portafolio[op.activo] = { cant: 0, costo: 0 }; const p = portafolio[op.activo]; const monto = op.cantidad * op.precio; if (op.tipo === 'Compra') { p.cant += op.cantidad; p.costo += monto + op.comision; capAportadoNeto += monto + op.comision; } else if (op.tipo === 'Venta') { if (p.cant > 0) { const ppp = p.costo / p.cant; p.cant -= op.cantidad; p.costo -= (op.cantidad * ppp); } capAportadoNeto -= (monto - op.comision); } });
-          const lista = document.getElementById('cart-lista'); if(!lista) return; lista.innerHTML = ''; let vMerc = 0;
+          const portafolio = {}; ops.sort((a,b) => new Date(a.fecha || 0) - new Date(b.fecha || 0)); 
+          let capAportadoNetoArs = 0, capAportadoNetoUsd = 0;
+          
+          ops.forEach(op => { 
+              const dh = op.dolarHistorico || dolarMep || 1000;
+              if (!portafolio[op.activo]) portafolio[op.activo] = { cant: 0, costo: 0, costoUsd: 0 }; 
+              const p = portafolio[op.activo]; 
+              
+              const nativoUsd = isActivoEnUsd(op.activo);
+              const montoOriginal = op.cantidad * op.precio; 
+              const comisionOriginal = op.comision || 0;
+              
+              let montoArs = nativoUsd ? (montoOriginal * dh) : montoOriginal;
+              let comisionArs = nativoUsd ? (comisionOriginal * dh) : comisionOriginal;
+              let montoUsd = nativoUsd ? montoOriginal : (montoOriginal / dh);
+              let comisionUsd = nativoUsd ? comisionOriginal : (comisionOriginal / dh);
+
+              if (op.tipo === 'Compra') { 
+                  p.cant += op.cantidad; p.costo += montoArs + comisionArs; p.costoUsd += montoUsd + comisionUsd;
+                  capAportadoNetoArs += montoArs + comisionArs; capAportadoNetoUsd += montoUsd + comisionUsd;
+              } else if (op.tipo === 'Venta') { 
+                  if (p.cant > 0) { 
+                      const ppp = p.costo / p.cant; const pppUsd = p.costoUsd / p.cant;
+                      p.cant -= op.cantidad; p.costo -= (op.cantidad * ppp); p.costoUsd -= (op.cantidad * pppUsd);
+                  } 
+                  capAportadoNetoArs -= (montoArs - comisionArs); capAportadoNetoUsd -= (montoUsd - comisionUsd);
+              } 
+          });
+          
+          const lista = document.getElementById('cart-lista'); if(!lista) return; lista.innerHTML = ''; 
+          let vMercArs = 0, vMercUsd = 0;
+          
           for (const t in portafolio) {
             const item = portafolio[t]; if (item.cant <= 0.00001) continue; 
-            const ppp = item.costo / item.cant; const pAct = pMap[t] ? pMap[t].precio : ppp; const isAuto = pMap[t] ? pMap[t].auto : false; const vAct = item.cant * pAct; const gan = vAct - item.costo; const isUp = gan >= 0; vMerc += vAct;
-            lista.innerHTML += `<div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><div class="flex justify-between items-center mb-4"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-vbody border border-vborder flex items-center justify-center font-bold text-vmain text-sm shadow-sm">${t.slice(0,3)}</div><div><h4 class="font-serif font-bold text-lg text-vmain flex items-center gap-2">${t} <button onclick="renombrarActivo('${t}')" class="text-vmuted hover:text-vaccent text-xs" title="Modificar nombre de Activo"><i class="fa-solid fa-pen-to-square"></i></button></h4></div></div><div class="text-right"><p class="font-bold text-vmain text-sm">${formatMoney(vAct)}</p><span class="text-[10px] font-bold ${isUp?'text-vup bg-vup/10':'text-vdown bg-vdown/10'} px-1.5 py-0.5 rounded-sm">${isUp?'+':''}${formatMoney(gan)}</span></div></div><div class="flex justify-between bg-vbody rounded-xl p-3 border border-vborder text-xs"><div><p class="text-[10px] text-vmuted mb-1">Nominales: <span class="font-bold text-vmain">${formatCrypto(item.cant)}</span></p><p class="text-vmuted mb-1">Precio Prom. Compra</p><p class="font-semibold text-vmain">${formatMoney(ppp)}</p></div><div class="text-right"><p class="text-vmuted mb-1">Actual ${isAuto ? '<i class="fa-solid fa-bolt text-vaccent text-[9px]" title="Cotización Automática"></i>' : '<i class="fa-solid fa-pen text-[9px]" title="Cotización Manual"></i>'}</p><input type="number" step="any" value="${isUsd && dolarMep > 0 ? (pAct / dolarMep).toFixed(2) : pAct}" onchange="actualizarPrecio('${t}', this.value)" class="w-20 text-right bg-transparent border-b border-vmuted font-semibold text-vmain outline-none focus:border-vaccent" /></div></div></div>`;
+            const pppArs = item.costo / item.cant; const pActArs = pMap[t] ? pMap[t].precio : pppArs; const isAuto = pMap[t] ? pMap[t].auto : false; 
+            const pActUsd = pActArs / (dolarMep || 1000);
+            const vActArs = item.cant * pActArs; const vActUsd = item.cant * pActUsd;
+            
+            vMercArs += vActArs; vMercUsd += vActUsd;
+
+            const pppDisp = isUsd ? (item.costoUsd / item.cant) : pppArs;
+            const pActDisp = isUsd ? pActUsd : pActArs;
+            const vActDisp = isUsd ? vActUsd : vActArs;
+            const costoDisp = isUsd ? item.costoUsd : item.costo;
+            const ganDisp = vActDisp - costoDisp;
+            const isUp = ganDisp >= 0; 
+            
+            lista.innerHTML += `<div class="bg-vcard p-5 rounded-2xl shadow-sm border border-vborder"><div class="flex justify-between items-center mb-4"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-vbody border border-vborder flex items-center justify-center font-bold text-vmain text-sm shadow-sm">${t.slice(0,3)}</div><div><h4 class="font-serif font-bold text-lg text-vmain flex items-center gap-2">${t} <button onclick="renombrarActivo('${t}')" class="text-vmuted hover:text-vaccent text-xs" title="Modificar nombre de Activo"><i class="fa-solid fa-pen-to-square"></i></button></h4></div></div><div class="text-right"><p class="font-bold text-vmain text-sm">${formatMoney(vActDisp, true)}</p><span class="text-[10px] font-bold ${isUp?'text-vup bg-vup/10':'text-vdown bg-vdown/10'} px-1.5 py-0.5 rounded-sm">${isUp?'+':''}${formatMoney(ganDisp, true)}</span></div></div><div class="flex justify-between bg-vbody rounded-xl p-3 border border-vborder text-xs"><div><p class="text-[10px] text-vmuted mb-1">Nominales: <span class="font-bold text-vmain">${formatCrypto(item.cant)}</span></p><p class="text-vmuted mb-1">Precio Prom. Compra</p><p class="font-semibold text-vmain">${formatMoney(pppDisp, true)}</p></div><div class="text-right"><p class="text-vmuted mb-1">Actual ${isAuto ? '<i class="fa-solid fa-bolt text-vaccent text-[9px]" title="Cotización Automática"></i>' : '<i class="fa-solid fa-pen text-[9px]" title="Cotización Manual"></i>'}</p><input type="number" step="any" value="${pActDisp.toFixed(2)}" onchange="actualizarPrecio('${t}', this.value)" class="w-20 text-right bg-transparent border-b border-vmuted font-semibold text-vmain outline-none focus:border-vaccent" /></div></div></div>`;
           }
-          const liquidez = await getLiquidez(); const patrimonioTotal = vMerc + liquidez;
-          if(document.getElementById('cart-patrimonio')) document.getElementById('cart-patrimonio').innerText = formatMoney(patrimonioTotal);
-          if(document.getElementById('cart-liquidez')) document.getElementById('cart-liquidez').innerText = formatMoney(liquidez);
-          if(document.getElementById('cart-valor')) document.getElementById('cart-valor').innerText = formatMoney(vMerc);
-          if(document.getElementById('cart-capital')) document.getElementById('cart-capital').innerText = formatMoney(capAportadoNeto);
-          const plTotal = vMerc - capAportadoNeto; const elPl = document.getElementById('cart-pl'); if(elPl){ elPl.innerText = formatMoney(plTotal); elPl.className = `text-lg font-semibold mb-1 ${plTotal>=0 ? 'text-vup' : 'text-vdown'}`; }
+          const liquidez = await getLiquidez(); 
+          const plTotalArs = vMercArs - capAportadoNetoArs; const plTotalUsd = vMercUsd - capAportadoNetoUsd;
+
+          const dispPatrimonio = isUsd ? (vMercUsd + (liquidez / (dolarMep||1000))) : (vMercArs + liquidez);
+          const dispLiquidez = isUsd ? (liquidez / (dolarMep||1000)) : liquidez;
+          const dispValor = isUsd ? vMercUsd : vMercArs;
+          const dispCap = isUsd ? capAportadoNetoUsd : capAportadoNetoArs;
+          const dispPl = isUsd ? plTotalUsd : plTotalArs;
+          
+          if(document.getElementById('cart-patrimonio')) document.getElementById('cart-patrimonio').innerText = formatMoney(dispPatrimonio, true);
+          if(document.getElementById('cart-liquidez')) document.getElementById('cart-liquidez').innerText = formatMoney(dispLiquidez, true);
+          if(document.getElementById('cart-valor')) document.getElementById('cart-valor').innerText = formatMoney(dispValor, true);
+          if(document.getElementById('cart-capital')) document.getElementById('cart-capital').innerText = formatMoney(dispCap, true);
+          const elPl = document.getElementById('cart-pl'); if(elPl){ elPl.innerText = formatMoney(dispPl, true); elPl.className = `text-lg font-semibold mb-1 ${dispPl>=0 ? 'text-vup' : 'text-vdown'}`; }
       } catch(e) { console.error(e); }
     }
 
@@ -616,53 +522,105 @@
           const style = getComputedStyle(document.body); const cUp = style.getPropertyValue('--up-color').trim(); const cDown = style.getPropertyValue('--down-color').trim(); const cAcc = style.getPropertyValue('--accent').trim(); const cText = style.getPropertyValue('--text-main').trim(); const cMuted = style.getPropertyValue('--text-muted').trim();
           const palette = [cAcc, cUp, cDown, '#8b5cf6', '#0ea5e9', '#f59e0b', '#ec4899', '#64748b'];
           const mesesCaja = {}; const gastosPorCategoria = {};
-          caja.forEach(i => { const m = (i.fecha || '2024-01').slice(0,7); if (!mesesCaja[m]) mesesCaja[m]={ing:0,gas:0}; if(i.tipo==='Ingreso') mesesCaja[m].ing+=i.monto; else { mesesCaja[m].gas+=i.monto; if (m === mesActualFiltro) { const cat = i.categoria || 'Otros'; if(!gastosPorCategoria[cat]) gastosPorCategoria[cat] = 0; gastosPorCategoria[cat] += i.monto; } } });
+          caja.forEach(i => { const m = (i.fecha || '2024-01').slice(0,7); if (!mesesCaja[m]) mesesCaja[m]={ing:0,gas:0}; const val = (isUsd && dolarMep > 0) ? (i.monto / dolarMep) : i.monto; if(i.tipo==='Ingreso') mesesCaja[m].ing+=val; else { mesesCaja[m].gas+=val; if (m === mesActualFiltro) { const cat = i.categoria || 'Otros'; if(!gastosPorCategoria[cat]) gastosPorCategoria[cat] = 0; gastosPorCategoria[cat] += val; } } });
           const lPieGastos = Object.keys(gastosPorCategoria); const dPieGastos = lPieGastos.map(k => gastosPorCategoria[k]);
           if(chartPieGastosInst) chartPieGastosInst.destroy(); chartPieGastosInst = new Chart(document.getElementById('chart-pie-gastos'), { type: 'doughnut', data:{labels:lPieGastos, datasets:[{data:dPieGastos, backgroundColor:palette}]}, options:{maintainAspectRatio:false, plugins:{legend:{position:'right',labels:{color:cText}}}} });
           const lCaja = Object.keys(mesesCaja).sort();
           if(chartCajaInst) chartCajaInst.destroy(); chartCajaInst = new Chart(document.getElementById('chart-caja'), { type: 'bar', data: { labels: lCaja, datasets: [{label:'Ingresos', data: lCaja.map(m=>mesesCaja[m].ing), backgroundColor: cUp}, {label:'Gastos', data: lCaja.map(m=>mesesCaja[m].gas), backgroundColor: cDown}] }, options:{maintainAspectRatio:false, plugins:{legend:{labels:{color:cText}}}, scales:{x:{ticks:{color:cMuted}},y:{ticks:{color:cMuted}}}} });
 
-          const pf = {}; let cIn = 0, iTot = 0, capAc = 0, intAc = 0; const mOps = {}; ops.sort((a,b)=>new Date(a.fecha||0)-new Date(b.fecha||0));
+          const pf = {}; let capArs = 0, intArs = 0, capUsd = 0, intUsd = 0; const mOps = {}; ops.sort((a,b)=>new Date(a.fecha||0)-new Date(b.fecha||0));
+          
           ops.forEach(op => {
-            if (!pf[op.activo]) pf[op.activo] = {c:0, ct:0}; const p = pf[op.activo]; const mo = op.cantidad * op.precio;
-            if(op.tipo === 'Compra') { p.c += op.cantidad; p.ct += mo + op.comision; cIn += mo + op.comision; capAc += mo + op.comision; } 
-            else { if (p.c > 0) { const ppp = p.ct / p.c; p.c -= op.cantidad; p.ct -= (op.cantidad * ppp); } cIn -= (mo - op.comision); capAc -= (mo - op.comision); }
-            iTot += op.interes; intAc += op.interes; 
-            let vMerAc = 0; for(const t in pf){ const px = pf[t]; if(px.c > 0.00001) { vMerAc += px.c * (pMap[t] || (px.ct / px.c)); } }
-            const plTotalAc = (vMerAc - capAc) + intAc; const m = (op.fecha||'2024-01').slice(0,7); mOps[m] = { cap: capAc, pl: plTotalAc };
+            const dh = op.dolarHistorico || dolarMep || 1000;
+            if (!pf[op.activo]) pf[op.activo] = {c:0, ct:0, ctUsd:0}; 
+            const p = pf[op.activo]; 
+            const nativoUsd = isActivoEnUsd(op.activo);
+            const montoOriginal = op.cantidad * op.precio; 
+            const comisionOriginal = op.comision || 0;
+            const interesOriginal = op.interes || 0;
+            
+            let montoArs = nativoUsd ? (montoOriginal * dh) : montoOriginal;
+            let comisionArs = nativoUsd ? (comisionOriginal * dh) : comisionOriginal;
+            let intArsOp = nativoUsd ? (interesOriginal * dh) : interesOriginal;
+            let montoUsd = nativoUsd ? montoOriginal : (montoOriginal / dh);
+            let comisionUsd = nativoUsd ? comisionOriginal : (comisionOriginal / dh);
+            let intUsdOp = nativoUsd ? interesOriginal : (interesOriginal / dh);
+
+            if(op.tipo === 'Compra') { 
+                p.c += op.cantidad; p.ct += montoArs + comisionArs; p.ctUsd += montoUsd + comisionUsd;
+                capArs += montoArs + comisionArs; capUsd += montoUsd + comisionUsd;
+            } else { 
+                if (p.c > 0) { const ppp = p.ct / p.c; const pppUsd = p.ctUsd / p.c; p.c -= op.cantidad; p.ct -= (op.cantidad * ppp); p.ctUsd -= (op.cantidad * pppUsd); } 
+                capArs -= (montoArs - comisionArs); capUsd -= (montoUsd - comisionUsd);
+            }
+            intArs += intArsOp; intUsd += intUsdOp; 
+            
+            let vMerAcArs = 0; let vMerAcUsd = 0;
+            for(const t in pf){ 
+                const px = pf[t]; 
+                if(px.c > 0.00001) { const valArs = px.c * (pMap[t] || (px.ct / px.c)); vMerAcArs += valArs; vMerAcUsd += valArs / (dolarMep || 1000); } 
+            }
+            const plTotalAcArs = (vMerAcArs - capArs) + intArs; const plTotalAcUsd = (vMerAcUsd - capUsd) + intUsd;
+            const m = (op.fecha||'2024-01').slice(0,7); mOps[m] = { cap: isUsd ? capUsd : capArs, pl: isUsd ? plTotalAcUsd : plTotalAcArs };
           });
           
-          let vMer = 0; const lPie = [], dPie = [];
-          for(const t in pf){ const p=pf[t]; if(p.c>0.00001) { lPie.push(t); const va=p.c*(pMap[t]||(p.ct/p.c)); dPie.push(va); vMer+=va; } }
+          let vMerArs = 0, vMerUsd = 0; const lPie = [], dPie = [];
+          for(const t in pf){ 
+              const p=pf[t]; 
+              if(p.c>0.00001) { 
+                  const valArs = p.c*(pMap[t]||(p.ct/p.c)); 
+                  vMerArs += valArs; vMerUsd += valArs / (dolarMep || 1000);
+                  lPie.push(t); dPie.push(isUsd ? (valArs / (dolarMep || 1000)) : valArs); 
+              } 
+          }
           if(chartPieInst) chartPieInst.destroy(); chartPieInst = new Chart(document.getElementById('chart-pie'), { type: 'doughnut', data:{labels:lPie, datasets:[{data:dPie, backgroundColor:palette}]}, options:{maintainAspectRatio:false, plugins:{legend:{position:'right',labels:{color:cText}}}} });
           const lLine = Object.keys(mOps).sort();
           if(chartLineInst) chartLineInst.destroy(); chartLineInst = new Chart(document.getElementById('chart-line'), { type: 'line', data: { labels: lLine, datasets:[ {label:'Aportes', data:lLine.map(m=>mOps[m].cap), borderColor:cText, tension:0.3}, {label:'P/L Total', data:lLine.map(m=>mOps[m].pl), borderColor:cAcc, tension:0.3} ] }, options: { maintainAspectRatio:false, plugins:{legend:{labels:{color:cText}}}, scales:{x:{ticks:{color:cMuted}},y:{ticks:{color:cMuted}}} } });
-          document.getElementById('met-cap').innerText = formatMoney(cIn); document.getElementById('met-int').innerText = formatMoney(iTot); const plt = (vMer-cIn)+iTot;
-          const ep = document.getElementById('met-pl'); ep.innerText = formatMoney(plt); ep.className = `text-2xl font-bold ${plt>=0?'text-vup':'text-vdown'}`;
           
+          const pltArs = (vMerArs - capArs) + intArs; const pltUsd = (vMerUsd - capUsd) + intUsd;
+          const roiArs = capArs > 0 ? (pltArs / capArs) * 100 : 0; const roiUsd = capUsd > 0 ? (pltUsd / capUsd) * 100 : 0;
+          
+          const dispCap = isUsd ? capUsd : capArs; const dispInt = isUsd ? intUsd : intArs;
+          const dispPl = isUsd ? pltUsd : pltArs; const dispRoi = isUsd ? roiUsd : roiArs;
+
+          document.getElementById('met-cap').innerText = formatMoney(dispCap, true); 
+          document.getElementById('met-int').innerText = formatMoney(dispInt, true); 
+          const ep = document.getElementById('met-pl'); ep.innerText = formatMoney(dispPl, true); ep.className = `text-2xl font-bold ${dispPl>=0?'text-vup':'text-vdown'}`;
+          
+          const eRoi = document.getElementById('met-roi');
+          if (eRoi) { eRoi.innerText = (dispRoi > 0 ? '+' : '') + dispRoi.toFixed(2) + '%'; eRoi.className = `text-xl font-bold ${dispRoi>=0 ? 'text-vup' : 'text-vdown'}`; }
+
           async function calcularSimuladorLocal() {
               const capInicial = parseFloat(document.getElementById('sim-cap').value) || 0; const aporteMes = parseFloat(document.getElementById('sim-mes').value) || 0; const tasaAnual = parseFloat(document.getElementById('sim-tasa').value) || 0; const anos = parseInt(document.getElementById('sim-anos').value) || 0;
               const labels = []; const dataAportes = []; const dataInteres = []; let capAportado = capInicial; let saldoTotal = capInicial; const tasaMensual = tasaAnual / 100 / 12;
-              for(let i=0; i<=anos; i++) { labels.push('Año ' + i); if(i===0) { dataAportes.push(capAportado); dataInteres.push(0); continue; } for(let m=1; m<=12; m++) { saldoTotal = saldoTotal * (1 + tasaMensual) + aporteMes; capAportado += aporteMes; } dataAportes.push(capAportado); dataInteres.push(saldoTotal - capAportado); }
+              let htmlTabla = `<div class="max-h-48 overflow-y-auto custom-scrollbar mt-2 border border-vborder rounded-xl shadow-sm"><table class="w-full text-xs text-left"><thead class="bg-vbody sticky top-0 shadow-sm"><tr class="text-vmuted uppercase tracking-wider text-[10px]"><th class="p-3 font-bold">Año</th><th class="p-3 font-bold">Invertido</th><th class="p-3 font-bold">Interés</th><th class="p-3 font-bold text-right">Total</th></tr></thead><tbody>`;
+              labels.push('Año 0'); dataAportes.push(capAportado); dataInteres.push(0);
+              htmlTabla += `<tr class="border-b border-vborder border-dashed last:border-0"><td class="p-3 font-bold text-vmain">0</td><td class="p-3 font-medium text-vmuted">${formatMoney(capAportado, true)}</td><td class="p-3 text-vmuted">-</td><td class="p-3 font-bold text-vmain text-right">${formatMoney(saldoTotal, true)}</td></tr>`;
+
+              for(let i=1; i<=anos; i++) { 
+                  for(let m=1; m<=12; m++) { let interesMes = saldoTotal * tasaMensual; saldoTotal = saldoTotal + interesMes + aporteMes; capAportado += aporteMes; }
+                  labels.push('Año ' + i); dataAportes.push(capAportado); dataInteres.push(saldoTotal - capAportado); 
+                  htmlTabla += `<tr class="border-b border-vborder border-dashed last:border-0 hover:bg-vbody transition-colors"><td class="p-3 font-bold text-vmain">${i}</td><td class="p-3 font-medium text-vmuted">${formatMoney(capAportado, true)}</td><td class="p-3 text-vup font-semibold">+${formatMoney(saldoTotal - capAportado, true)}</td><td class="p-3 font-bold text-vmain text-right">${formatMoney(saldoTotal, true)}</td></tr>`;
+              }
+              htmlTabla += `</tbody></table></div>`;
+              const rentaMensual = saldoTotal * tasaMensual; const interesTotalGanado = saldoTotal - capAportado;
+              const htmlResumen = `
+                <div class="grid grid-cols-2 gap-3 mt-6 mb-3">
+                    <div class="bg-vnav p-4 rounded-2xl shadow-sm text-white"><p class="text-[10px] text-vmuted font-bold uppercase tracking-wider mb-1">Capital Final</p><p class="text-xl font-serif font-bold text-white">${formatMoney(saldoTotal, true)}</p></div>
+                    <div class="bg-vup/10 p-4 rounded-2xl shadow-sm border border-vup/20"><p class="text-[10px] text-vup font-bold uppercase tracking-wider mb-1">Renta Mensual</p><p class="text-xl font-serif font-bold text-vup">${formatMoney(rentaMensual, true)}</p></div>
+                    <div class="bg-vbody p-4 rounded-2xl border border-vborder"><p class="text-[10px] text-vmuted font-bold uppercase tracking-wider mb-1">Total Invertido</p><p class="text-sm font-semibold text-vmain">${formatMoney(capAportado, true)}</p></div>
+                    <div class="bg-vbody p-4 rounded-2xl border border-vborder"><p class="text-[10px] text-vmuted font-bold uppercase tracking-wider mb-1">Interés Ganado</p><p class="text-sm font-semibold text-vup">+${formatMoney(interesTotalGanado, true)}</p></div>
+                </div>
+              `;
+              const simResultados = document.getElementById('sim-resultados');
+              if (simResultados) { simResultados.innerHTML = htmlResumen + htmlTabla; simResultados.classList.remove('hidden'); }
+
               if(chartSimInst) chartSimInst.destroy(); chartSimInst = new Chart(document.getElementById('chart-simulador'), { type: 'bar', data: { labels: labels, datasets: [ {label: 'Aportes Totales', data: dataAportes, backgroundColor: cText}, {label: 'Interés Compuesto', data: dataInteres, backgroundColor: cUp} ] }, options: { maintainAspectRatio: false, plugins: { legend: { labels: { color: cText } } }, scales: { x: { stacked: true, ticks: {color: cMuted} }, y: { stacked: true, ticks: {color: cMuted} } } } });
           }
           
           const simCap = document.getElementById('sim-cap'); 
-          if (simCap) { 
-              if (simCap.value === "0" && vMer > 0) { 
-                  simCap.value = isUsd && dolarMep > 0 ? Math.floor(vMer / dolarMep) : Math.floor(vMer); 
-              } 
-              setTimeout(calcularSimuladorLocal, 100); 
-          }
+          if (simCap) { if (simCap.value === "0" && vMerArs > 0) { simCap.value = isUsd ? Math.floor(vMerUsd) : Math.floor(vMerArs); } setTimeout(calcularSimuladorLocal, 100); }
       } catch(e) { console.error(e); }
-    }
-
-    async function calcularSimulador() {
-      const capInicial = parseFloat(document.getElementById('sim-cap').value) || 0; const aporteMes = parseFloat(document.getElementById('sim-mes').value) || 0; const tasaAnual = parseFloat(document.getElementById('sim-tasa').value) || 0; const anos = parseInt(document.getElementById('sim-anos').value) || 0;
-      const labels = []; const dataAportes = []; const dataInteres = []; let capAportado = capInicial; let saldoTotal = capInicial; const tasaMensual = tasaAnual / 100 / 12;
-      for(let i=0; i<=anos; i++) { labels.push('Año ' + i); if(i===0) { dataAportes.push(capAportado); dataInteres.push(0); continue; } for(let m=1; m<=12; m++) { saldoTotal = saldoTotal * (1 + tasaMensual) + aporteMes; capAportado += aporteMes; } dataAportes.push(capAportado); dataInteres.push(saldoTotal - capAportado); }
-      const style = getComputedStyle(document.body); const cUp = style.getPropertyValue('--up-color').trim(); const cText = style.getPropertyValue('--text-main').trim(); const cMuted = style.getPropertyValue('--text-muted').trim();
-      if(chartSimInst) chartSimInst.destroy(); chartSimInst = new Chart(document.getElementById('chart-simulador'), { type: 'bar', data: { labels: labels, datasets: [ {label: 'Aportes Totales', data: dataAportes, backgroundColor: cText}, {label: 'Interés Compuesto', data: dataInteres, backgroundColor: cUp} ] }, options: { maintainAspectRatio: false, plugins: { legend: { labels: { color: cText } } }, scales: { x: { stacked: true, ticks: {color: cMuted} }, y: { stacked: true, ticks: {color: cMuted} } } } });
     }
 
     const sUser = localStorage.getItem('cf_user'); 
