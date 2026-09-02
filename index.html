@@ -250,7 +250,20 @@
    const themes = ['', 'theme-pro', 'theme-premium', 'theme-adaptive']; 
     // Recuperamos el tema guardado o empezamos en 0
     let currentThemeIndex = parseInt(localStorage.getItem('cf_theme_index')) || 0;
-    function toggleTheme() { document.body.classList.remove('theme-pro', 'theme-premium', 'theme-adaptive'); currentThemeIndex = (currentThemeIndex + 1) % themes.length; if(themes[currentThemeIndex]) { document.body.classList.add(themes[currentThemeIndex]); } if(document.getElementById('header-title').innerText.includes('Métrica')) { updateMetricas(); } }
+    function toggleTheme() { 
+        document.body.classList.remove('theme-pro', 'theme-premium', 'theme-adaptive'); 
+        currentThemeIndex = (currentThemeIndex + 1) % themes.length; 
+        
+        // Guardamos la nueva elección en la memoria
+        localStorage.setItem('cf_theme_index', currentThemeIndex);
+
+        if(themes[currentThemeIndex]) { 
+            document.body.classList.add(themes[currentThemeIndex]); 
+        } 
+        if(document.getElementById('header-title').innerText.includes('Métrica')) { 
+            updateMetricas(); 
+        } 
+    }
     function switchAuthTab(t) { document.getElementById('tab-login').className = t==='login' ? 'flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent' : 'flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted'; document.getElementById('tab-register').className = t==='register' ? 'flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent' : 'flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted'; document.getElementById('form-login').classList.toggle('hidden', t!=='login'); document.getElementById('form-register').classList.toggle('hidden', t!=='register'); }
     
     async function handleRegister(e) { e.preventDefault(); const user = document.getElementById('reg-user').value.trim(); const pass = document.getElementById('reg-pass').value; const errorMsg = document.getElementById('reg-error'); const doc = await db.collection("usuarios").doc(user).get(); if(doc.exists) { errorMsg.classList.remove('hidden'); } else { await db.collection("usuarios").doc(user).set({ username: user, password: pass }); errorMsg.classList.add('hidden'); startSession(user); } }
@@ -796,6 +809,11 @@
           options: { maintainAspectRatio: false, plugins: { legend: { labels: { color: cText } } }, scales: { x: { stacked: true, ticks: {color: cMuted} }, y: { stacked: true, ticks: {color: cMuted} } } } 
       });
       setTimeout(aplicarAutoShrink, 10);
+    }
+
+    // Aplicar tema guardado al cargar
+    if(themes[currentThemeIndex]) {
+        document.body.classList.add(themes[currentThemeIndex]);
     }
 
     const sUser = localStorage.getItem('cf_user'); 
