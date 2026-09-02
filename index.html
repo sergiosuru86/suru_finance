@@ -247,7 +247,9 @@
     const fechaActual = new Date(); const mesActualText = `${meses[fechaActual.getMonth()]} DE ${fechaActual.getFullYear()}`; const mesActualFiltro = fechaActual.toISOString().slice(0, 7);
     const headerTitles = { 'resumen': 'Buenos días', 'caja': 'Caja diaria', 'operaciones': 'Operaciones', 'cartera': 'Cartera', 'metricas': 'Métricas' };
 
-    let currentThemeIndex = 0; const themes = ['', 'theme-pro', 'theme-premium', 'theme-adaptive']; 
+   const themes = ['', 'theme-pro', 'theme-premium', 'theme-adaptive']; 
+    // Recuperamos el tema guardado o empezamos en 0
+    let currentThemeIndex = parseInt(localStorage.getItem('cf_theme_index')) || 0;
     function toggleTheme() { document.body.classList.remove('theme-pro', 'theme-premium', 'theme-adaptive'); currentThemeIndex = (currentThemeIndex + 1) % themes.length; if(themes[currentThemeIndex]) { document.body.classList.add(themes[currentThemeIndex]); } if(document.getElementById('header-title').innerText.includes('Métrica')) { updateMetricas(); } }
     function switchAuthTab(t) { document.getElementById('tab-login').className = t==='login' ? 'flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent' : 'flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted'; document.getElementById('tab-register').className = t==='register' ? 'flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent' : 'flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted'; document.getElementById('form-login').classList.toggle('hidden', t!=='login'); document.getElementById('form-register').classList.toggle('hidden', t!=='register'); }
     
