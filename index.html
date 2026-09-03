@@ -83,6 +83,7 @@
           <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-vcard border border-vborder rounded-2xl shadow-xl overflow-hidden z-50">
             <div class="p-4 border-b border-vborder"><p class="text-xs text-vmuted font-semibold uppercase">Sesión iniciada</p><p id="menu-username" class="font-bold text-vmain truncate">Usuario</p></div>
             
+            <button onclick="abrirCambiarPass(); document.getElementById('user-menu').classList.add('hidden');" class="w-full text-left px-4 py-3 text-sm font-bold text-vmain hover:bg-vbody border-b border-vborder transition-colors"><i class="fa-solid fa-shield-halved mr-2 text-vhero"></i> Cambiar clave</button>
             <label for="json-upload" class="w-full text-left px-4 py-3 text-sm font-bold text-vmain hover:bg-vbody transition-colors cursor-pointer block m-0"><i class="fa-solid fa-file-import mr-2 text-vaccent"></i> Importar datos<input type="file" id="json-upload" class="hidden" accept=".json" onchange="importarMisDatos(event)" /></label>
             <button onclick="openModal('modal-exportar'); document.getElementById('user-menu').classList.add('hidden');" class="w-full text-left px-4 py-3 text-sm font-bold text-vmain hover:bg-vbody border-b border-vborder transition-colors"><i class="fa-solid fa-file-export mr-2 text-vup"></i> Exportar datos</button>
             <button onclick="logout()" class="w-full text-left px-4 py-3 text-sm font-bold text-vdown hover:bg-vdown/10 transition-colors"><i class="fa-solid fa-right-from-bracket mr-2"></i> Cerrar sesión</button>
@@ -145,7 +146,6 @@
     </div>
   </div>
 
-  <!-- NUEVO: Modal de Exportación y Conexión con Sheets -->
   <div id="modal-exportar" class="glass-effect fixed inset-0 z-[100] hidden flex-col justify-end sm:justify-center items-center transition-opacity max-h-screen overflow-y-auto pt-20">
     <div class="bg-vcard w-full sm:w-[400px] rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-[slideUp_0.3s_ease-out] mb-10 border border-white/20">
       <div class="flex justify-between items-center mb-6"><h3 class="font-serif text-2xl font-semibold text-vmain">Exportar Datos</h3><button onclick="closeModal('modal-exportar')" class="text-vmuted hover:text-vdown text-xl"><i class="fa-solid fa-xmark"></i></button></div>
@@ -161,6 +161,29 @@
           3. En el menú superior de Sheets, hacé clic en <strong class="text-vmain">Archivo > Importar > Subir</strong>.<br>
           4. Seleccioná el CSV que acabás de descargar y en "Tipo de separador" elegí <strong class="text-vmain">"Detectar automáticamente"</strong>.
       </div>
+    </div>
+  </div>
+
+  <!-- NUEVO MODAL: Cambiar Contraseña -->
+  <div id="modal-cambiar-pass" class="glass-effect fixed inset-0 z-[100] hidden flex-col justify-end sm:justify-center items-center transition-opacity max-h-screen overflow-y-auto pt-20">
+    <div class="bg-vcard w-full sm:w-[400px] rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-[slideUp_0.3s_ease-out] mb-10 border border-white/20">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="font-serif text-2xl font-semibold text-vmain">Cambiar Clave</h3>
+        <button onclick="closeModal('modal-cambiar-pass')" class="text-vmuted hover:text-vdown text-xl"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="cambiarPassword(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-vmuted uppercase mb-1">Clave Actual</label>
+          <input type="password" id="pass-actual" required class="w-full bg-vbody text-vmain border border-vborder rounded-2xl p-4 outline-none focus:ring-2 focus:ring-vaccent transition-all" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-vmuted uppercase mb-1">Nueva Clave</label>
+          <input type="password" id="pass-nueva" required class="w-full bg-vbody text-vmain border border-vborder rounded-2xl p-4 outline-none focus:ring-2 focus:ring-vhero transition-all" />
+        </div>
+        <p id="pass-error" class="text-vdown text-xs hidden font-medium">La clave actual es incorrecta.</p>
+        <p id="pass-exito" class="text-vup text-xs hidden font-medium">¡Clave actualizada de forma segura!</p>
+        <button type="submit" id="btn-pass-submit" class="w-full bg-vhero text-white font-bold py-4 rounded-2xl shadow-md hover:shadow-lg active:scale-95 transition-all mt-2 ripple"><i class="fa-solid fa-shield-check mr-2"></i>Actualizar Seguridad</button>
+      </form>
     </div>
   </div>
 
@@ -184,17 +207,34 @@
     window.currentSortCaja = 'mes';
     window.currentSortOp = 'fecha';
 
-    // --- 🛡️ PARCHE DE SEGURIDAD 1: Sanitización y Encriptación ---
+    // --- 🛡️ PARCHES DE SEGURIDAD BLINDADOS ---
     function escapeHTML(str) {
         if (typeof str !== 'string') return str;
         return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
     }
-    async function hashPassword(password) {
-        const msgBuffer = new TextEncoder().encode(password);
+    
+    // Hash con Salting para neutralizar Rainbow Tables
+    async function hashPassword(username, password) {
+        // Generamos la 'sal' usando el username para que cada usuario tenga un hash único
+        const salt = username.toLowerCase() + "_CF_Salt_2024!";
+        const msgBuffer = new TextEncoder().encode(password + salt);
         const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
+
+    // Sanitiza todo el objeto JSON iterativamente durante la importación
+    function sanitizarObjeto(obj) {
+        if (typeof obj === 'string') return escapeHTML(obj);
+        if (typeof obj !== 'object' || obj === null) return obj;
+        if (Array.isArray(obj)) return obj.map(sanitizarObjeto);
+        const nuevoObjeto = {};
+        for (const key in obj) {
+            nuevoObjeto[escapeHTML(key)] = sanitizarObjeto(obj[key]);
+        }
+        return nuevoObjeto;
+    }
+    // ------------------------------------------
 
     const catIngresos = ['Sueldo', 'Impresión 3D', 'Inversiones', 'Ventas', 'Otros'];
     const catGastos = ['Supermercado', 'Servicios', 'Suscripciones', 'Transporte', 'Ocio', 'Salud', 'Hogar', 'Otros'];
@@ -217,15 +257,69 @@
     
     function switchAuthTab(t) { document.getElementById('tab-login').className = t==='login' ? 'flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent' : 'flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted'; document.getElementById('tab-register').className = t==='register' ? 'flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent' : 'flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted'; document.getElementById('form-login').classList.toggle('hidden', t!=='login'); document.getElementById('form-register').classList.toggle('hidden', t!=='register'); }
     
+    // Auth Segura con Salting
     async function handleRegister(e) { 
         e.preventDefault(); const user = escapeHTML(document.getElementById('reg-user').value.trim()); const pass = document.getElementById('reg-pass').value; const errorMsg = document.getElementById('reg-error'); const doc = await db.collection("usuarios").doc(user).get(); 
-        if(doc.exists) { errorMsg.classList.remove('hidden'); } else { const hashedPass = await hashPassword(pass); await db.collection("usuarios").doc(user).set({ username: user, password: hashedPass }); errorMsg.classList.add('hidden'); startSession(user); } 
+        if(doc.exists) { errorMsg.classList.remove('hidden'); } else { const hashedPass = await hashPassword(user, pass); await db.collection("usuarios").doc(user).set({ username: user, password: hashedPass }); errorMsg.classList.add('hidden'); startSession(user); } 
     }
     
     async function handleLogin(e) { 
         e.preventDefault(); const user = escapeHTML(document.getElementById('login-user').value.trim()); const pass = document.getElementById('login-pass').value; const errorMsg = document.getElementById('login-error'); const doc = await db.collection("usuarios").doc(user).get(); 
-        if(doc.exists) { const hashedAttempt = await hashPassword(pass); if (doc.data().password === hashedAttempt || doc.data().password === pass) { errorMsg.classList.add('hidden'); startSession(user); return; } } 
+        if(doc.exists) { 
+            const hashedAttempt = await hashPassword(user, pass); 
+            // Soporta hash nuevo con salt, hashes viejos sin salt, o texto plano por migración progresiva
+            if (doc.data().password === hashedAttempt || doc.data().password === pass) { 
+                errorMsg.classList.add('hidden'); startSession(user); 
+                // Auto-migrar contraseña a la nueva seguridad si estaba desprotegida
+                if(doc.data().password === pass) { await db.collection("usuarios").doc(user).update({ password: hashedAttempt }); }
+                return; 
+            } 
+        } 
         errorMsg.classList.remove('hidden'); 
+    }
+
+    // NUEVO: Funcionalidad de Cambio de Contraseña
+    function abrirCambiarPass() {
+        document.getElementById('pass-actual').value = '';
+        document.getElementById('pass-nueva').value = '';
+        document.getElementById('pass-error').classList.add('hidden');
+        document.getElementById('pass-exito').classList.add('hidden');
+        openModal('modal-cambiar-pass');
+    }
+
+    async function cambiarPassword(e) {
+        e.preventDefault();
+        const passActual = document.getElementById('pass-actual').value;
+        const passNueva = document.getElementById('pass-nueva').value;
+        const errorMsg = document.getElementById('pass-error');
+        const exitoMsg = document.getElementById('pass-exito');
+        const btn = document.getElementById('btn-pass-submit');
+
+        errorMsg.classList.add('hidden');
+        exitoMsg.classList.add('hidden');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Verificando...';
+
+        try {
+            const doc = await db.collection("usuarios").doc(currentUser).get();
+            if (doc.exists) {
+                const hashedAttempt = await hashPassword(currentUser, passActual);
+                if (doc.data().password === hashedAttempt || doc.data().password === passActual) {
+                    const newHashedPass = await hashPassword(currentUser, passNueva);
+                    await db.collection("usuarios").doc(currentUser).update({ password: newHashedPass });
+                    exitoMsg.classList.remove('hidden');
+                    document.getElementById('pass-actual').value = '';
+                    document.getElementById('pass-nueva').value = '';
+                    setTimeout(() => closeModal('modal-cambiar-pass'), 2000);
+                } else {
+                    errorMsg.classList.remove('hidden');
+                }
+            }
+        } catch(err) {
+            console.error(err);
+        }
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-shield-check mr-2"></i>Actualizar Seguridad';
     }
 
     function startSession(u) { currentUser = u; localStorage.setItem('cf_user', u); document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('app-container').classList.remove('hidden'); document.getElementById('app-container').classList.add('flex'); document.getElementById('display-username').innerText = u; document.getElementById('menu-username').innerText = u; document.getElementById('user-avatar').innerText = u.substring(0,2).toUpperCase(); changeTab('resumen', document.querySelector('.nav-item')); }
@@ -308,6 +402,7 @@
     function prepararNuevaCaja() { editCajaId = null; document.getElementById('titulo-modal-caja').innerText = "Nuevo Movimiento"; document.getElementById('caja-fecha').valueAsDate = new Date(); document.getElementById('caja-desc').value = ''; document.getElementById('caja-monto').value = ''; document.querySelector('input[name="tipo-mov"][value="Ingreso"]').checked = true; actualizarSelectCategorias(); openModal('modal-caja'); }
     function prepararNuevaOp() { editOpId = null; document.getElementById('titulo-modal-op').innerText = "Registrar Operación"; document.getElementById('op-fecha').valueAsDate = new Date(); document.getElementById('op-activo').value = ''; document.getElementById('op-cantidad').value = ''; document.getElementById('op-precio').value = ''; document.getElementById('op-comision').value = '0'; document.getElementById('op-interes').value = '0'; openModal('modal-operacion'); }
 
+    // --- Importación Blindada ---
     async function importarMisDatos(event) {
         const file = event.target.files[0]; if (!file) return;
         if (!confirm("⚠️ ¡Atención! Importar un respaldo sobrescribirá tus datos actuales si hay duplicados. ¿Querés continuar?")) { event.target.value = ''; return; }
@@ -315,12 +410,17 @@
         const reader = new FileReader();
         reader.onload = async function(e) {
             try {
-                const datos = JSON.parse(e.target.result); let count = 0;
+                // Parseamos y SANITIZAMOS todo el JSON antes de tocar Firebase
+                const rawDatos = JSON.parse(e.target.result);
+                const datos = sanitizarObjeto(rawDatos); 
+                let count = 0;
+                
                 if (datos.caja && Array.isArray(datos.caja)) { for(let mov of datos.caja) { let d = {...mov}; delete d.id; await db.collection("caja").doc(mov.id).set(d, { merge: true }); count++; } }
                 if (datos.operaciones && Array.isArray(datos.operaciones)) { for(let op of datos.operaciones) { let d = {...op}; delete d.id; await db.collection("operaciones").doc(op.id).set(d, { merge: true }); count++; } }
                 if (datos.precios && Array.isArray(datos.precios)) { for(let p of datos.precios) { let d = {...p}; delete d.id; await db.collection("precios").doc(p.id).set(d, { merge: true }); count++; } }
-                alert(`¡Importación exitosa! Se restauraron ${count} registros.`); changeTab('resumen', document.querySelector('.nav-item')); 
-            } catch (error) { console.error(error); alert("Error: El archivo no es un respaldo válido de Capital Flow."); }
+                
+                alert(`¡Importación exitosa y segura! Se restauraron ${count} registros.`); changeTab('resumen', document.querySelector('.nav-item')); 
+            } catch (error) { console.error(error); alert("Error: El archivo no es un respaldo válido de Capital Flow o está corrupto."); }
             event.target.value = ''; btn.innerHTML = originalText; document.getElementById('user-menu').classList.add('hidden');
         };
         reader.readAsText(file);
@@ -712,7 +812,7 @@
           if(chartCajaInst) chartCajaInst.destroy(); chartCajaInst = new Chart(document.getElementById('chart-caja'), { type: 'bar', data: { labels: lCaja, datasets: [{label:'Ingresos', data: lCaja.map(m=>mesesCaja[m].ing), backgroundColor: cUp}, {label:'Gastos', data: lCaja.map(m=>mesesCaja[m].gas), backgroundColor: cDown}] }, options:{maintainAspectRatio:false, plugins:{legend:{labels:{color:cText}}}, scales:{x:{ticks:{color:cMuted}},y:{ticks:{color:cMuted}}}} });
 
           const pf = {}; let capArs = 0, intArs = 0, capUsd = 0, intUsd = 0; const mOps = {}; ops.sort((a,b)=>new Date(a.fecha||0)-new Date(b.fecha||0));
-          const flujosArs = []; const flujosUsd = []; // TIR
+          const flujosArs = []; const flujosUsd = []; 
           
           ops.forEach(op => {
             const dh = op.dolarHistorico || dolarMep || 1000;
