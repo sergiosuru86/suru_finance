@@ -6,9 +6,10 @@
   <title>Capital Flow</title>
   <link rel="manifest" href="./manifest.json" />
   
-  <!-- SDK de Firebase -->
+  <!-- SDK de Firebase: Agregamos el módulo oficial de Autenticación -->
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -66,8 +67,19 @@
       <div class="text-center mb-10"><div class="w-16 h-16 bg-vaccent text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg"><i class="fa-solid fa-layer-group"></i></div><h1 class="font-serif text-4xl font-bold text-vmain tracking-tight">Capital Flow</h1><p class="text-vmuted text-sm mt-2 font-medium">Tu espacio personal en la nube.</p></div>
       <div class="bg-vcard p-7 rounded-3xl shadow-2xl border border-vborder">
         <div class="flex border-b border-vborder mb-6"><button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent">Iniciar Sesión</button><button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted">Crear Cuenta</button></div>
-        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4"><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Usuario</label><input type="text" id="login-user" required class="w-full bg-vbody text-vmain border border-vborder rounded-2xl p-4 outline-none focus:ring-2 focus:ring-vaccent transition-all" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Contraseña</label><input type="password" id="login-pass" required class="w-full bg-vbody text-vmain border border-vborder rounded-2xl p-4 outline-none focus:ring-2 focus:ring-vaccent transition-all" /></div><p id="login-error" class="text-vdown text-xs hidden">Usuario o contraseña incorrectos.</p><button type="submit" class="w-full bg-vaccent text-white font-bold py-4 rounded-2xl mt-2 shadow-md hover:shadow-lg active:scale-95 transition-all ripple">Entrar</button></form>
-        <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden"><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Elige un Usuario</label><input type="text" id="reg-user" required class="w-full bg-vbody text-vmain border border-vborder rounded-2xl p-4 outline-none focus:ring-2 focus:ring-vmain transition-all" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Crea una Contraseña</label><input type="password" id="reg-pass" required class="w-full bg-vbody text-vmain border border-vborder rounded-2xl p-4 outline-none focus:ring-2 focus:ring-vmain transition-all" /></div><p id="reg-error" class="text-vdown text-xs hidden">El usuario ya existe.</p><button type="submit" class="w-full bg-vmain text-vbody font-bold py-4 rounded-2xl mt-2 shadow-md hover:shadow-lg active:scale-95 transition-all ripple">Registrarme</button></form>
+        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
+            <!-- Firebase Auth requiere un email, no solo un usuario. Ocultamos esto al usuario final -->
+            <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Usuario</label><input type="text" id="login-user" required class="w-full bg-vbody text-vmain border border-vborder rounded-2xl p-4 outline-none focus:ring-2 focus:ring-vaccent transition-all" /></div>
+            <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Contraseña</label><input type="password" id="login-pass" required class="w-full bg-vbody text-vmain border border-vborder rounded-2xl p-4 outline-none focus:ring-2 focus:ring-vaccent transition-all" /></div>
+            <p id="login-error" class="text-vdown text-xs hidden">Usuario o contraseña incorrectos.</p>
+            <button type="submit" id="btn-login-submit" class="w-full bg-vaccent text-white font-bold py-4 rounded-2xl mt-2 shadow-md hover:shadow-lg active:scale-95 transition-all ripple">Entrar</button>
+        </form>
+        <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+            <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Elige un Usuario</label><input type="text" id="reg-user" required class="w-full bg-vbody text-vmain border border-vborder rounded-2xl p-4 outline-none focus:ring-2 focus:ring-vmain transition-all" /></div>
+            <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Crea una Contraseña (mínimo 6 let.)</label><input type="password" id="reg-pass" required minlength="6" class="w-full bg-vbody text-vmain border border-vborder rounded-2xl p-4 outline-none focus:ring-2 focus:ring-vmain transition-all" /></div>
+            <p id="reg-error" class="text-vdown text-xs hidden">Error al crear la cuenta. Intenta con otra clave.</p>
+            <button type="submit" id="btn-reg-submit" class="w-full bg-vmain text-vbody font-bold py-4 rounded-2xl mt-2 shadow-md hover:shadow-lg active:scale-95 transition-all ripple">Registrarme</button>
+        </form>
       </div>
     </div>
   </div>
@@ -83,7 +95,7 @@
           <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-vcard border border-vborder rounded-2xl shadow-xl overflow-hidden z-50">
             <div class="p-4 border-b border-vborder"><p class="text-xs text-vmuted font-semibold uppercase">Sesión iniciada</p><p id="menu-username" class="font-bold text-vmain truncate">Usuario</p></div>
             
-            <button onclick="abrirCambiarPass(); document.getElementById('user-menu').classList.add('hidden');" class="w-full text-left px-4 py-3 text-sm font-bold text-vmain hover:bg-vbody border-b border-vborder transition-colors"><i class="fa-solid fa-shield-halved mr-2 text-vhero"></i> Cambiar clave</button>
+            <!-- El cambio de clave ahora lo maneja Firebase directo -->
             <label for="json-upload" class="w-full text-left px-4 py-3 text-sm font-bold text-vmain hover:bg-vbody transition-colors cursor-pointer block m-0"><i class="fa-solid fa-file-import mr-2 text-vaccent"></i> Importar datos<input type="file" id="json-upload" class="hidden" accept=".json" onchange="importarMisDatos(event)" /></label>
             <button onclick="openModal('modal-exportar'); document.getElementById('user-menu').classList.add('hidden');" class="w-full text-left px-4 py-3 text-sm font-bold text-vmain hover:bg-vbody border-b border-vborder transition-colors"><i class="fa-solid fa-file-export mr-2 text-vup"></i> Exportar datos</button>
             <button onclick="logout()" class="w-full text-left px-4 py-3 text-sm font-bold text-vdown hover:bg-vdown/10 transition-colors"><i class="fa-solid fa-right-from-bracket mr-2"></i> Cerrar sesión</button>
@@ -164,29 +176,6 @@
     </div>
   </div>
 
-  <!-- NUEVO MODAL: Cambiar Contraseña -->
-  <div id="modal-cambiar-pass" class="glass-effect fixed inset-0 z-[100] hidden flex-col justify-end sm:justify-center items-center transition-opacity max-h-screen overflow-y-auto pt-20">
-    <div class="bg-vcard w-full sm:w-[400px] rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-[slideUp_0.3s_ease-out] mb-10 border border-white/20">
-      <div class="flex justify-between items-center mb-6">
-        <h3 class="font-serif text-2xl font-semibold text-vmain">Cambiar Clave</h3>
-        <button onclick="closeModal('modal-cambiar-pass')" class="text-vmuted hover:text-vdown text-xl"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <form onsubmit="cambiarPassword(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-vmuted uppercase mb-1">Clave Actual</label>
-          <input type="password" id="pass-actual" required class="w-full bg-vbody text-vmain border border-vborder rounded-2xl p-4 outline-none focus:ring-2 focus:ring-vaccent transition-all" />
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-vmuted uppercase mb-1">Nueva Clave</label>
-          <input type="password" id="pass-nueva" required class="w-full bg-vbody text-vmain border border-vborder rounded-2xl p-4 outline-none focus:ring-2 focus:ring-vhero transition-all" />
-        </div>
-        <p id="pass-error" class="text-vdown text-xs hidden font-medium">La clave actual es incorrecta.</p>
-        <p id="pass-exito" class="text-vup text-xs hidden font-medium">¡Clave actualizada de forma segura!</p>
-        <button type="submit" id="btn-pass-submit" class="w-full bg-vhero text-white font-bold py-4 rounded-2xl shadow-md hover:shadow-lg active:scale-95 transition-all mt-2 ripple"><i class="fa-solid fa-shield-check mr-2"></i>Actualizar Seguridad</button>
-      </form>
-    </div>
-  </div>
-
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyB6c7W6XVzY9ZZYjvZhRhQ-B1nEc8gggAg",
@@ -198,43 +187,40 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const auth = firebase.auth(); // Inicializamos Firebase Auth
+
+    // Activamos la persistencia de sesión local oficial de Firebase
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
     db.enablePersistence({synchronizeTabs:true}).catch(err => console.log("Modo offline:", err));
 
-    let currentUser = null, chartCajaInst = null, chartPieInst = null, chartLineInst = null, chartSimInst = null, chartPieGastosInst = null;
+    let currentUser = null, currentUsername = "Usuario";
+    let chartCajaInst = null, chartPieInst = null, chartLineInst = null, chartSimInst = null, chartPieGastosInst = null;
     let editCajaId = null, editOpId = null;
     let isUsd = false; let dolarMep = null;
     
     window.currentSortCaja = 'mes';
     window.currentSortOp = 'fecha';
 
-    // --- 🛡️ PARCHES DE SEGURIDAD BLINDADOS ---
     function escapeHTML(str) {
         if (typeof str !== 'string') return str;
         return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
     }
-    
-    // Hash con Salting para neutralizar Rainbow Tables
-    async function hashPassword(username, password) {
-        // Generamos la 'sal' usando el username para que cada usuario tenga un hash único
-        const salt = username.toLowerCase() + "_CF_Salt_2024!";
-        const msgBuffer = new TextEncoder().encode(password + salt);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
 
-    // Sanitiza todo el objeto JSON iterativamente durante la importación
     function sanitizarObjeto(obj) {
         if (typeof obj === 'string') return escapeHTML(obj);
         if (typeof obj !== 'object' || obj === null) return obj;
         if (Array.isArray(obj)) return obj.map(sanitizarObjeto);
         const nuevoObjeto = {};
-        for (const key in obj) {
-            nuevoObjeto[escapeHTML(key)] = sanitizarObjeto(obj[key]);
-        }
+        for (const key in obj) { nuevoObjeto[escapeHTML(key)] = sanitizarObjeto(obj[key]); }
         return nuevoObjeto;
     }
-    // ------------------------------------------
+
+    // Funciones Auxiliares para transformar el Nombre de Usuario en Email (Requisito de Firebase Auth)
+    // Agregamos un sufijo fijo para que la persona solo escriba "Sergio" pero Firebase vea "Sergio@capitalflow.app"
+    function getEmailFromUsername(user) {
+        return user.replace(/[^a-zA-Z0-9]/g, "").toLowerCase() + "@capitalflow.app";
+    }
 
     const catIngresos = ['Sueldo', 'Impresión 3D', 'Inversiones', 'Ventas', 'Otros'];
     const catGastos = ['Supermercado', 'Servicios', 'Suscripciones', 'Transporte', 'Ocio', 'Salud', 'Hogar', 'Otros'];
@@ -257,73 +243,89 @@
     
     function switchAuthTab(t) { document.getElementById('tab-login').className = t==='login' ? 'flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent' : 'flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted'; document.getElementById('tab-register').className = t==='register' ? 'flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent' : 'flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted'; document.getElementById('form-login').classList.toggle('hidden', t!=='login'); document.getElementById('form-register').classList.toggle('hidden', t!=='register'); }
     
-    // Auth Segura con Salting
+    // --- 🛡️ FIREBASE AUTHENTICATION (BLINDAJE TOTAL) ---
     async function handleRegister(e) { 
-        e.preventDefault(); const user = escapeHTML(document.getElementById('reg-user').value.trim()); const pass = document.getElementById('reg-pass').value; const errorMsg = document.getElementById('reg-error'); const doc = await db.collection("usuarios").doc(user).get(); 
-        if(doc.exists) { errorMsg.classList.remove('hidden'); } else { const hashedPass = await hashPassword(user, pass); await db.collection("usuarios").doc(user).set({ username: user, password: hashedPass }); errorMsg.classList.add('hidden'); startSession(user); } 
+        e.preventDefault(); 
+        const btn = document.getElementById('btn-reg-submit');
+        const userStr = document.getElementById('reg-user').value.trim(); 
+        const passStr = document.getElementById('reg-pass').value; 
+        const errorMsg = document.getElementById('reg-error'); 
+        const email = getEmailFromUsername(userStr);
+
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+        btn.disabled = true;
+
+        try {
+            // Firebase Auth crea la cuenta y hashea todo en sus servidores
+            const userCredential = await auth.createUserWithEmailAndPassword(email, passStr);
+            // Guardamos el nombre "humano" en el perfil de Firebase
+            await userCredential.user.updateProfile({ displayName: userStr });
+            
+            errorMsg.classList.add('hidden');
+        } catch (error) {
+            console.error("Error al registrar:", error);
+            errorMsg.innerText = "Error: " + (error.code === 'auth/email-already-in-use' ? 'El usuario ya existe.' : 'La contraseña debe tener al menos 6 caracteres.');
+            errorMsg.classList.remove('hidden');
+        }
+        btn.innerHTML = 'Registrarme';
+        btn.disabled = false;
     }
     
     async function handleLogin(e) { 
-        e.preventDefault(); const user = escapeHTML(document.getElementById('login-user').value.trim()); const pass = document.getElementById('login-pass').value; const errorMsg = document.getElementById('login-error'); const doc = await db.collection("usuarios").doc(user).get(); 
-        if(doc.exists) { 
-            const hashedAttempt = await hashPassword(user, pass); 
-            // Soporta hash nuevo con salt, hashes viejos sin salt, o texto plano por migración progresiva
-            if (doc.data().password === hashedAttempt || doc.data().password === pass) { 
-                errorMsg.classList.add('hidden'); startSession(user); 
-                // Auto-migrar contraseña a la nueva seguridad si estaba desprotegida
-                if(doc.data().password === pass) { await db.collection("usuarios").doc(user).update({ password: hashedAttempt }); }
-                return; 
-            } 
-        } 
-        errorMsg.classList.remove('hidden'); 
-    }
+        e.preventDefault(); 
+        const btn = document.getElementById('btn-login-submit');
+        const userStr = document.getElementById('login-user').value.trim(); 
+        const passStr = document.getElementById('login-pass').value; 
+        const errorMsg = document.getElementById('login-error'); 
+        const email = getEmailFromUsername(userStr);
 
-    // NUEVO: Funcionalidad de Cambio de Contraseña
-    function abrirCambiarPass() {
-        document.getElementById('pass-actual').value = '';
-        document.getElementById('pass-nueva').value = '';
-        document.getElementById('pass-error').classList.add('hidden');
-        document.getElementById('pass-exito').classList.add('hidden');
-        openModal('modal-cambiar-pass');
-    }
-
-    async function cambiarPassword(e) {
-        e.preventDefault();
-        const passActual = document.getElementById('pass-actual').value;
-        const passNueva = document.getElementById('pass-nueva').value;
-        const errorMsg = document.getElementById('pass-error');
-        const exitoMsg = document.getElementById('pass-exito');
-        const btn = document.getElementById('btn-pass-submit');
-
-        errorMsg.classList.add('hidden');
-        exitoMsg.classList.add('hidden');
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Verificando...';
 
         try {
-            const doc = await db.collection("usuarios").doc(currentUser).get();
-            if (doc.exists) {
-                const hashedAttempt = await hashPassword(currentUser, passActual);
-                if (doc.data().password === hashedAttempt || doc.data().password === passActual) {
-                    const newHashedPass = await hashPassword(currentUser, passNueva);
-                    await db.collection("usuarios").doc(currentUser).update({ password: newHashedPass });
-                    exitoMsg.classList.remove('hidden');
-                    document.getElementById('pass-actual').value = '';
-                    document.getElementById('pass-nueva').value = '';
-                    setTimeout(() => closeModal('modal-cambiar-pass'), 2000);
-                } else {
-                    errorMsg.classList.remove('hidden');
-                }
-            }
-        } catch(err) {
-            console.error(err);
+            await auth.signInWithEmailAndPassword(email, passStr);
+            errorMsg.classList.add('hidden'); 
+        } catch (error) {
+            console.error("Error al iniciar sesión:", error);
+            errorMsg.classList.remove('hidden'); 
         }
+        btn.innerHTML = 'Entrar';
         btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-shield-check mr-2"></i>Actualizar Seguridad';
     }
 
-    function startSession(u) { currentUser = u; localStorage.setItem('cf_user', u); document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('app-container').classList.remove('hidden'); document.getElementById('app-container').classList.add('flex'); document.getElementById('display-username').innerText = u; document.getElementById('menu-username').innerText = u; document.getElementById('user-avatar').innerText = u.substring(0,2).toUpperCase(); changeTab('resumen', document.querySelector('.nav-item')); }
-    function logout() { currentUser = null; localStorage.removeItem('cf_user'); document.getElementById('user-menu').classList.add('hidden'); document.getElementById('app-container').classList.add('hidden'); document.getElementById('app-container').classList.remove('flex'); document.getElementById('auth-screen').classList.remove('hidden'); }
+    function logout() { 
+        auth.signOut();
+    }
+
+    // --- ESCUCHADOR MAESTRO DE SESIÓN (El cerebro de la seguridad) ---
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            // El usuario tiene un Token criptográfico válido
+            currentUser = user.uid; // Usamos el ID criptográfico, no el nombre, para vincular los datos
+            currentUsername = user.displayName || "Usuario"; // Mostramos el nombre bonito en la pantalla
+            
+            document.getElementById('auth-screen').classList.add('hidden'); 
+            document.getElementById('app-container').classList.remove('hidden'); 
+            document.getElementById('app-container').classList.add('flex'); 
+            
+            document.getElementById('display-username').innerText = currentUsername; 
+            document.getElementById('menu-username').innerText = currentUsername; 
+            document.getElementById('user-avatar').innerText = currentUsername.substring(0,2).toUpperCase(); 
+            
+            // Forzamos el clic en la primer pestaña para que cargue
+            const navResumen = document.querySelector('.nav-item');
+            if(navResumen) changeTab('resumen', navResumen);
+            
+        } else {
+            // El usuario no existe o se deslogueó
+            currentUser = null;
+            document.getElementById('user-menu').classList.add('hidden'); 
+            document.getElementById('app-container').classList.add('hidden'); 
+            document.getElementById('app-container').classList.remove('flex'); 
+            document.getElementById('auth-screen').classList.remove('hidden');
+        }
+    });
+    // ------------------------------------------------------------------
 
     function formatMoney(num, bypassConversion = false) { 
         if (isUsd && dolarMep > 0) { const val = bypassConversion ? num : (num / dolarMep); return "u$s " + val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
@@ -337,7 +339,6 @@
 
     function parseNumberArg(val) { if (!val) return 0; let s = String(val).trim().replace(/[$ \t]/g, ''); if (!s) return 0; if (s.includes('.') && s.includes(',')) { if (s.indexOf('.') < s.indexOf(',')) s = s.replace(/\./g, '').replace(',', '.'); else s = s.replace(/,/g, ''); } else if (s.includes(',')) s = s.replace(',', '.'); return parseFloat(s) || 0; }
     
-    // --- NUEVO ALGORITMO MWRR (TIR) ---
     function calcularTIR(flujos) {
         if (!flujos || flujos.length < 2) return 0;
         let pos = false, neg = false;
@@ -365,8 +366,8 @@
         }
         return isNaN(rate) ? 0 : rate;
     }
-    // ----------------------------------
 
+    // Modificadas para usar el currentUser (que ahora es el UID criptográfico de Firebase)
     function getUserRecords(s) { return db.collection(s).where("userId", "==", currentUser).get().then(snap => snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))); }
     function getRecordById(s, id) { return db.collection(s).doc(id).get().then(doc => doc.exists ? { id: doc.id, ...doc.data() } : null); }
     function addRecord(s, d) { d.userId = currentUser; return db.collection(s).add(d); }
@@ -410,16 +411,17 @@
         const reader = new FileReader();
         reader.onload = async function(e) {
             try {
-                // Parseamos y SANITIZAMOS todo el JSON antes de tocar Firebase
                 const rawDatos = JSON.parse(e.target.result);
                 const datos = sanitizarObjeto(rawDatos); 
                 let count = 0;
                 
-                if (datos.caja && Array.isArray(datos.caja)) { for(let mov of datos.caja) { let d = {...mov}; delete d.id; await db.collection("caja").doc(mov.id).set(d, { merge: true }); count++; } }
-                if (datos.operaciones && Array.isArray(datos.operaciones)) { for(let op of datos.operaciones) { let d = {...op}; delete d.id; await db.collection("operaciones").doc(op.id).set(d, { merge: true }); count++; } }
-                if (datos.precios && Array.isArray(datos.precios)) { for(let p of datos.precios) { let d = {...p}; delete d.id; await db.collection("precios").doc(p.id).set(d, { merge: true }); count++; } }
+                // IMPORTANTE: Al importar, forzamos que todos los registros lleven el UID de la sesión actual
+                // Esto permite que subas un archivo viejo de cuando no usabas Firebase Auth, y la app se apropie de esos datos de forma segura.
+                if (datos.caja && Array.isArray(datos.caja)) { for(let mov of datos.caja) { let d = {...mov}; delete d.id; d.userId = currentUser; await db.collection("caja").doc(mov.id).set(d, { merge: true }); count++; } }
+                if (datos.operaciones && Array.isArray(datos.operaciones)) { for(let op of datos.operaciones) { let d = {...op}; delete d.id; d.userId = currentUser; await db.collection("operaciones").doc(op.id).set(d, { merge: true }); count++; } }
+                if (datos.precios && Array.isArray(datos.precios)) { for(let p of datos.precios) { let d = {...p}; delete d.id; d.userId = currentUser; await db.collection("precios").doc(p.id).set(d, { merge: true }); count++; } }
                 
-                alert(`¡Importación exitosa y segura! Se restauraron ${count} registros.`); changeTab('resumen', document.querySelector('.nav-item')); 
+                alert(`¡Importación exitosa! Se vincularon ${count} registros a tu cuenta de forma segura.`); changeTab('resumen', document.querySelector('.nav-item')); 
             } catch (error) { console.error(error); alert("Error: El archivo no es un respaldo válido de Capital Flow o está corrupto."); }
             event.target.value = ''; btn.innerHTML = originalText; document.getElementById('user-menu').classList.add('hidden');
         };
@@ -430,7 +432,7 @@
         try {
             const btn = event.currentTarget; const originalText = btn.innerHTML; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-vaccent"></i> Preparando...';
             const caja = await getUserRecords("caja"); const operaciones = await getUserRecords("operaciones"); const precios = await getUserRecords("precios");
-            const data = { fecha_exportacion: new Date().toISOString(), usuario: currentUser, caja: caja, operaciones: operaciones, precios: precios };
+            const data = { fecha_exportacion: new Date().toISOString(), usuario: currentUsername, caja: caja, operaciones: operaciones, precios: precios };
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a'); a.href = url; a.download = `CapitalFlow_Respaldo_${new Date().toISOString().split('T')[0]}.json`;
@@ -930,9 +932,6 @@
     }
 
     if(themes[currentThemeIndex]) { document.body.classList.add(themes[currentThemeIndex]); }
-    const sUser = localStorage.getItem('cf_user'); 
-    if(sUser) { setTimeout(() => startSession(sUser), 200); }
-    if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
   </script>
 </body>
 </html>
