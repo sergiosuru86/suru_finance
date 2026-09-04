@@ -6,7 +6,7 @@
   <title>Capital Flow</title>
   <link rel="manifest" href="./manifest.json" />
   
-  <!-- SDK de Firebase: Agregamos el módulo oficial de Autenticación -->
+  <!-- SDK de Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
@@ -68,7 +68,6 @@
       <div class="bg-vcard p-7 rounded-3xl shadow-2xl border border-vborder">
         <div class="flex border-b border-vborder mb-6"><button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent">Iniciar Sesión</button><button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted">Crear Cuenta</button></div>
         <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
-            <!-- Firebase Auth requiere un email, no solo un usuario. Ocultamos esto al usuario final -->
             <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Usuario</label><input type="text" id="login-user" required class="w-full bg-vbody text-vmain border border-vborder rounded-2xl p-4 outline-none focus:ring-2 focus:ring-vaccent transition-all" /></div>
             <div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Contraseña</label><input type="password" id="login-pass" required class="w-full bg-vbody text-vmain border border-vborder rounded-2xl p-4 outline-none focus:ring-2 focus:ring-vaccent transition-all" /></div>
             <p id="login-error" class="text-vdown text-xs hidden">Usuario o contraseña incorrectos.</p>
@@ -94,8 +93,7 @@
           <button onclick="document.getElementById('user-menu').classList.toggle('hidden')" class="w-10 h-10 rounded-full bg-vaccent flex items-center justify-center text-white font-bold text-sm shadow-sm border-2 border-transparent focus:border-vmain transition-all" id="user-avatar">CF</button>
           <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-vcard border border-vborder rounded-2xl shadow-xl overflow-hidden z-50">
             <div class="p-4 border-b border-vborder"><p class="text-xs text-vmuted font-semibold uppercase">Sesión iniciada</p><p id="menu-username" class="font-bold text-vmain truncate">Usuario</p></div>
-            
-            <!-- El cambio de clave ahora lo maneja Firebase directo -->
+            <button onclick="abrirCambiarPass(); document.getElementById('user-menu').classList.add('hidden');" class="w-full text-left px-4 py-3 text-sm font-bold text-vmain hover:bg-vbody border-b border-vborder transition-colors"><i class="fa-solid fa-shield-halved mr-2 text-vhero"></i> Cambiar clave</button>
             <label for="json-upload" class="w-full text-left px-4 py-3 text-sm font-bold text-vmain hover:bg-vbody transition-colors cursor-pointer block m-0"><i class="fa-solid fa-file-import mr-2 text-vaccent"></i> Importar datos<input type="file" id="json-upload" class="hidden" accept=".json" onchange="importarMisDatos(event)" /></label>
             <button onclick="openModal('modal-exportar'); document.getElementById('user-menu').classList.add('hidden');" class="w-full text-left px-4 py-3 text-sm font-bold text-vmain hover:bg-vbody border-b border-vborder transition-colors"><i class="fa-solid fa-file-export mr-2 text-vup"></i> Exportar datos</button>
             <button onclick="logout()" class="w-full text-left px-4 py-3 text-sm font-bold text-vdown hover:bg-vdown/10 transition-colors"><i class="fa-solid fa-right-from-bracket mr-2"></i> Cerrar sesión</button>
@@ -176,6 +174,13 @@
     </div>
   </div>
 
+  <div id="modal-cambiar-pass" class="glass-effect fixed inset-0 z-[100] hidden flex-col justify-end sm:justify-center items-center transition-opacity max-h-screen overflow-y-auto pt-20">
+    <div class="bg-vcard w-full sm:w-[400px] rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-[slideUp_0.3s_ease-out] mb-10 border border-white/20">
+      <div class="flex justify-between items-center mb-6"><h3 class="font-serif text-2xl font-semibold text-vmain">Cambiar Clave</h3><button onclick="closeModal('modal-cambiar-pass')" class="text-vmuted hover:text-vdown text-xl"><i class="fa-solid fa-xmark"></i></button></div>
+      <form onsubmit="cambiarPassword(event)" class="space-y-4"><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Clave Actual</label><input type="password" id="pass-actual" required class="w-full bg-vbody text-vmain border border-vborder rounded-2xl p-4 outline-none focus:ring-2 focus:ring-vaccent transition-all" /></div><div><label class="block text-xs font-semibold text-vmuted uppercase mb-1">Nueva Clave</label><input type="password" id="pass-nueva" required class="w-full bg-vbody text-vmain border border-vborder rounded-2xl p-4 outline-none focus:ring-2 focus:ring-vhero transition-all" /></div><p id="pass-error" class="text-vdown text-xs hidden font-medium">La clave actual es incorrecta.</p><p id="pass-exito" class="text-vup text-xs hidden font-medium">¡Clave actualizada de forma segura!</p><button type="submit" id="btn-pass-submit" class="w-full bg-vhero text-white font-bold py-4 rounded-2xl shadow-md hover:shadow-lg active:scale-95 transition-all mt-2 ripple"><i class="fa-solid fa-shield-check mr-2"></i>Actualizar Seguridad</button></form>
+    </div>
+  </div>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyB6c7W6XVzY9ZZYjvZhRhQ-B1nEc8gggAg",
@@ -187,11 +192,9 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    const auth = firebase.auth(); // Inicializamos Firebase Auth
+    const auth = firebase.auth(); 
 
-    // Activamos la persistencia de sesión local oficial de Firebase
     auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-
     db.enablePersistence({synchronizeTabs:true}).catch(err => console.log("Modo offline:", err));
 
     let currentUser = null, currentUsername = "Usuario";
@@ -216,11 +219,7 @@
         return nuevoObjeto;
     }
 
-    // Funciones Auxiliares para transformar el Nombre de Usuario en Email (Requisito de Firebase Auth)
-    // Agregamos un sufijo fijo para que la persona solo escriba "Sergio" pero Firebase vea "Sergio@capitalflow.app"
-    function getEmailFromUsername(user) {
-        return user.replace(/[^a-zA-Z0-9]/g, "").toLowerCase() + "@capitalflow.app";
-    }
+    function getEmailFromUsername(user) { return user.replace(/[^a-zA-Z0-9]/g, "").toLowerCase() + "@capitalflow.app"; }
 
     const catIngresos = ['Sueldo', 'Impresión 3D', 'Inversiones', 'Ventas', 'Otros'];
     const catGastos = ['Supermercado', 'Servicios', 'Suscripciones', 'Transporte', 'Ocio', 'Salud', 'Hogar', 'Otros'];
@@ -243,89 +242,46 @@
     
     function switchAuthTab(t) { document.getElementById('tab-login').className = t==='login' ? 'flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent' : 'flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted'; document.getElementById('tab-register').className = t==='register' ? 'flex-1 pb-3 text-sm font-bold border-b-2 border-vaccent text-vaccent' : 'flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-vmuted'; document.getElementById('form-login').classList.toggle('hidden', t!=='login'); document.getElementById('form-register').classList.toggle('hidden', t!=='register'); }
     
-    // --- 🛡️ FIREBASE AUTHENTICATION (BLINDAJE TOTAL) ---
     async function handleRegister(e) { 
-        e.preventDefault(); 
-        const btn = document.getElementById('btn-reg-submit');
-        const userStr = document.getElementById('reg-user').value.trim(); 
-        const passStr = document.getElementById('reg-pass').value; 
-        const errorMsg = document.getElementById('reg-error'); 
-        const email = getEmailFromUsername(userStr);
-
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-        btn.disabled = true;
-
-        try {
-            // Firebase Auth crea la cuenta y hashea todo en sus servidores
-            const userCredential = await auth.createUserWithEmailAndPassword(email, passStr);
-            // Guardamos el nombre "humano" en el perfil de Firebase
-            await userCredential.user.updateProfile({ displayName: userStr });
-            
-            errorMsg.classList.add('hidden');
-        } catch (error) {
-            console.error("Error al registrar:", error);
-            errorMsg.innerText = "Error: " + (error.code === 'auth/email-already-in-use' ? 'El usuario ya existe.' : 'La contraseña debe tener al menos 6 caracteres.');
-            errorMsg.classList.remove('hidden');
-        }
-        btn.innerHTML = 'Registrarme';
-        btn.disabled = false;
+        e.preventDefault(); const btn = document.getElementById('btn-reg-submit'); const userStr = document.getElementById('reg-user').value.trim(); const passStr = document.getElementById('reg-pass').value; const errorMsg = document.getElementById('reg-error'); const email = getEmailFromUsername(userStr);
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; btn.disabled = true;
+        try { const userCredential = await auth.createUserWithEmailAndPassword(email, passStr); await userCredential.user.updateProfile({ displayName: userStr }); errorMsg.classList.add('hidden'); } catch (error) { console.error("Error al registrar:", error); errorMsg.innerText = "Error: " + (error.code === 'auth/email-already-in-use' ? 'El usuario ya existe.' : 'La contraseña debe tener al menos 6 caracteres.'); errorMsg.classList.remove('hidden'); }
+        btn.innerHTML = 'Registrarme'; btn.disabled = false;
     }
     
     async function handleLogin(e) { 
-        e.preventDefault(); 
-        const btn = document.getElementById('btn-login-submit');
-        const userStr = document.getElementById('login-user').value.trim(); 
-        const passStr = document.getElementById('login-pass').value; 
-        const errorMsg = document.getElementById('login-error'); 
-        const email = getEmailFromUsername(userStr);
+        e.preventDefault(); const btn = document.getElementById('btn-login-submit'); const userStr = document.getElementById('login-user').value.trim(); const passStr = document.getElementById('login-pass').value; const errorMsg = document.getElementById('login-error'); const email = getEmailFromUsername(userStr);
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; btn.disabled = true;
+        try { await auth.signInWithEmailAndPassword(email, passStr); errorMsg.classList.add('hidden'); } catch (error) { console.error("Error al iniciar sesión:", error); errorMsg.classList.remove('hidden'); }
+        btn.innerHTML = 'Entrar'; btn.disabled = false;
+    }
 
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-        btn.disabled = true;
+    function logout() { auth.signOut(); }
 
+    function abrirCambiarPass() { document.getElementById('pass-actual').value = ''; document.getElementById('pass-nueva').value = ''; document.getElementById('pass-error').classList.add('hidden'); document.getElementById('pass-exito').classList.add('hidden'); openModal('modal-cambiar-pass'); }
+
+    async function cambiarPassword(e) {
+        e.preventDefault(); const passActual = document.getElementById('pass-actual').value; const passNueva = document.getElementById('pass-nueva').value; const errorMsg = document.getElementById('pass-error'); const exitoMsg = document.getElementById('pass-exito'); const btn = document.getElementById('btn-pass-submit');
+        errorMsg.classList.add('hidden'); exitoMsg.classList.add('hidden'); btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Verificando...';
         try {
-            await auth.signInWithEmailAndPassword(email, passStr);
-            errorMsg.classList.add('hidden'); 
-        } catch (error) {
-            console.error("Error al iniciar sesión:", error);
-            errorMsg.classList.remove('hidden'); 
-        }
-        btn.innerHTML = 'Entrar';
-        btn.disabled = false;
+            const credential = firebase.auth.EmailAuthProvider.credential(auth.currentUser.email, passActual);
+            await auth.currentUser.reauthenticateWithCredential(credential);
+            await auth.currentUser.updatePassword(passNueva);
+            exitoMsg.classList.remove('hidden'); document.getElementById('pass-actual').value = ''; document.getElementById('pass-nueva').value = ''; setTimeout(() => closeModal('modal-cambiar-pass'), 2000);
+        } catch(err) { console.error(err); errorMsg.classList.remove('hidden'); }
+        btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-shield-check mr-2"></i>Actualizar Seguridad';
     }
 
-    function logout() { 
-        auth.signOut();
-    }
-
-    // --- ESCUCHADOR MAESTRO DE SESIÓN (El cerebro de la seguridad) ---
     auth.onAuthStateChanged((user) => {
         if (user) {
-            // El usuario tiene un Token criptográfico válido
-            currentUser = user.uid; // Usamos el ID criptográfico, no el nombre, para vincular los datos
-            currentUsername = user.displayName || "Usuario"; // Mostramos el nombre bonito en la pantalla
-            
-            document.getElementById('auth-screen').classList.add('hidden'); 
-            document.getElementById('app-container').classList.remove('hidden'); 
-            document.getElementById('app-container').classList.add('flex'); 
-            
-            document.getElementById('display-username').innerText = currentUsername; 
-            document.getElementById('menu-username').innerText = currentUsername; 
-            document.getElementById('user-avatar').innerText = currentUsername.substring(0,2).toUpperCase(); 
-            
-            // Forzamos el clic en la primer pestaña para que cargue
-            const navResumen = document.querySelector('.nav-item');
-            if(navResumen) changeTab('resumen', navResumen);
-            
+            currentUser = user.uid; currentUsername = user.displayName || "Usuario"; 
+            document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('app-container').classList.remove('hidden'); document.getElementById('app-container').classList.add('flex'); 
+            document.getElementById('display-username').innerText = currentUsername; document.getElementById('menu-username').innerText = currentUsername; document.getElementById('user-avatar').innerText = currentUsername.substring(0,2).toUpperCase(); 
+            const navResumen = document.querySelector('.nav-item'); if(navResumen) changeTab('resumen', navResumen);
         } else {
-            // El usuario no existe o se deslogueó
-            currentUser = null;
-            document.getElementById('user-menu').classList.add('hidden'); 
-            document.getElementById('app-container').classList.add('hidden'); 
-            document.getElementById('app-container').classList.remove('flex'); 
-            document.getElementById('auth-screen').classList.remove('hidden');
+            currentUser = null; document.getElementById('user-menu').classList.add('hidden'); document.getElementById('app-container').classList.add('hidden'); document.getElementById('app-container').classList.remove('flex'); document.getElementById('auth-screen').classList.remove('hidden');
         }
     });
-    // ------------------------------------------------------------------
 
     function formatMoney(num, bypassConversion = false) { 
         if (isUsd && dolarMep > 0) { const val = bypassConversion ? num : (num / dolarMep); return "u$s " + val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
@@ -340,34 +296,18 @@
     function parseNumberArg(val) { if (!val) return 0; let s = String(val).trim().replace(/[$ \t]/g, ''); if (!s) return 0; if (s.includes('.') && s.includes(',')) { if (s.indexOf('.') < s.indexOf(',')) s = s.replace(/\./g, '').replace(',', '.'); else s = s.replace(/,/g, ''); } else if (s.includes(',')) s = s.replace(',', '.'); return parseFloat(s) || 0; }
     
     function calcularTIR(flujos) {
-        if (!flujos || flujos.length < 2) return 0;
-        let pos = false, neg = false;
-        flujos.forEach(f => { if (f.amount > 0.01) pos = true; if (f.amount < -0.01) neg = true; });
-        if (!pos || !neg) return 0;
-        flujos.sort((a, b) => a.date - b.date);
-        const d0 = flujos[0].date;
-        const years = flujos.map(f => (f.date - d0) / (1000 * 60 * 60 * 24 * 365.25));
-        if (years[years.length - 1] === 0) return 0;
+        if (!flujos || flujos.length < 2) return 0; let pos = false, neg = false; flujos.forEach(f => { if (f.amount > 0.01) pos = true; if (f.amount < -0.01) neg = true; }); if (!pos || !neg) return 0;
+        flujos.sort((a, b) => a.date - b.date); const d0 = flujos[0].date; const years = flujos.map(f => (f.date - d0) / (1000 * 60 * 60 * 24 * 365.25)); if (years[years.length - 1] === 0) return 0;
         let rate = 0.1;
         for (let i = 0; i < 100; i++) {
             let npv = 0; let dnpv = 0;
-            for (let j = 0; j < flujos.length; j++) {
-                const t = years[j]; const cf = flujos[j].amount;
-                const denominator = Math.pow(1 + rate, t);
-                npv += cf / denominator;
-                if (t > 0) dnpv -= (t * cf) / (denominator * (1 + rate));
-            }
-            if (Math.abs(npv) < 0.0001) return rate;
-            if (dnpv === 0) break;
-            let newRate = rate - npv / dnpv;
-            if (newRate <= -1) newRate = -0.9999;
-            if (Math.abs(newRate - rate) < 0.000001) return newRate;
-            rate = newRate;
+            for (let j = 0; j < flujos.length; j++) { const t = years[j]; const cf = flujos[j].amount; const denominator = Math.pow(1 + rate, t); npv += cf / denominator; if (t > 0) dnpv -= (t * cf) / (denominator * (1 + rate)); }
+            if (Math.abs(npv) < 0.0001) return rate; if (dnpv === 0) break;
+            let newRate = rate - npv / dnpv; if (newRate <= -1) newRate = -0.9999; if (Math.abs(newRate - rate) < 0.000001) return newRate; rate = newRate;
         }
         return isNaN(rate) ? 0 : rate;
     }
 
-    // Modificadas para usar el currentUser (que ahora es el UID criptográfico de Firebase)
     function getUserRecords(s) { return db.collection(s).where("userId", "==", currentUser).get().then(snap => snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))); }
     function getRecordById(s, id) { return db.collection(s).doc(id).get().then(doc => doc.exists ? { id: doc.id, ...doc.data() } : null); }
     function addRecord(s, d) { d.userId = currentUser; return db.collection(s).add(d); }
@@ -403,7 +343,6 @@
     function prepararNuevaCaja() { editCajaId = null; document.getElementById('titulo-modal-caja').innerText = "Nuevo Movimiento"; document.getElementById('caja-fecha').valueAsDate = new Date(); document.getElementById('caja-desc').value = ''; document.getElementById('caja-monto').value = ''; document.querySelector('input[name="tipo-mov"][value="Ingreso"]').checked = true; actualizarSelectCategorias(); openModal('modal-caja'); }
     function prepararNuevaOp() { editOpId = null; document.getElementById('titulo-modal-op').innerText = "Registrar Operación"; document.getElementById('op-fecha').valueAsDate = new Date(); document.getElementById('op-activo').value = ''; document.getElementById('op-cantidad').value = ''; document.getElementById('op-precio').value = ''; document.getElementById('op-comision').value = '0'; document.getElementById('op-interes').value = '0'; openModal('modal-operacion'); }
 
-    // --- Importación Blindada ---
     async function importarMisDatos(event) {
         const file = event.target.files[0]; if (!file) return;
         if (!confirm("⚠️ ¡Atención! Importar un respaldo sobrescribirá tus datos actuales si hay duplicados. ¿Querés continuar?")) { event.target.value = ''; return; }
@@ -411,16 +350,10 @@
         const reader = new FileReader();
         reader.onload = async function(e) {
             try {
-                const rawDatos = JSON.parse(e.target.result);
-                const datos = sanitizarObjeto(rawDatos); 
-                let count = 0;
-                
-                // IMPORTANTE: Al importar, forzamos que todos los registros lleven el UID de la sesión actual
-                // Esto permite que subas un archivo viejo de cuando no usabas Firebase Auth, y la app se apropie de esos datos de forma segura.
+                const rawDatos = JSON.parse(e.target.result); const datos = sanitizarObjeto(rawDatos); let count = 0;
                 if (datos.caja && Array.isArray(datos.caja)) { for(let mov of datos.caja) { let d = {...mov}; delete d.id; d.userId = currentUser; await db.collection("caja").doc(mov.id).set(d, { merge: true }); count++; } }
                 if (datos.operaciones && Array.isArray(datos.operaciones)) { for(let op of datos.operaciones) { let d = {...op}; delete d.id; d.userId = currentUser; await db.collection("operaciones").doc(op.id).set(d, { merge: true }); count++; } }
                 if (datos.precios && Array.isArray(datos.precios)) { for(let p of datos.precios) { let d = {...p}; delete d.id; d.userId = currentUser; await db.collection("precios").doc(p.id).set(d, { merge: true }); count++; } }
-                
                 alert(`¡Importación exitosa! Se vincularon ${count} registros a tu cuenta de forma segura.`); changeTab('resumen', document.querySelector('.nav-item')); 
             } catch (error) { console.error(error); alert("Error: El archivo no es un respaldo válido de Capital Flow o está corrupto."); }
             event.target.value = ''; btn.innerHTML = originalText; document.getElementById('user-menu').classList.add('hidden');
@@ -433,8 +366,7 @@
             const btn = event.currentTarget; const originalText = btn.innerHTML; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-vaccent"></i> Preparando...';
             const caja = await getUserRecords("caja"); const operaciones = await getUserRecords("operaciones"); const precios = await getUserRecords("precios");
             const data = { fecha_exportacion: new Date().toISOString(), usuario: currentUsername, caja: caja, operaciones: operaciones, precios: precios };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob);
             const a = document.createElement('a'); a.href = url; a.download = `CapitalFlow_Respaldo_${new Date().toISOString().split('T')[0]}.json`;
             document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
             btn.innerHTML = '<i class="fa-solid fa-check text-vup"></i> ¡Descargado!'; setTimeout(() => { btn.innerHTML = originalText; }, 2000);
@@ -447,8 +379,7 @@
             const ops = await getUserRecords("operaciones"); ops.sort((a,b) => new Date(a.fecha || 0) - new Date(b.fecha || 0));
             let csvContent = "\uFEFFFecha,Activo,Tipo,Cantidad,Precio Unitario,Comisión,Intereses,Dólar Histórico\n";
             ops.forEach(op => { csvContent += `"${op.fecha||''}","${op.activo||''}","${op.tipo||''}",${op.cantidad||0},${op.precio||0},${op.comision||0},${op.interes||0},${op.dolarHistorico||''}\n`; });
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob);
             const a = document.createElement('a'); a.href = url; a.download = `CapitalFlow_PestañaOperar_${new Date().toISOString().split('T')[0]}.csv`;
             document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
             btn.innerHTML = '<i class="fa-solid fa-check text-vup"></i> ¡CSV Listo!'; setTimeout(() => { btn.innerHTML = originalText; }, 2000);
@@ -553,15 +484,9 @@
             let actualizados = 0;
             
             const promesas = opsQuery.docs.map(async (docSnap) => {
-                const op = docSnap.data();
-                const f = op.fecha;
-                const matches = dataMep.filter(d => d.fecha <= f);
-                let dh = dolarMep || 1000;
-                if (matches.length > 0) dh = matches[matches.length - 1].venta;
-                else if (dataMep.length > 0) dh = dataMep[0].venta;
-                
-                await db.collection("operaciones").doc(docSnap.id).update({ dolarHistorico: dh });
-                actualizados++;
+                const op = docSnap.data(); const f = op.fecha; const matches = dataMep.filter(d => d.fecha <= f);
+                let dh = dolarMep || 1000; if (matches.length > 0) dh = matches[matches.length - 1].venta; else if (dataMep.length > 0) dh = dataMep[0].venta;
+                await db.collection("operaciones").doc(docSnap.id).update({ dolarHistorico: dh }); actualizados++;
             });
             await Promise.all(promesas);
             alert(`¡Éxito! Se corrigió el Dólar Histórico en ${actualizados} operaciones.`);
@@ -586,7 +511,7 @@
             else {
                 activos.forEach(item => {
                     const porcentaje = vMer > 0 ? ((item.valor / vMer) * 100).toFixed(1) : 0;
-                    lista.innerHTML += `<div class="flex justify-between items-center bg-vbody p-4 rounded-3xl border border-vborder hover:shadow-md transition-all active:scale-[0.98]"><div class="flex items-center gap-4"><div class="w-11 h-11 rounded-full bg-vcard border border-vborder flex items-center justify-center font-black text-vmain text-xs shadow-md">${item.ticker.slice(0,3)}</div><div><h4 class="font-bold text-vmain text-base">${item.ticker}</h4><p class="text-xs text-vmuted font-semibold mt-0.5">${porcentaje}% de la cartera</p></div></div><div class="text-right font-black text-vmain text-base">${formatMoney(item.valor)}</div></div>`;
+                    lista.innerHTML += `<div class="flex justify-between items-center bg-vbody p-4 rounded-3xl border border-vborder hover:shadow-md transition-all active:scale-[0.98]"><div class="flex items-center"><div class="min-w-0"><h4 class="font-bold text-vmain text-base">${item.ticker}</h4><p class="text-xs text-vmuted font-semibold mt-0.5">${porcentaje}% de la cartera</p></div></div><div class="text-right font-black text-vmain text-base">${formatMoney(item.valor)}</div></div>`;
                 });
             }
             openModal('modal-distribucion');
@@ -779,7 +704,7 @@
             
             const pctGan = costoDisp > 0 ? (ganDisp / costoDisp) * 100 : 0;
             
-            lista.innerHTML += `<div class="bg-vcard p-6 rounded-3xl shadow-md border border-vborder hover:shadow-lg transition-all"><div class="flex justify-between items-center mb-5"><div class="flex items-center gap-3"><div class="w-12 h-12 rounded-full bg-vbody border border-vborder flex items-center justify-center font-black text-vmain text-base shadow-md">${t.slice(0,3)}</div><div><h4 class="font-serif font-black text-xl text-vmain flex items-center gap-2">${t} <button onclick="renombrarActivo('${t}')" class="text-vmuted hover:text-vaccent text-sm transition-colors" title="Modificar nombre de Activo"><i class="fa-solid fa-pen-to-square"></i></button></h4></div></div><div class="text-right flex-shrink-0 ml-2"><p class="font-black text-vmain text-lg auto-shrink inline-block max-w-full whitespace-nowrap origin-right">${formatMoney(vActDisp, true)}</p><span class="text-xs font-bold ${isUp?'text-vup bg-vup/10':'text-vdown bg-vdown/10'} px-2 py-1 rounded-lg block mt-1 mb-1">${isUp?'+':''}${formatMoney(ganDisp, true)}</span><span class="text-[11px] font-black ${isUp?'text-vup':'text-vdown'} block text-right">${isUp?'+':''}${pctGan.toFixed(2)}%</span></div></div><div class="flex justify-between bg-vbody rounded-2xl p-4 border border-vborder text-sm"><div><p class="text-xs text-vmuted mb-2 font-bold uppercase tracking-wider">Nominales: <span class="font-black text-vmain">${formatCrypto(item.cant)}</span></p><p class="text-xs text-vmuted mb-1 font-bold uppercase tracking-wider">Precio Prom. Compra</p><p class="font-black text-vmain text-base">${formatMoney(pppDisp, true)}</p></div><div class="text-right"><p class="text-xs text-vmuted mb-1 font-bold uppercase tracking-wider">Actual ${isAuto ? '<i class="fa-solid fa-bolt text-vaccent text-[10px]" title="Cotización Automática"></i>' : '<i class="fa-solid fa-pen text-[10px]" title="Cotización Manual"></i>'}</p><input type="number" step="any" value="${pActDisp.toFixed(2)}" onchange="actualizarPrecio('${t}', this.value)" class="w-24 text-right bg-transparent border-b-2 border-vaccent/50 font-black text-vmain text-base outline-none focus:border-vaccent transition-all" /></div></div></div>`;
+            lista.innerHTML += `<div class="bg-vcard p-6 rounded-3xl shadow-md border border-vborder hover:shadow-lg transition-all"><div class="flex justify-between items-center mb-5"><div class="flex items-center min-w-0 pr-2"><div class="min-w-0"><h4 class="font-serif font-black text-xl text-vmain flex items-center gap-2 truncate">${t} <button onclick="renombrarActivo('${t}')" class="text-vmuted hover:text-vaccent text-sm transition-colors flex-shrink-0" title="Modificar nombre de Activo"><i class="fa-solid fa-pen-to-square"></i></button></h4></div></div><div class="flex flex-col items-end gap-1.5 flex-shrink-0 ml-2 max-w-[50%] min-w-0"><p class="font-black text-vmain text-lg auto-shrink inline-block max-w-full whitespace-nowrap origin-right leading-none mb-0.5">${formatMoney(vActDisp, true)}</p><span class="text-[10px] font-bold ${isUp?'text-vup bg-vup/10':'text-vdown bg-vdown/10'} px-2 py-1 rounded-md auto-shrink inline-block max-w-full whitespace-nowrap origin-right leading-none">${isUp?'+':''}${formatMoney(ganDisp, true)}</span><span class="text-[11px] font-black ${isUp?'text-vup':'text-vdown'} auto-shrink inline-block max-w-full whitespace-nowrap origin-right leading-none">${isUp?'+':''}${pctGan.toFixed(2)}%</span></div></div><div class="flex justify-between bg-vbody rounded-2xl p-4 border border-vborder text-sm"><div class="min-w-0 flex-1 pr-2"><p class="text-xs text-vmuted mb-2 font-bold uppercase tracking-wider truncate">Nominales: <span class="font-black text-vmain">${formatCrypto(item.cant)}</span></p><p class="text-xs text-vmuted mb-1 font-bold uppercase tracking-wider truncate">Precio Prom. Compra</p><p class="font-black text-vmain text-base auto-shrink inline-block max-w-full whitespace-nowrap origin-left">${formatMoney(pppDisp, true)}</p></div><div class="text-right flex-shrink-0 max-w-[50%] min-w-0"><p class="text-xs text-vmuted mb-1 font-bold uppercase tracking-wider truncate">Actual ${isAuto ? '<i class="fa-solid fa-bolt text-vaccent text-[10px]" title="Cotización Automática"></i>' : '<i class="fa-solid fa-pen text-[10px]" title="Cotización Manual"></i>'}</p><input type="number" step="any" value="${pActDisp.toFixed(2)}" onchange="actualizarPrecio('${t}', this.value)" class="w-24 max-w-full text-right bg-transparent border-b-2 border-vaccent/50 font-black text-vmain text-base outline-none focus:border-vaccent transition-all" /></div></div></div>`;
           }
           const liquidez = await getLiquidez(); 
           const plTotalArs = (vMercArs - costoCarteraArs) + intArsTot; const plTotalUsd = (vMercUsd - costoCarteraUsd) + intUsdTot; 
@@ -860,11 +785,14 @@
           });
           
           let vMerArs = 0, vMerUsd = 0; const lPie = [], dPie = [];
+          let costoCarteraArs = 0, costoCarteraUsd = 0; 
+
           for(const t in pf){ 
               const p=pf[t]; 
               if(p.c>0.00001) { 
                   const valArs = p.c*(pMap[t]||(p.ct/p.c)); 
                   vMerArs += valArs; vMerUsd += valArs / (dolarMep || 1000);
+                  costoCarteraArs += p.ct; costoCarteraUsd += p.ctUsd; 
                   lPie.push(t); dPie.push(isUsd ? (valArs / (dolarMep || 1000)) : valArs); 
               } 
           }
@@ -875,11 +803,18 @@
           flujosArs.push({ date: new Date(), amount: vMerArs });
           flujosUsd.push({ date: new Date(), amount: vMerUsd });
           
-          const pltArs = (vMerArs - capArs) + intArs; const pltUsd = (vMerUsd - capUsd) + intUsd;
+          const plLatenteArs = vMerArs - costoCarteraArs;
+          const plLatenteUsd = vMerUsd - costoCarteraUsd;
+          
           const roiArs = calcularTIR(flujosArs) * 100; const roiUsd = calcularTIR(flujosUsd) * 100;
           
-          const dispCap = isUsd ? capUsd : capArs; const dispInt = isUsd ? intUsd : intArs;
-          const dispPl = isUsd ? pltUsd : pltArs; const dispRoi = isUsd ? roiUsd : roiArs;
+          const pltArs = plLatenteArs + intArs;
+          const pltUsd = plLatenteUsd + intUsd;
+
+          const dispCap = isUsd ? costoCarteraUsd : costoCarteraArs; 
+          const dispInt = isUsd ? intUsd : intArs;
+          const dispPl = isUsd ? pltUsd : pltArs; 
+          const dispRoi = isUsd ? roiUsd : roiArs;
 
           document.getElementById('met-cap').innerText = formatMoney(dispCap, true); 
           document.getElementById('met-int').innerText = formatMoney(dispInt, true); 
