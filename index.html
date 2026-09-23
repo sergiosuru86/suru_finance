@@ -456,8 +456,8 @@
                         const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`).catch(()=>null);
                         if(res && res.ok) { const data = await res.json(); if(data.price) precioPesos = parseFloat(data.price) * dolarDeCierre; }
                     } else {
-                        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${t}`;
-                        let res = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`).catch(()=>null);
+                        const url = `https://query2.finance.yahoo.com/v8/finance/chart/${t}`;
+                        let res = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`).catch(()=>null);
                         if(!res || !res.ok) { res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`).catch(()=>null); }
                         if(res && res.ok) { const yData = await res.json(); if(yData.chart && yData.chart.result && yData.chart.result.length > 0) { const pRef = yData.chart.result[0].meta.regularMarketPrice; precioPesos = t.includes('.BA') ? pRef : (pRef * dolarDeCierre); } }
                     }
@@ -466,7 +466,7 @@
             }
             await updateCartera(); 
             if(actualizados > 0) { btn.innerHTML = `<i class="fa-solid fa-check mr-1"></i> ${actualizados} listos`; btn.classList.replace('text-vaccent', 'text-vup'); } 
-            else { btn.innerHTML = `<i class="fa-solid fa-xmark mr-1"></i> Sin datos`; }
+            else { btn.innerHTML = `<i class="fa-solid fa-xmark mr-1"></i> Falló conex.`; }
         } catch(e) { btn.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> Error'; }
         setTimeout(() => { if(document.getElementById('btn-sync')) { document.getElementById('btn-sync').innerHTML = originalText; document.getElementById('btn-sync').disabled = false; document.getElementById('btn-sync').classList.replace('text-vup', 'text-vaccent'); } }, 4000);
     }
@@ -864,6 +864,41 @@
       const style = getComputedStyle(document.body); const cUp = style.getPropertyValue('--up-color').trim(); const cText = style.getPropertyValue('--text-main').trim(); const cMuted = style.getPropertyValue('--text-muted').trim();
       if(chartSimInst) chartSimInst.destroy(); chartSimInst = new Chart(document.getElementById('chart-simulador'), { type: 'bar', data: { labels: labels, datasets: [ {label: 'Aportes Totales', data: dataAportes, backgroundColor: cText}, {label: 'Interés Compuesto', data: dataInteres, backgroundColor: cUp} ] }, options: { maintainAspectRatio: false, plugins: { legend: { labels: { color: cText } } }, scales: { x: { stacked: true, ticks: {color: cMuted} }, y: { stacked: true, ticks: {color: cMuted} } } } });
       setTimeout(aplicarAutoShrink, 10);
+    }
+
+    async function sincronizarMercado() {
+        const btn = document.getElementById('btn-sync'); if(!btn) return;
+        const originalText = btn.innerHTML; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Sincronizando...'; btn.disabled = true;
+        try {
+            const ops = await getUserRecords("operaciones"); 
+            const tickers = [...new Set(ops.map(o => o.activo.trim().toUpperCase()))].filter(t => !t.includes(' ')); 
+            if(tickers.length === 0) { btn.innerHTML = `<i class="fa-solid fa-xmark mr-1"></i> Sin datos`; setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 3000); return; }
+            let actualizados = 0; let dolarDeCierre = dolarMep;
+            if (!dolarDeCierre) {
+                const resDol = await fetch('https://dolarapi.com/v1/dolares/bolsa').catch(()=>null);
+                if (resDol && resDol.ok) { const dataDol = await resDol.json(); dolarDeCierre = dataDol.venta; } else { dolarDeCierre = 1000; }
+            }
+            for(let t of tickers) {
+                try {
+                    let precioPesos = null;
+                    if(isActivoEnUsd(t)) {
+                        let symbol = t; if(t === 'BTC') symbol = 'BTCUSDT'; if(t === 'ETH') symbol = 'ETHUSDT';
+                        const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`).catch(()=>null);
+                        if(res && res.ok) { const data = await res.json(); if(data.price) precioPesos = parseFloat(data.price) * dolarDeCierre; }
+                    } else {
+                        const url = `https://query2.finance.yahoo.com/v8/finance/chart/${t}`;
+                        let res = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`).catch(()=>null);
+                        if(!res || !res.ok) { res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`).catch(()=>null); }
+                        if(res && res.ok) { const yData = await res.json(); if(yData.chart && yData.chart.result && yData.chart.result.length > 0) { const pRef = yData.chart.result[0].meta.regularMarketPrice; precioPesos = t.includes('.BA') ? pRef : (pRef * dolarDeCierre); } }
+                    }
+                    if(precioPesos && precioPesos > 0) { await db.collection("precios").doc(currentUser + "_" + t).set({ userId: currentUser, ticker: t, precio: precioPesos, auto: true }, { merge: true }); actualizados++; }
+                } catch(e) { console.error(`Error procesando ${t}`); }
+            }
+            await updateCartera(); 
+            if(actualizados > 0) { btn.innerHTML = `<i class="fa-solid fa-check mr-1"></i> ${actualizados} listos`; btn.classList.replace('text-vaccent', 'text-vup'); } 
+            else { btn.innerHTML = `<i class="fa-solid fa-xmark mr-1"></i> Sin datos`; }
+        } catch(e) { btn.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> Error'; }
+        setTimeout(() => { if(document.getElementById('btn-sync')) { document.getElementById('btn-sync').innerHTML = originalText; document.getElementById('btn-sync').disabled = false; document.getElementById('btn-sync').classList.replace('text-vup', 'text-vaccent'); } }, 4000);
     }
 
     if(themes[currentThemeIndex]) { document.body.classList.add(themes[currentThemeIndex]); }
